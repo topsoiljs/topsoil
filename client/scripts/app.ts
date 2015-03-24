@@ -1,4 +1,5 @@
 import React = require('react');
+import io = require('socket.io-client');
 
 interface Props { name: string; role: string; }
 
@@ -11,7 +12,7 @@ class Output extends React.Component<Props, OutputState> {
     super(props);
   }
   setupStream() {
-
+    var stream = io('localhost:8000');
   }
   public componentDidMount() {
     this.setupStream();

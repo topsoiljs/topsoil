@@ -4,7 +4,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", 'react'], function (require, exports, React) {
+define(["require", "exports", 'react', 'socket.io-client'], function (require, exports, React, io) {
     var Output = (function (_super) {
         __extends(Output, _super);
         function Output(props) {
@@ -14,6 +14,7 @@ define(["require", "exports", 'react'], function (require, exports, React) {
             };
         }
         Output.prototype.setupStream = function () {
+            var stream = io('localhost:8000');
         };
         Output.prototype.componentDidMount = function () {
             this.setupStream();
