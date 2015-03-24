@@ -1,7 +1,7 @@
 /**
  * Created by Derek on 3/24/15.
  */
-/// <reference path="./typings/hapi/hapi.d.ts" />
+/// <reference path="../typings/hapi/hapi.d.ts" />
 var Hapi = require("hapi");
 //// Create a server with a host and port
 var server = new Hapi.Server();
@@ -17,5 +17,4 @@ server.route({
         reply('hello world');
     }
 });
-
 server.start();
