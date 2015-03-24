@@ -20,7 +20,7 @@ class Output extends React.Component<Props, OutputState> {
 
       var out = document.getElementById("logs");
       // scrollheight is total height, client height is height of box, scrolltop is distance from top of box to top of scroll height
-      var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 5;
+      var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 50;
       if(isScrolledToBottom){
         out.scrollTop = out.scrollHeight - out.clientHeight;
       }

@@ -21,7 +21,7 @@ define(["require", "exports", 'react', 'socket.io-client'], function (require, e
                 this.setState({ log: log });
                 var out = document.getElementById("logs");
                 // scrollheight is total height, client height is height of box, scrolltop is distance from top of box to top of scroll height
-                var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 5;
+                var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 50;
                 if (isScrolledToBottom) {
                     out.scrollTop = out.scrollHeight - out.clientHeight;
                 }
