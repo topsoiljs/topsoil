@@ -13,19 +13,24 @@ function emitOutput(data){
 
 io.on('connection', function(socket){
   socket.on('input', function(data){
+    data = String(data);
     try {
       var commands = data.split(' ');
       var command = commands[0];
       var args = commands.slice(1);
-      console.log(command, args);
-      var proc = spawn(data, args);
+      args = args.map(function(el){return el});
+      var proc = spawn(command, args);
+
       proc.on('error', function(err){
         console.log('invalid command', err);
         emitOutput('invalid command : ' + data);
       })
+
       proc.on('close', function (code) {
       });
+
       proc.stdout.on('data', emitOutput);
+
       proc.stderr.on('data', emitOutput);
     } catch (e){
       console.log('error executing');
