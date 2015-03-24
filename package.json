@@ -1,0 +1,11 @@
+{
+  "name": "topsoil",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The topsoil for your terminal.",
+  "dependencies": {
+    "hapi": "^8.4.0",
+    "typescript": "^1.4.1"
+  },
+  "devDependencies": {}
+}
