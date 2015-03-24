@@ -1,3 +1,3 @@
-require(["scripts/app.js"], function(app) {
+require(["scripts/output.js", "scripts/input.js"], function(app) {
 
 });
