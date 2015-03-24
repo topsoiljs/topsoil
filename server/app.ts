@@ -9,6 +9,8 @@ server.connection({
     host: 'localhost',
     port: 8000
 });
+
+////direct to home page
 server.route({
     method: 'GET',
     path: '/',
@@ -17,4 +19,16 @@ server.route({
         reply.file('../public/index.html');
     }
 });
+
+////serve static assets
+server.route({
+    method: 'GET',
+    path: '/public/{param*}',
+    handler: {
+        directory: {
+            path: '../public'
+        }
+    }
+});
+
 server.start();
