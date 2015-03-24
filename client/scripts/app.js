@@ -20,7 +20,7 @@ define(["require", "exports", 'react', 'socket.io-client'], function (require, e
                 this.state.log.push(data);
                 this.setState({ log: log });
                 var out = document.getElementById("logs");
-                var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+                var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 5;
                 console.log(isScrolledToBottom);
                 if (isScrolledToBottom) {
                     out.scrollTop = out.scrollHeight - out.clientHeight;
