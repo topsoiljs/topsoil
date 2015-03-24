@@ -13,10 +13,15 @@ define(["require", "exports", 'react'], function (require, exports, React) {
                 log: []
             };
         }
+        Output.prototype.setupStream = function () {
+        };
+        Output.prototype.componentDidMount = function () {
+            this.setupStream();
+        };
         Output.prototype.render = function () {
             console.log(this.state);
-            // var data : string = this.state.log.join('\n');
-            return React.DOM.pre(null, "testtestestst\ntestst\nasdlfjkslfd");
+            var data = this.state.log.join('\n');
+            return React.DOM.pre(null, data);
         };
         return Output;
     })(React.Component);
@@ -24,5 +29,5 @@ define(["require", "exports", 'react'], function (require, exports, React) {
         return React.createElement(Output);
     }
     React.render(Factory(), document.getElementById('output'));
-    return Factory;
 });
+// export = Factory;

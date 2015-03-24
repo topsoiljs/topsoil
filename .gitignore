@@ -28,3 +28,5 @@ typings
 # Users Environment Variables
 .lock-wscript
 .idea
+
+bower_components
