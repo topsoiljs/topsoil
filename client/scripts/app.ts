@@ -21,7 +21,6 @@ class Output extends React.Component<Props, OutputState> {
       var out = document.getElementById("logs");
       // scrollheight is total height, client height is height of box, scrolltop is distance from top of box to top of scroll height
       var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 5;
-      console.log(isScrolledToBottom);
       if(isScrolledToBottom){
         out.scrollTop = out.scrollHeight - out.clientHeight;
       }
@@ -34,7 +33,6 @@ class Output extends React.Component<Props, OutputState> {
       log: []
   }
   public render() {
-    console.log(this.state);
     var data : string = this.state.log.join('\n');
     return React.DOM.pre({id: "logs"}, data);
   }
