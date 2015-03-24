@@ -28,4 +28,3 @@ server.route({
     }
 });
 server.start();
-//# sourceMappingURL=app.js.map

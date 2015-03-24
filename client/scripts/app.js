@@ -14,7 +14,18 @@ define(["require", "exports", 'react', 'socket.io-client'], function (require, e
             };
         }
         Output.prototype.setupStream = function () {
-            var stream = io('localhost:8000');
+            var stream = io('http://localhost:8000');
+            stream.on('data', function (data) {
+                var log = this.state.log;
+                this.state.log.push(data);
+                this.setState({ log: log });
+                var out = document.getElementById("logs");
+                var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+                console.log(isScrolledToBottom);
+                if (isScrolledToBottom) {
+                    out.scrollTop = out.scrollHeight - out.clientHeight;
+                }
+            }.bind(this));
         };
         Output.prototype.componentDidMount = function () {
             this.setupStream();
@@ -22,7 +33,7 @@ define(["require", "exports", 'react', 'socket.io-client'], function (require, e
         Output.prototype.render = function () {
             console.log(this.state);
             var data = this.state.log.join('\n');
-            return React.DOM.pre(null, data);
+            return React.DOM.pre({ id: "logs" }, data);
         };
         return Output;
     })(React.Component);

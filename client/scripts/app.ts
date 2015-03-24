@@ -12,7 +12,19 @@ class Output extends React.Component<Props, OutputState> {
     super(props);
   }
   setupStream() {
-    var stream = io('localhost:8000');
+    var stream = io('http://localhost:8000');
+    stream.on('data', function(data){
+      var log : string[] = this.state.log;
+      this.state.log.push(data);
+      this.setState({log: log})
+
+      var out = document.getElementById("logs");
+      var isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+      console.log(isScrolledToBottom);
+      if(isScrolledToBottom){
+        out.scrollTop = out.scrollHeight - out.clientHeight;
+      }
+    }.bind(this))
   }
   public componentDidMount() {
     this.setupStream();
@@ -23,7 +35,7 @@ class Output extends React.Component<Props, OutputState> {
   public render() {
     console.log(this.state);
     var data : string = this.state.log.join('\n');
-    return React.DOM.pre(null, data);
+    return React.DOM.pre({id: "logs"}, data);
   }
 }
 

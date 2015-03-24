@@ -1,0 +1,5 @@
+pre {
+  overflow: auto;
+  height: 500px;
+  whitespace: pre-wrap;
+}
