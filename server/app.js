@@ -9,12 +9,22 @@ server.connection({
     host: 'localhost',
     port: 8000
 });
+////direct to home page
 server.route({
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-        console.log(request);
-        reply('hello world');
+        reply.file('../public/index.html');
+    }
+});
+////serve static assets
+server.route({
+    method: 'GET',
+    path: '/public/{param*}',
+    handler: {
+        directory: {
+            path: '../public'
+        }
     }
 });
 server.start();
