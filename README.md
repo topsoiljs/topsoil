@@ -7,6 +7,10 @@ The topsoil for your terminal.
 
 npm install
 
+- Install the typings
+
+tsd reinstall
+
 - Run the server
 
 nodemon app.js
