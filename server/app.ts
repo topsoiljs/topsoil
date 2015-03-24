@@ -14,7 +14,7 @@ server.route({
     path: '/',
     handler: function (request, reply) {
         console.log(request);
-        reply('hello world');
+        reply.file('../public/index.html');
     }
 });
 server.start();
