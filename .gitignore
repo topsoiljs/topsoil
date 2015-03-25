@@ -29,4 +29,9 @@ typings
 .lock-wscript
 .idea
 
+#floo
+*.floo
+*.flooignore
+
+
 bower_components

@@ -20,7 +20,7 @@ gulp.task('jade', function () {
     .pipe(gulp.dest('./deploy/client'))
 });
 
-gulp.task('compress', function() {
+gulp.task('stylus', function() {
   gulp.src('./deploy/stylus_styles/*.styl')
     .pipe(stylus({
       compress: true
@@ -48,7 +48,7 @@ gulp.task('ts', function () {
       ]);
 });
 
-gulp.task('build-all', ['jade', 'compress', 'ts']);
+gulp.task('build-all', ['jade', 'stylus', 'ts']);
 
 
 
