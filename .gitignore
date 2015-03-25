@@ -28,3 +28,13 @@ typings
 # Users Environment Variables
 .lock-wscript
 .idea
+
+#floo
+*.floo
+*.flooignore
+
+#DS_Store
+.DS_Store
+
+
+bower_components
