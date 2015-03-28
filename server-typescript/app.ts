@@ -13,13 +13,12 @@ server.connection({
     port: 8000
 });
 
-
 var io = require('socket.io')(server.listener);
 
 io.on('connection', function(socket){
   console.log("a user is connected");
   socket.on('input', function(data){
-    data = String(data);
+    data = String(data); 
     console.log(data);
   });
 }); 
@@ -29,7 +28,7 @@ server.route({
     path: '/{param*}',
     handler: {
         directory: {
-            path: 'deploy/client'
+            path: 'client'
         }
     }
 });

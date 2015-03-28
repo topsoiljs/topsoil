@@ -24,7 +24,7 @@ server.route({
     path: '/{param*}',
     handler: {
         directory: {
-            path: 'deploy/client'
+            path: 'client'
         }
     }
 });
