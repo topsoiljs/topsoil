@@ -1,6 +1,6 @@
-/// <reference path="../typings/hapi/hapi.d.ts"/>
+/// <reference path="../../typings/hapi/hapi.d.ts"/>
 var Server = require('socket.io');
-var spawn = require('child_process').spawn;
+//var spawn = require('child_process').spawn;
 
 var io = new Server(8000);
 // setInterval(function(){

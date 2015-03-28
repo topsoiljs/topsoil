@@ -1,19 +1,25 @@
 # topsoil
 The topsoil for your terminal.
 
-## Set Up
+## Set Up in the root directory
 
-- Install all npm dependencies
+Install all npm dependencies
 
-npm install
+- npm install
 
-- Install the typings
+Install the typings
 
-tsd reinstall
+- tsd reinstall
 
-- Run the server
+Install all front end dependencies
 
-nodemon app.js
+- bower install
+
+To compile javascript code:
+- gulp build-all
+
+To run server under the deploy directory 
+- nodemon app.js
 
 Topsoil will be hosted on local host 8000
 
