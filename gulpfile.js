@@ -32,14 +32,16 @@ gulp.task('ts', function () {
   var tsApp = gulp.src('server-typescript/*.ts')
                   .pipe(ts({
                       declarationFiles: true,
-                      noExternalResolve: false
+                      noExternalResolve: false,
+                      module: "commonjs"
                   }));
     
 
   var tsServer = gulp.src('server-typescript/server/*.ts')
                      .pipe(ts({
                          declarationFiles: true,
-                         noExternalResolve: false
+                         noExternalResolve: false,
+                         module: "commonjs"
                      }));
 
   return merge([
@@ -47,6 +49,11 @@ gulp.task('ts', function () {
       tsServer.js.pipe(gulp.dest('deploy/server'))
       ]);
 });
+
+gulp.task('tsw', function () {
+  gulp.watch("**/*.ts", ["ts"])
+});
+
 
 gulp.task('build-all', ['jade', 'stylus', 'ts']);
 
