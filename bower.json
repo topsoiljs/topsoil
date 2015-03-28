@@ -1,10 +1,6 @@
 {
   "name": "topsoil",
   "version": "0.0.0",
-  "homepage": "https://github.com/asakurasol/topsoil",
-  "authors": [
-    "asakurasol <mamamia1734@gmail.com>"
-  ],
   "license": "MIT",
   "private": true,
   "ignore": [
