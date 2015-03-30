@@ -11,6 +11,10 @@ Magic.prototype.callCommand = function(command){
 };
 
 Magic.prototype.search = function(terms){
+  if(terms === ''){
+    return [];
+  };
+
   var results = [];
   // Brute force search for now
   _.each(this.views, function(view){
@@ -44,9 +48,19 @@ magic.registerView({
       categories: ['read'],
       method: function(dir){
       }
+    },
+    {
+      name: 'readFile',
+      description: 'reads a file',
+      args: 'file',
+      tags: ['read file', 'see file', 'view file'],
+      categories: ['read'],
+      method: function(dir){
+      }
     }
   ],
   category: 'filesystem'
 });
+
 
 // console.log(test.search('show'));

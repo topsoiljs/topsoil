@@ -1,7 +1,10 @@
+// Temp setstate
+var setSuggestions;
+
 var MagicInput = React.createClass({displayName: "MagicInput",
   onChange: function(e){
     var results = magic.search(e.target.value);
-    MagicSuggestions.setState({suggestions: results});
+    setSuggestions({suggestions: results});
   },
   render: function() {
     return (
@@ -11,6 +14,10 @@ var MagicInput = React.createClass({displayName: "MagicInput",
 });
 
 var MagicSuggestions = React.createClass({displayName: "MagicSuggestions",
+  componentDidMount: function(){
+    console.log('setting suggestions');
+    setSuggestions = this.setState.bind(this);
+  },
   getInitialState: function(){
     return {suggestions:[]};
   },
@@ -18,11 +25,14 @@ var MagicSuggestions = React.createClass({displayName: "MagicSuggestions",
     var nodes = [];
     this.state.suggestions.forEach(function(suggestion){
       nodes.push(
-        React.createElement("div", null, 
-          suggestion.name, 
+        React.createElement("li", null, 
+          suggestion.name, " |", 
           suggestion.description
         )
         )
+      nodes.push(
+        React.createElement("div", null)
+      )
     })
     return (
       React.createElement("div", null, 
