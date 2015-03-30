@@ -1,5 +1,3 @@
-var _ = require('lodash');
-
 var Magic = function(){
   this.views = {};
 };
@@ -33,22 +31,22 @@ Magic.prototype.search = function(terms){
   return results;
 };
 
-// var test = new Magic();
+var magic = new Magic();
 
-// test.registerView({
-//   name: 'filesystem',
-//   commands: [
-//     {
-//       name: 'getFiles',
-//       description: 'lists files in directory',
-//       args: 'directory',
-//       tags: ['show files', 'list files', 'display files'],
-//       categories: ['read'],
-//       method: function(dir){
-//       }
-//     }
-//   ],
-//   category: 'filesystem'
-// });
+magic.registerView({
+  name: 'filesystem',
+  commands: [
+    {
+      name: 'getFiles',
+      description: 'lists files in directory',
+      args: 'directory',
+      tags: ['show files', 'list files', 'display files'],
+      categories: ['read'],
+      method: function(dir){
+      }
+    }
+  ],
+  category: 'filesystem'
+});
 
 // console.log(test.search('show'));

@@ -1,10 +1,12 @@
 var MagicInput = React.createClass({
   onChange: function(e){
-    var results = Magic.search(e.target.value);
+    var results = magic.search(e.target.value);
     MagicSuggestions.setState({suggestions: results});
   },
   render: function() {
-    return <input onChange={this.onChange}>
+    return (
+      <input onChange={this.onChange} />
+    );
   }
 });
 
@@ -14,7 +16,7 @@ var MagicSuggestions = React.createClass({
   },
   render: function() {
     var nodes = [];
-    this.state.forEach(function(suggestion){
+    this.state.suggestions.forEach(function(suggestion){
       nodes.push(
         <div>
           {suggestion.name}
@@ -22,9 +24,15 @@ var MagicSuggestions = React.createClass({
         </div>
         )
     })
-    return
+    return (
+      <div>
+        {nodes}
+      </div>
+    );
   }
 });
 
-var suggestions = React.render(<MagicSuggestions />, document.getElementById('suggestions'));
-var input = React.render(<MagicInput />, document.getElementById('input'));
+$(function(){
+  var suggestions = React.render(<MagicSuggestions />, document.getElementById('suggestions'));
+  var input = React.render(<MagicInput />, document.getElementById('input'));
+})
