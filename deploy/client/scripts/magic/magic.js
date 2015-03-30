@@ -12,7 +12,7 @@ Magic.prototype.callCommand = function(command){
 
 };
 
-Magic.prototype.searchCommand = function(terms){
+Magic.prototype.search = function(terms){
   var results = [];
   // Brute force search for now
   _.each(this.views, function(view){
@@ -51,4 +51,4 @@ Magic.prototype.searchCommand = function(terms){
 //   category: 'filesystem'
 // });
 
-// console.log(test.searchCommand('show'));
+// console.log(test.search('show'));
