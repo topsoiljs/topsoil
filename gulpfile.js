@@ -8,12 +8,13 @@ var merge = require('merge2');
 var jade = require('gulp-jade');
 var stylus = require('gulp-stylus');
 var watch = require('gulp-watch');
- 
+var react = require('gulp-react');
+var concat = require('gulp-concat'); 
 
 gulp.task('jade', function () {
   var YOUR_LOCALS = {};
  
-  gulp.src('./deploy/templates/*.jade')
+  gulp.src('./client/templates/*.jade')
     .pipe(jade({
       locals: YOUR_LOCALS
     }))
@@ -21,11 +22,11 @@ gulp.task('jade', function () {
 });
 
 gulp.task('stylus', function() {
-  gulp.src('./deploy/stylus_styles/*.styl')
+  gulp.src('./client/stylus_styles/*.styl')
     .pipe(stylus({
       compress: true
     }))
-    .pipe(gulp.dest('./deploy/client/styles'));
+    .pipe(gulp.dest('./deploy/client'));
 });
 
 gulp.task('ts', function () {
@@ -50,10 +51,20 @@ gulp.task('ts', function () {
       ]);
 });
 
+gulp.task('jsx', function(){
+   return gulp.src('client/**/*.jsx')
+              .pipe(react())
+              .pipe(concat('client.js'))
+              .pipe(gulp.dest('deploy/client'));
+})
+
 gulp.task('tsw', function () {
-  gulp.watch("**/*.ts", ["ts"])
+  gulp.watch("**/*.ts", ["ts"]);
 });
 
+gulp.task('jsx-w', function () {
+  gulp.watch("**/*.jsx", ["jsx"]);
+});
 
 gulp.task('build-all', ['jade', 'stylus', 'ts']);
 
