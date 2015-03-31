@@ -62,5 +62,26 @@ magic.registerView({
   category: 'filesystem'
 });
 
+// for(var i=0;i<100;i++){
+//   var obj = {
+//     name: Math.random().toString(36),
+//     commands: [
+//       {
+//         name: Math.random().toString(36),
+//         description: Math.random().toString(),
+//         tags: [Math.random().toString(), Math.random().toString()],
+//         categories: ['write'],
+//         method: function(){
+//           console.log(this.name);
+//         }
+//       }
+//     ]
+//   };
+//   for(var j=0;j<100;j++){
+//     obj.name += Math.toString(36);
+//     obj.commands[0].name += Math.toString(36);
+//   }
+//   magic.registerView(obj)
+// }
 
 // console.log(test.search('show'));
