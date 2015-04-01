@@ -7,7 +7,13 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command){
-
+  for(var i=0;i<this.views;i++){
+    for(var j=0;j<this.views[i].commands;j++){
+      if(this.views[i].commands[j].name === command.name){
+        return this.views[i].commands[j].method();
+      }
+    }
+  }
 };
 
 Magic.prototype.search = function(terms){
@@ -88,15 +94,29 @@ var magic = new Magic();
 
 // Temp setstate
 var setSuggestions;
-
+var currentSuggestions;
+var passSuggestions = function(data){
+  currentSuggestions = data;
+  setSuggestions(data);
+};
 var MagicInput = React.createClass({displayName: "MagicInput",
+  handleInput: function(e){
+    if (e.key === 'Enter') {
+      console.log("ENTER");
+
+      var el = document.getElementById('terminal');
+      var value = el.value;
+      magic.callCommand(currentSuggestions[0]);
+      el.value = "";
+    }
+  },
   onChange: function(e){
     var results = magic.search(e.target.value);
-    setSuggestions({suggestions: results});
+    passSuggestions({suggestions: results});
   },
   render: function() {
     return (
-      React.createElement("input", {onChange: this.onChange})
+      React.createElement("input", {onChange: this.onChange, id: "terminal", onKeyUp: this.handleInput})
     );
   }
 });

@@ -7,7 +7,13 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command){
-
+  for(var i=0;i<this.views;i++){
+    for(var j=0;j<this.views[i].commands;j++){
+      if(this.views[i].commands[j].name === command.name){
+        return this.views[i].commands[j].method();
+      }
+    }
+  }
 };
 
 Magic.prototype.search = function(terms){

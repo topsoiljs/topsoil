@@ -1,14 +1,26 @@
 // Temp setstate
 var setSuggestions;
-
+var currentSuggestions;
+var passSuggestions = function(data){
+  currentSuggestions = data;
+  setSuggestions(data);
+};
 var MagicInput = React.createClass({
+  handleInput: function(e){
+    if (e.key === 'Enter') {
+      var el = document.getElementById('terminal');
+      var value = el.value;
+      magic.callCommand(currentSuggestions[0]);
+      el.value = "";
+    }
+  },
   onChange: function(e){
     var results = magic.search(e.target.value);
-    setSuggestions({suggestions: results});
+    passSuggestions({suggestions: results});
   },
   render: function() {
     return (
-      <input onChange={this.onChange} />
+      <input onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}/>
     );
   }
 });
