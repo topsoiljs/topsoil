@@ -65,6 +65,9 @@ function ViewStore() {
       state.files = [];
       eventBus.emit('filesystem');
     },
+    renderView: function(){
+      React.render(<FilesystemComponent/>, document.getElementById('test'));
+    },
     getState: function() {
       return state;
     }
@@ -104,7 +107,6 @@ var FilesystemComponent = React.createClass({
   }
 });
 
-React.render(<FilesystemComponent/>, document.getElementById('test'));
 
 magic.registerView({
   name: 'filesystem',
@@ -124,6 +126,14 @@ magic.registerView({
       tags: ['hide files', 'remove fileview', "don't display files"],
       categories: ['ui'],
       method: viewStore["hideFiles"]
+    },
+    {
+      name: "renderFilesystem",
+      description: 'renders fileSystemView',
+      args: 'directory',
+      tags: ['show filesystem view'],
+      categories: ['ui'],
+      method: viewStore["renderView"]
     }
     ],
   category: 'filesystem',
