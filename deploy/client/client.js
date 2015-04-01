@@ -6,9 +6,9 @@ var EventBus = function() {
     register: function(view, listener) {
       events[view] = listener;
     },
-    emit: function(view, data) {
+    emit: function(view) {
       if(events[view]) {
-        events[view](data);
+        events[view]();
       }
     }
   }
@@ -84,7 +84,6 @@ var FilesystemComponent = React.createClass({displayName: "FilesystemComponent",
   },
   componentDidMount: function() {
     eventBus.register("filesystem", function() {
-      console.log(this);
       this.setState(viewStore.getState());
     }.bind(this));
 
