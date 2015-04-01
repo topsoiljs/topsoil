@@ -12,7 +12,7 @@ var MagicInput = React.createClass({
       var value = el.value;
       magic.callCommand(currentSuggestions.suggestions[0]);
       el.value = "";
-      currentSuggestions = null;
+      passSuggestions({suggestions:[]});
     }
   },
   onChange: function(e){

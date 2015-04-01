@@ -1,5 +1,5 @@
 var EventBus = function() {
-  
+
   var events = {};
 
   var api = {
@@ -17,7 +17,7 @@ var EventBus = function() {
 }
 
 var eventBus = EventBus();
-  
+
 
 
 /*
@@ -35,7 +35,7 @@ function io(path) {
                    "tests",
                    "secret"]});
     }
-  } 
+  }
 }
 
 /*
@@ -59,6 +59,11 @@ function ViewStore() {
             state.files = data.data;
             eventBus.emit('filesystem');
           })
+    },
+    hideFiles: function(){
+      console.log('hidefiles');
+      state.files = [];
+      eventBus.emit('filesystem');
     },
     getState: function() {
       return state;
@@ -86,7 +91,7 @@ var FilesystemComponent = React.createClass({
     }
   },
   render: function() {
-    
+
     var fileText = this.state.files.map(function(filename) {
       return (<p> {filename} </p>)
     });
@@ -104,14 +109,23 @@ React.render(<FilesystemComponent/>, document.getElementById('test'));
 magic.registerView({
   name: 'filesystem',
   commands: [
-     { 
+     {
       name: "getFiles",
       description: 'lists files in directory',
       args: 'directory',
       tags: ['show files', 'list files', 'display files'],
       categories: ['read'],
       method: viewStore["getFiles"]
-    }],
+    },
+    {
+      name: "hideFiles",
+      description: 'hides files in directory view',
+      args: 'directory',
+      tags: ['hide files', 'remove fileview', "don't display files"],
+      categories: ['ui'],
+      method: viewStore["hideFiles"]
+    }
+    ],
   category: 'filesystem',
   component: FilesystemComponent
 });

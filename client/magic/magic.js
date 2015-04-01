@@ -26,6 +26,10 @@ Magic.prototype.search = function(terms){
   // Brute force search for now
   _.each(this.views, function(view){
     view.commands.forEach(function(command){
+      if(command.description.indexOf(terms) > -1){
+        results.push(command);
+        return;
+      }
       if(command.name.indexOf(terms) > -1){
         results.push(command);
         return;

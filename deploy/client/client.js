@@ -26,6 +26,10 @@ Magic.prototype.search = function(terms){
   // Brute force search for now
   _.each(this.views, function(view){
     view.commands.forEach(function(command){
+      if(command.description.indexOf(terms) > -1){
+        results.push(command);
+        return;
+      }
       if(command.name.indexOf(terms) > -1){
         results.push(command);
         return;
@@ -107,7 +111,7 @@ var MagicInput = React.createClass({displayName: "MagicInput",
       var value = el.value;
       magic.callCommand(currentSuggestions.suggestions[0]);
       el.value = "";
-      currentSuggestions = null;
+      passSuggestions({suggestions:[]});
     }
   },
   onChange: function(e){
@@ -156,7 +160,7 @@ $(function(){
 })
 
 var EventBus = function() {
-  
+
   var events = {};
 
   var api = {
@@ -174,7 +178,7 @@ var EventBus = function() {
 }
 
 var eventBus = EventBus();
-  
+
 
 
 /*
@@ -192,7 +196,7 @@ function io(path) {
                    "tests",
                    "secret"]});
     }
-  } 
+  }
 }
 
 /*
@@ -216,6 +220,11 @@ function ViewStore() {
             state.files = data.data;
             eventBus.emit('filesystem');
           })
+    },
+    hideFiles: function(){
+      console.log('hidefiles');
+      state.files = [];
+      eventBus.emit('filesystem');
     },
     getState: function() {
       return state;
@@ -243,7 +252,7 @@ var FilesystemComponent = React.createClass({displayName: "FilesystemComponent",
     }
   },
   render: function() {
-    
+
     var fileText = this.state.files.map(function(filename) {
       return (React.createElement("p", null, " ", filename, " "))
     });
@@ -261,14 +270,23 @@ React.render(React.createElement(FilesystemComponent, null), document.getElement
 magic.registerView({
   name: 'filesystem',
   commands: [
-     { 
+     {
       name: "getFiles",
       description: 'lists files in directory',
       args: 'directory',
       tags: ['show files', 'list files', 'display files'],
       categories: ['read'],
       method: viewStore["getFiles"]
-    }],
+    },
+    {
+      name: "hideFiles",
+      description: 'hides files in directory view',
+      args: 'directory',
+      tags: ['hide files', 'remove fileview', "don't display files"],
+      categories: ['ui'],
+      method: viewStore["hideFiles"]
+    }
+    ],
   category: 'filesystem',
   component: FilesystemComponent
 });
