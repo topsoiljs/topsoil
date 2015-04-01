@@ -52,7 +52,7 @@ gulp.task('ts', function () {
 });
 
 gulp.task('jsx', function(){
-   return gulp.src('client/**/*.jsx')
+   return gulp.src(['client/**/*.js', 'client/**/*.jsx'])
               .pipe(react())
               .pipe(concat('client.js'))
               .pipe(gulp.dest('deploy/client'));
@@ -66,7 +66,7 @@ gulp.task('jsx-w', function () {
   gulp.watch("**/*.jsx", ["jsx"]);
 });
 
-gulp.task('build-all', ['jade', 'stylus', 'ts']);
+gulp.task('build-all', ['jade', 'stylus', 'ts', 'jsx']);
 
 
 

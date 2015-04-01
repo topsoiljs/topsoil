@@ -37,30 +37,30 @@ Magic.prototype.search = function(terms){
 
 var magic = new Magic();
 
-magic.registerView({
-  name: 'filesystem',
-  commands: [
-    {
-      name: 'getFiles',
-      description: 'lists files in directory',
-      args: 'directory',
-      tags: ['show files', 'list files', 'display files'],
-      categories: ['read'],
-      method: function(dir){
-      }
-    },
-    {
-      name: 'readFile',
-      description: 'reads a file',
-      args: 'file',
-      tags: ['read file', 'see file', 'view file'],
-      categories: ['read'],
-      method: function(dir){
-      }
-    }
-  ],
-  category: 'filesystem'
-});
+// magic.registerView({
+//   name: 'filesystem',
+//   commands: [
+//     {
+//       name: 'getFiles',
+//       description: 'lists files in directory',
+//       args: 'directory',
+//       tags: ['show files', 'list files', 'display files'],
+//       categories: ['read'],
+//       method: function(dir){
+//       }
+//     },
+//     {
+//       name: 'readFile',
+//       description: 'reads a file',
+//       args: 'file',
+//       tags: ['read file', 'see file', 'view file'],
+//       categories: ['read'],
+//       method: function(dir){
+//       }
+//     }
+//   ],
+//   category: 'filesystem'
+// });
 
 // for(var i=0;i<100;i++){
 //   var obj = {

@@ -38,14 +38,6 @@ function io(path) {
   } 
 }
 
-var magic = {
-  registerView: function() {
-
-  }
-}
-
-
-
 /*
 END DUMMY DATA
 */
@@ -107,19 +99,19 @@ var FilesystemComponent = React.createClass({
   }
 });
 
-React.render(<FilesystemComponent/>, document.getElementById('input'));
+React.render(<FilesystemComponent/>, document.getElementById('test'));
 
 magic.registerView({
   name: 'filesystem',
-  commands: [{
-    getFiles: { 
+  commands: [
+     { 
+      name: "getFiles",
       description: 'lists files in directory',
       args: 'directory',
       tags: ['show files', 'list files', 'display files'],
       categories: ['read'],
       method: viewStore["getFiles"]
-    }
-  }],
+    }],
   category: 'filesystem',
   component: FilesystemComponent
 });
