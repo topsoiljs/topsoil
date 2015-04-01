@@ -10,8 +10,9 @@ var MagicInput = React.createClass({
     if (e.key === 'Enter') {
       var el = document.getElementById('terminal');
       var value = el.value;
-      magic.callCommand(currentSuggestions[0]);
+      magic.callCommand(currentSuggestions.suggestions[0]);
       el.value = "";
+      currentSuggestions = null;
     }
   },
   onChange: function(e){

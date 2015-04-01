@@ -7,10 +7,11 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command){
-  for(var i=0;i<this.views;i++){
-    for(var j=0;j<this.views[i].commands;j++){
-      if(this.views[i].commands[j].name === command.name){
-        return this.views[i].commands[j].method();
+  for(var key in this.views){
+    for(var j=0;j<this.views[key].commands.length;j++){
+      // console.log(this.views[i].commands[j].name, command.name);
+      if(this.views[key].commands[j].name === command.name){
+        return this.views[key].commands[j].method();
       }
     }
   }
