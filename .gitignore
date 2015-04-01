@@ -38,3 +38,6 @@ typings
 
 
 bower_components
+
+*.css
+*.html
