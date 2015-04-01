@@ -20,23 +20,30 @@ var io = require('socket.io')(server.listener);
 
 io.on('connection', function(socket){
   console.log("a user is connected");
-<<<<<<< HEAD
-  socket.on('input', function(data){
-    data = String(data);
-    console.log(data);
-=======
-  socket.on('input', function(c){
-      var ls = processManager();
-      ls.run(c)
-          .success(function(data){
-              console.log('success', data);
-          })
-          .error(function(error){
-              console.log('error', error);
-          });
->>>>>>> add a simple process manager
-  });
-});
+
+  var api = processManager();
+
+    function setupAPI(socket){
+        api.forEach(function(methods, namespace){
+            methods.forEach(function(methodFunc, methodName){
+                socket.on(namespace + '.' + methodName, methodFunc(socket));
+            })
+        })
+    }
+
+    setupAPI(socket);
+
+  //  socket.on('input', function(c){
+  //    var ls = processManager();
+  //    ls.run(c)
+  //        .success(function(data){
+  //            console.log('success', data);
+  //        })
+  //        .error(function(error){
+  //            console.log('error', error);
+  //        });
+  //});
+}); 
 
 server.route({
     method: 'GET',
@@ -49,4 +56,3 @@ server.route({
 });
 
 server.start();
-
