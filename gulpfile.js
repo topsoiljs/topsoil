@@ -50,9 +50,25 @@ gulp.task('ts', function () {
                          module: "commonjs"
                      }));
 
+    var processAPI = gulp.src('server-typescript/server/processAPIs/*.ts')
+        .pipe(ts({
+            declarationFiles: true,
+            noExternalResolve: false,
+            module: "commonjs"
+        }));
+
+    var utility = gulp.src('server-typescript/server/utility/*.ts')
+        .pipe(ts({
+            declarationFiles: true,
+            noExternalResolve: false,
+            module: "commonjs"
+        }));
+
   return merge([
       tsApp.js.pipe(gulp.dest('deploy')),
-      tsServer.js.pipe(gulp.dest('deploy/server'))
+      tsServer.js.pipe(gulp.dest('deploy/server')),
+      processAPI.js.pipe(gulp.dest('deploy/server/processAPIs')),
+      utility.js.pipe(gulp.dest('deploy/server/utility'))
       ]);
 });
 

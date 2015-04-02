@@ -2,13 +2,7 @@
 /// <reference path="../utility/utility.ts"/>
 var spawn = require('child_process').spawn;
 var utility = require('../utility/utility');
-
-interface listenerFunc {
-    (data:string) : any;
-}
-
-var terminalAPI = <any> {};
-
+var terminalAPI = {};
 //terminalAPI.run = function(input:string){
 //    var successCB:listenerFunc;
 //    var errorCB:listenerFunc;
@@ -41,5 +35,4 @@ var terminalAPI = <any> {};
 //        }
 //    }
 //};
-
 module.exports = terminalAPI;

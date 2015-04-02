@@ -18,25 +18,23 @@ var EventBus = function() {
 
 var eventBus = EventBus();
 
-
-
 /*
 START DUMMY DATA
 */
 
-function io(path) {
-  return {
-    emit: function() {
+// function io(path) {
+//   return {
+//     emit: function() {
 
-    },
-    on: function(dummy, func) {
-      func({data: ["deploy",
-                   "client",
-                   "tests",
-                   "secret"]});
-    }
-  }
-}
+//     },
+//     on: function(dummy, func) {
+//       func({data: ["deploy",
+//                    "client",
+//                    "tests",
+//                    "secret"]});
+//     }
+//   }
+// }
 
 /*
 END DUMMY DATA
@@ -44,7 +42,7 @@ END DUMMY DATA
 
 function ViewStore() {
   var state = {files: []};
-  var socket = io('/');
+  var socket = io();
 
   var methods = {
     getFiles: function(dir){

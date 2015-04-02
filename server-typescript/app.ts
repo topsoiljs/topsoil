@@ -22,13 +22,19 @@ io.on('connection', function(socket){
   console.log("a user is connected");
 
   var api = processManager();
+  //console.log(api);
 
     function setupAPI(socket){
-        api.forEach(function(methods, namespace){
-            methods.forEach(function(methodFunc, methodName){
-                socket.on(namespace + '.' + methodName, methodFunc(socket));
-            })
-        })
+        for(var namespace in api){
+            for(var methodName in api[namespace]){
+                socket.on(namespace + '.' + methodName, api[namespace][methodName](socket))
+            }
+        }
+        //api.forEach(function(methods, namespace){
+        //    methods.forEach(function(methodFunc, methodName){
+        //        socket.on(namespace + '.' + methodName, methodFunc(socket));
+        //    })
+        //})
     }
 
     setupAPI(socket);
@@ -43,7 +49,7 @@ io.on('connection', function(socket){
   //            console.log('error', error);
   //        });
   //});
-}); 
+});
 
 server.route({
     method: 'GET',
