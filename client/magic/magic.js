@@ -7,7 +7,14 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command){
-
+  for(var key in this.views){
+    for(var j=0;j<this.views[key].commands.length;j++){
+      // console.log(this.views[i].commands[j].name, command.name);
+      if(this.views[key].commands[j].name === command.name){
+        return this.views[key].commands[j].method();
+      }
+    }
+  }
 };
 
 Magic.prototype.search = function(terms){
@@ -19,6 +26,10 @@ Magic.prototype.search = function(terms){
   // Brute force search for now
   _.each(this.views, function(view){
     view.commands.forEach(function(command){
+      if(command.description.indexOf(terms) > -1){
+        results.push(command);
+        return;
+      }
       if(command.name.indexOf(terms) > -1){
         results.push(command);
         return;

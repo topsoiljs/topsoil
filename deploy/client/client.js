@@ -7,7 +7,14 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command){
-
+  for(var key in this.views){
+    for(var j=0;j<this.views[key].commands.length;j++){
+      // console.log(this.views[i].commands[j].name, command.name);
+      if(this.views[key].commands[j].name === command.name){
+        return this.views[key].commands[j].method();
+      }
+    }
+  }
 };
 
 Magic.prototype.search = function(terms){
@@ -19,6 +26,10 @@ Magic.prototype.search = function(terms){
   // Brute force search for now
   _.each(this.views, function(view){
     view.commands.forEach(function(command){
+      if(command.description.indexOf(terms) > -1){
+        results.push(command);
+        return;
+      }
       if(command.name.indexOf(terms) > -1){
         results.push(command);
         return;
@@ -88,15 +99,28 @@ var magic = new Magic();
 
 // Temp setstate
 var setSuggestions;
-
+var currentSuggestions;
+var passSuggestions = function(data){
+  currentSuggestions = data;
+  setSuggestions(data);
+};
 var MagicInput = React.createClass({displayName: "MagicInput",
+  handleInput: function(e){
+    if (e.key === 'Enter') {
+      var el = document.getElementById('terminal');
+      var value = el.value;
+      magic.callCommand(currentSuggestions.suggestions[0]);
+      el.value = "";
+      passSuggestions({suggestions:[]});
+    }
+  },
   onChange: function(e){
     var results = magic.search(e.target.value);
-    setSuggestions({suggestions: results});
+    passSuggestions({suggestions: results});
   },
   render: function() {
     return (
-      React.createElement("input", {onChange: this.onChange})
+      React.createElement("input", {onChange: this.onChange, id: "terminal", onKeyUp: this.handleInput})
     );
   }
 });
@@ -136,7 +160,7 @@ $(function(){
 })
 
 var EventBus = function() {
-  
+
   var events = {};
 
   var api = {
@@ -154,7 +178,7 @@ var EventBus = function() {
 }
 
 var eventBus = EventBus();
-  
+
 
 
 /*
@@ -172,7 +196,7 @@ function io(path) {
                    "tests",
                    "secret"]});
     }
-  } 
+  }
 }
 
 /*
@@ -196,6 +220,14 @@ function ViewStore() {
             state.files = data.data;
             eventBus.emit('filesystem');
           })
+    },
+    hideFiles: function(){
+      console.log('hidefiles');
+      state.files = [];
+      eventBus.emit('filesystem');
+    },
+    renderView: function(){
+      React.render(React.createElement(FilesystemComponent, null), document.getElementById('test'));
     },
     getState: function() {
       return state;
@@ -223,7 +255,7 @@ var FilesystemComponent = React.createClass({displayName: "FilesystemComponent",
     }
   },
   render: function() {
-    
+
     var fileText = this.state.files.map(function(filename) {
       return (React.createElement("p", null, " ", filename, " "))
     });
@@ -236,19 +268,35 @@ var FilesystemComponent = React.createClass({displayName: "FilesystemComponent",
   }
 });
 
-React.render(React.createElement(FilesystemComponent, null), document.getElementById('test'));
 
 magic.registerView({
   name: 'filesystem',
   commands: [
-     { 
+     {
       name: "getFiles",
       description: 'lists files in directory',
       args: 'directory',
       tags: ['show files', 'list files', 'display files'],
       categories: ['read'],
       method: viewStore["getFiles"]
-    }],
+    },
+    {
+      name: "hideFiles",
+      description: 'hides files in directory view',
+      args: 'directory',
+      tags: ['hide files', 'remove fileview', "don't display files"],
+      categories: ['ui'],
+      method: viewStore["hideFiles"]
+    },
+    {
+      name: "renderFilesystem",
+      description: 'renders fileSystemView',
+      args: 'directory',
+      tags: ['show filesystem view'],
+      categories: ['ui'],
+      method: viewStore["renderView"]
+    }
+    ],
   category: 'filesystem',
   component: FilesystemComponent
 });
