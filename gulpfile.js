@@ -74,7 +74,7 @@ gulp.task('jsx-w', function () {
 gulp.task('build-all', ['jade', 'stylus', 'ts', 'jsx']);
 
 gulp.task('build-all-w', function(){
-  gulp.watch(["**/*", "!./deploy/**/*"], ['build-all']);
+  gulp.watch(["**/*", "!deploy/**/*"], ['build-all']);
 });
 
 
