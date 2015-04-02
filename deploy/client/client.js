@@ -159,6 +159,28 @@ $(function(){
   var input = React.render(React.createElement(MagicInput, null), document.getElementById('input'));
 })
 
+var FilesystemComponent = React.createClass({displayName: "FilesystemComponent",
+  getInitialState: function() {
+    return {activeComponent: null, views: magic.getViews()}
+  },
+  componentDidMount: function() {
+  },
+  render: function() {
+    if(this.state.activeComponent) {
+      return (React.createElement("div", null, 
+                React.createElement(MagicInput, null), 
+                React.createElement("div", {class: "main"}, 
+                  React.createElement(this.state.activeComponent, null)
+                )
+              ))
+    } else {
+      return (React.createElement("div", null, 
+                React.createElement(MagicInput, null)
+              ))
+    }
+  }
+});
+
 var EventBus = function() {
 
   var events = {};
