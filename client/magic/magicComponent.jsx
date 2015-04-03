@@ -55,30 +55,6 @@ var MagicSuggestions = React.createClass({
   }
 });
 
-var MagicSuggestions = React.createClass({
-  componentDidMount: function(){
-    console.log('setting suggestions');
-    setSuggestions = this.setState.bind(this);
-  },
-  getInitialState: function(){
-    return {activeView: fileSystem};
-
-    this.props.views = {viewName: component};
-  },
-  render: function() {
-    if(this.state.activeView) {
-      return (<div class= "1-6">
-                <searchbar minimized = true>
-              </div>
-              <div class= "5-6">
-                
-              </div>)
-    } else {
-      return (<searchbar minimized = false>)
-    }
-  }
-});
-
 $(function(){
   var suggestions = React.render(<MagicSuggestions />, document.getElementById('suggestions'));
   var input = React.render(<MagicInput />, document.getElementById('input'));
