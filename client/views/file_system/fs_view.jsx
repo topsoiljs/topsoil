@@ -1,45 +1,3 @@
-var EventBus = function() {
-
-  var events = {};
-
-  var api = {
-    register: function(view, listener) {
-      events[view] = listener;
-    },
-    emit: function(view, data) {
-      if(events[view]) {
-        events[view](data);
-      }
-    }
-  }
-
-  return api;
-}
-
-var eventBus = EventBus();
-
-/*
-START DUMMY DATA
-*/
-
-// function io(path) {
-//   return {
-//     emit: function() {
-
-//     },
-//     on: function(dummy, func) {
-//       func({data: ["deploy",
-//                    "client",
-//                    "tests",
-//                    "secret"]});
-//     }
-//   }
-// }
-
-/*
-END DUMMY DATA
-*/
-
 function ViewStore() {
   var state = {files: []};
   var socket = io();
@@ -64,7 +22,7 @@ function ViewStore() {
       eventBus.emit('filesystem');
     },
     renderView: function(){
-      React.render(<FilesystemComponent/>, document.getElementById('test'));
+      
     },
     getState: function() {
       return state;
@@ -90,9 +48,10 @@ var FilesystemComponent = React.createClass({
       e.preventDefault();
       viewStore.getFiles();
     }
+    console.log("mounted");
   },
   render: function() {
-
+    console.log("FS render");
     var fileText = this.state.files.map(function(filename) {
       return (<p> {filename} </p>)
     });
