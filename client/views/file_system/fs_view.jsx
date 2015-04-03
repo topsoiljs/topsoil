@@ -22,7 +22,7 @@ function ViewStore() {
       eventBus.emit('filesystem');
     },
     renderView: function(){
-      React.render(<FilesystemComponent/>, document.getElementById('test'));
+      
     },
     getState: function() {
       return state;
@@ -48,9 +48,10 @@ var FilesystemComponent = React.createClass({
       e.preventDefault();
       viewStore.getFiles();
     }
+    console.log("mounted");
   },
   render: function() {
-
+    console.log("FS render");
     var fileText = this.state.files.map(function(filename) {
       return (<p> {filename} </p>)
     });

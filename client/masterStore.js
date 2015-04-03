@@ -6,6 +6,7 @@ function MasterStore() {
   var masterStore = {
     openView: function(newViewComponent) {
       activeView = newViewComponent;
+      eventBus.emit("master");
     },
     closeView: function() {
       
@@ -14,7 +15,11 @@ function MasterStore() {
       return activeView;
     }
   }
+
+  return masterStore; 
 }
+
+var masterStore = MasterStore();
 
 
 

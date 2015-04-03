@@ -2,20 +2,23 @@
 
 var MasterView = React.createClass({
   getInitialState: function() {
-    return null;
+    return {activeView: null};
   },
   componentDidMount: function() {
     eventBus.register("master", function() {
-      this.setState(masterStore.getState());
+      this.setState({activeView: masterStore.getState()});
     }.bind(this));
   },
   render: function() {
-    if(this.state) {
+    if(this.state.activeView) {
+
+      console.log(this.state);
+
       return (<div>
                 <MagicInput/>
                 <MagicSuggestions/>
-                <div class="main">
-                  <this.state/>
+                <div className="main">
+                  <this.state.activeView/>
                 </div>
               </div>)
     } else {
