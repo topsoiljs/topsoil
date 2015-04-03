@@ -13,6 +13,7 @@ var MasterView = React.createClass({
     if(this.state) {
       return (<div>
                 <MagicInput/>
+                <MagicSuggestions/>
                 <div class="main">
                   <this.state/>
                 </div>
@@ -20,6 +21,7 @@ var MasterView = React.createClass({
     } else {
       return (<div>
                 <MagicInput/>
+                <MagicSuggestions/>
               </div>)
     }
   }

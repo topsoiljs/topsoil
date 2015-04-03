@@ -54,8 +54,3 @@ var MagicSuggestions = React.createClass({
     );
   }
 });
-
-$(function(){
-  var suggestions = React.render(<MagicSuggestions />, document.getElementById('suggestions'));
-  var input = React.render(<MagicInput />, document.getElementById('input'));
-})
