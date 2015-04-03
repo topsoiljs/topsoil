@@ -5,7 +5,11 @@ var Magic = function(){
 Magic.prototype.registerView = function(viewObject){
   this.views[viewObject.name] = viewObject;
 };
-
+var masterStore = {
+  openView: function(component){
+    console.log("OPENING COMPONENT", component);
+  }
+}
 Magic.prototype.callCommand = function(command){
   for(var key in this.views){
     for(var j=0;j<this.views[key].commands.length;j++){
@@ -159,11 +163,6 @@ var MagicSuggestions = React.createClass({displayName: "MagicSuggestions",
   }
 });
 
-$(function(){
-  var suggestions = React.render(React.createElement(MagicSuggestions, null), document.getElementById('suggestions'));
-  var input = React.render(React.createElement(MagicInput, null), document.getElementById('input'));
-})
-
 
 
 var MasterView = React.createClass({displayName: "MasterView",
@@ -176,13 +175,15 @@ var MasterView = React.createClass({displayName: "MasterView",
     if(this.state.activeComponent) {
       return (React.createElement("div", null, 
                 React.createElement(MagicInput, null), 
+                React.createElement(MagicSuggestions, null), 
                 React.createElement("div", {class: "main"}, 
                   React.createElement(this.state.activeComponent, null)
                 )
       ))
     } else {
       return (React.createElement("div", null, 
-                React.createElement(MagicInput, null)
+                React.createElement(MagicInput, null), 
+                React.createElement(MagicSuggestions, null)
               ))
     }
   }
