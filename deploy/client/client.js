@@ -46,6 +46,10 @@ Magic.prototype.search = function(terms){
   return results;
 };
 
+Magic.prototype.getViews = function() {
+  return this.views;
+}
+
 var magic = new Magic();
 
 // magic.registerView({
@@ -159,7 +163,9 @@ $(function(){
   var input = React.render(React.createElement(MagicInput, null), document.getElementById('input'));
 })
 
-var FilesystemComponent = React.createClass({displayName: "FilesystemComponent",
+
+
+var MasterView = React.createClass({displayName: "MasterView",
   getInitialState: function() {
     return {activeComponent: null, views: magic.getViews()}
   },
@@ -172,7 +178,7 @@ var FilesystemComponent = React.createClass({displayName: "FilesystemComponent",
                 React.createElement("div", {class: "main"}, 
                   React.createElement(this.state.activeComponent, null)
                 )
-              ))
+      ))
     } else {
       return (React.createElement("div", null, 
                 React.createElement(MagicInput, null)
@@ -180,6 +186,9 @@ var FilesystemComponent = React.createClass({displayName: "FilesystemComponent",
     }
   }
 });
+$(function(){
+  React.render(React.createElement(MasterView, null), document.getElementById('app'));
+})
 
 var EventBus = function() {
 

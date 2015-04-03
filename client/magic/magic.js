@@ -46,6 +46,10 @@ Magic.prototype.search = function(terms){
   return results;
 };
 
+Magic.prototype.getViews = function() {
+  return this.views;
+}
+
 var magic = new Magic();
 
 // magic.registerView({
