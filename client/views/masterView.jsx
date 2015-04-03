@@ -2,18 +2,21 @@
 
 var MasterView = React.createClass({
   getInitialState: function() {
-    return {activeComponent: null, views: magic.getViews()}
+    return null;
   },
   componentDidMount: function() {
+    eventBus.register("master", function() {
+      this.setState(masterStore.getState());
+    }.bind(this));
   },
   render: function() {
-    if(this.state.activeComponent) {
+    if(this.state) {
       return (<div>
                 <MagicInput/>
                 <div class="main">
-                  <this.state.activeComponent/>
+                  <this.state/>
                 </div>
-      </div>)
+              </div>)
     } else {
       return (<div>
                 <MagicInput/>
@@ -21,6 +24,8 @@ var MasterView = React.createClass({
     }
   }
 });
+
+
 $(function(){
   React.render(<MasterView />, document.getElementById('app'));
 })
