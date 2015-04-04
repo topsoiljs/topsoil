@@ -1,27 +1,20 @@
-// Temp setstate
-// Crazy things happening here. Refactor later.
-var currentSuggestions;
-
-eventBus.register('suggestions', function(data){
-  currentSuggestions = data;
-});
 var MagicInput = React.createClass({
   getInitialState: function(){
     return {
       args: null,
-      currentCommand: null
+      currentCommand: null,
+      suggestions: []
     }
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
     if (e.key === 'Enter') {
-      if(!this.state.args && currentSuggestions[0]){
+      if(!this.state.args && this.state.suggestions[0]){
         el.value = el.value += ' ';
         this.setState({
           args: [],
-          currentCommand: currentSuggestions[0]
+          currentCommand: this.state.suggestions[0]
         })
-        eventBus.emit('suggestions', []);
       }else{
         var value = el.value;
         args = value.split(' ').slice(1);
