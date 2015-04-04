@@ -1,5 +1,3 @@
-
-
 var MasterView = React.createClass({
   getInitialState: function() {
     return {activeView: null};
@@ -12,19 +10,19 @@ var MasterView = React.createClass({
   render: function() {
     if(this.state.activeView) {
 
-      console.log(this.state);
-
       return (<div>
-                <MagicInput/>
-                <MagicSuggestions/>
+                <div className="row">
+                  <MagicInput/>
+                </div>
                 <div className="main">
                   <this.state.activeView/>
                 </div>
               </div>)
     } else {
       return (<div>
-                <MagicInput/>
-                <MagicSuggestions/>
+                <div className="row">
+                  <MagicInput/>
+                </div>
               </div>)
     }
   }
