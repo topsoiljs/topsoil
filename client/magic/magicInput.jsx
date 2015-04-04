@@ -10,20 +10,24 @@ var MagicInput = React.createClass({
     var el = document.getElementById('terminal');
     if (e.key === 'Enter') {
       if(!this.state.args && this.state.suggestions[0]){
+        this.state.suggestions[0].selected = true;
         el.value = el.value += ' ';
         this.setState({
           args: [],
-          currentCommand: this.state.suggestions[0]
+          currentCommand: this.state.suggestions[0],
+          suggestions: this.state.suggestions
         })
       }else{
         var value = el.value;
         args = value.split(' ').slice(1);
         eventBus.emit('master');
         magic.callCommand(this.state.currentCommand, args);
+        this.state.currentCommand.selected = false;
         el.value = '';
         this.setState({
           args: null,
-          currentCommand: null
+          currentCommand: null,
+          suggestions: []
         })
       }
     }
@@ -38,16 +42,11 @@ var MagicInput = React.createClass({
   },
   render: function() {
     var nodes = [
-      <div className="input-field col s10">
+      <div className="input-field col s12">
         <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
         <input type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}/>
       </div>
     ];
-    if(this.state.args){
-      nodes.push(
-        <h3>Enter args for command : {this.state.currentCommand.name}</h3>
-      )
-    }
     return (
       <div>
         <div className="row">

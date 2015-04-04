@@ -10,11 +10,11 @@ var MasterView = React.createClass({
   render: function() {
     if(this.state.activeView) {
 
-      return (<div>
-                <div className="row">
+      return (<div className="row">
+                <div className="col s4">
                   <MagicInput/>
                 </div>
-                <div className="main">
+                <div className="main col s8">
                   <this.state.activeView/>
                 </div>
               </div>)
