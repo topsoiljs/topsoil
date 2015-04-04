@@ -1,7 +1,9 @@
 var MagicSuggestions = React.createClass({
   componentDidMount: function(){
-    console.log('setting suggestions');
-    setSuggestions = this.setState.bind(this);
+    eventBus.register('suggestions', function(data){
+      console.log(data, 'sug');
+      this.setState({suggestions: data});
+    }.bind(this))
   },
   getInitialState: function(){
     return {suggestions:[]};

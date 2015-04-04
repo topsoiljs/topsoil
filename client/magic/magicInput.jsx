@@ -1,28 +1,10 @@
 // Temp setstate
 // Crazy things happening here. Refactor later.
-var setSuggestions;
 var currentSuggestions;
 
-// var MagicStore = function(){
-//   var state = {
-//     args: null,
-//   };
-//   return {
-//     toggleArgs: function(){
-//       state.args = !state.args;
-//     },
-//     getState: function(){
-//       return state;
-//     }
-//   }
-// };
-
-// var magicStore = MagicStore();
-
-var passSuggestions = function(data){
+eventBus.register('suggestions', function(data){
   currentSuggestions = data;
-  setSuggestions(data);
-};
+});
 var MagicInput = React.createClass({
   getInitialState: function(){
     return {
@@ -33,13 +15,13 @@ var MagicInput = React.createClass({
   handleInput: function(e){
     var el = document.getElementById('terminal');
     if (e.key === 'Enter') {
-      if(!this.state.args && currentSuggestions.suggestions[0]){
+      if(!this.state.args && currentSuggestions[0]){
         el.value = el.value += ' ';
         this.setState({
           args: [],
-          currentCommand: currentSuggestions.suggestions[0]
+          currentCommand: currentSuggestions[0]
         })
-        passSuggestions({suggestions:[]});
+        eventBus.emit('suggestions', []);
       }else{
         var value = el.value;
         args = value.split(' ').slice(1);
@@ -56,7 +38,7 @@ var MagicInput = React.createClass({
   onChange: function(e){
     if(!this.state.args){
       var results = magic.search(e.target.value);
-      passSuggestions({suggestions: results});
+      eventBus.emit('suggestions', results);
     }
   },
   render: function() {
