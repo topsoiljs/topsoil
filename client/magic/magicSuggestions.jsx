@@ -4,18 +4,15 @@ var MagicSuggestions = React.createClass({
     this.props.suggestions.forEach(function(suggestion){
       nodes.push(
         <li>
-          {suggestion.name} |
-          {suggestion.description}
+          <div className="collapsible-header"> {suggestion.name} </div>
+          <div className="collapsible-body"><p>{suggestion.description}</p></div>
         </li>
         )
-      nodes.push(
-        <div></div>
-      )
     })
     return (
-      <div>
+      <ul className="collapsible" data-collapsible="accordion">
         {nodes}
-      </div>
+      </ul>
     );
   }
 });

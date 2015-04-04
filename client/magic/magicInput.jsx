@@ -50,8 +50,12 @@ var MagicInput = React.createClass({
     }
     return (
       <div>
-        {nodes}
-        <MagicSuggestions suggestions={this.state.suggestions}/>
+        <div className="row">
+          {nodes}
+        </div>
+        <div className="row">
+          <MagicSuggestions suggestions={this.state.suggestions}/>
+        </div>
       </div>
     );
   }
