@@ -3,7 +3,9 @@ function ViewStore() {
   var socket = io();
 
   var methods = {
-    getFiles: function(dir){
+    getFiles: function(args){
+          var dir = args.directory;
+          console.log(dir);
           var UID = Math.random();
           socket.emit('fs.ls', {
             dir: dir,

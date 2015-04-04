@@ -11,6 +11,10 @@ Magic.prototype.callCommand = function(command, args){
     for(var j=0;j<this.views[key].commands.length;j++){
       if(this.views[key].commands[j].name === command.name){
         masterStore.openView(this.views[key].component);
+        var argsObj = {};
+        this.views[key].commands[j].args.forEach(function(el, ind){
+          argsObj[el] = args[ind];
+        })
         return this.views[key].commands[j].method(args);
       }
     }
