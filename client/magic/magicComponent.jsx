@@ -62,7 +62,7 @@ var MagicInput = React.createClass({
     var nodes = [<input onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}/>];
     if(this.state.args){
       nodes.push(
-        <h3>Enter args</h3>
+        <h3>Enter args for command : {this.state.currentCommand.name}</h3>
       )
     }
     return (
