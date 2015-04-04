@@ -20,7 +20,7 @@ function fsWrapper(fsCallback, args){
 
             //Set values for default directory and data if noy provided, need to delete this later
 
-            if(!opts.dir) opts.dir = '/Users/Derek/Desktop/topsoil';
+            if(!opts.dir) opts.dir = '/';
             console.log('options are ', opts);
 
             var emit = function(err, data){
