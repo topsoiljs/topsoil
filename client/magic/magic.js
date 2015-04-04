@@ -6,13 +6,12 @@ Magic.prototype.registerView = function(viewObject){
   this.views[viewObject.name] = viewObject;
 };
 
-Magic.prototype.callCommand = function(command){
+Magic.prototype.callCommand = function(command, args){
   for(var key in this.views){
     for(var j=0;j<this.views[key].commands.length;j++){
-      // console.log(this.views[i].commands[j].name, command.name);
       if(this.views[key].commands[j].name === command.name){
         masterStore.openView(this.views[key].component);
-        return this.views[key].commands[j].method();
+        return this.views[key].commands[j].method(args);
       }
     }
   }
