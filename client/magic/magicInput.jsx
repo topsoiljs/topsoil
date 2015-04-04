@@ -6,6 +6,11 @@ var MagicInput = React.createClass({
       suggestions: []
     }
   },
+  handleShortcut: function(e){
+    if(e.which === 9){
+      e.preventDefault();
+    }
+  },
   handleInput: function(e){
     var el = document.getElementById('terminal');
     if (e.key === 'Enter') {
@@ -44,7 +49,7 @@ var MagicInput = React.createClass({
     var nodes = [
       <div className="input-field col s12">
         <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
-        <input type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}/>
+        <input type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
       </div>
     ];
     return (
