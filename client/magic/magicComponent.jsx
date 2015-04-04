@@ -24,9 +24,9 @@ var passSuggestions = function(data){
   setSuggestions(data);
 };
 var MagicInput = React.createClass({
-  setInitialState: function(){
+  getInitialState: function(){
     return {
-      args: null
+      args: null,
       currentCommand: null
     }
   },
@@ -34,15 +34,17 @@ var MagicInput = React.createClass({
     var el = document.getElementById('terminal');
     if (e.key === 'Enter') {
       if(!this.state.args && currentSuggestions.suggestions[0]){
+        el.value = el.value += ' ';
         this.setState({
           args: [],
           currentCommand: currentSuggestions.suggestions[0]
         })
         passSuggestions({suggestions:[]});
       }else{
+        var value = el.value;
         args = value.split(' ').slice(1);
-        magic.callCommand(currentSuggestions.suggestions[0], args);
-        el.value = "";
+        magic.callCommand(this.state.currentCommand, args);
+        el.value = '';
         this.setState({
           args: null,
           currentCommand: null

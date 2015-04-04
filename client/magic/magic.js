@@ -15,7 +15,7 @@ Magic.prototype.callCommand = function(command, args){
         this.views[key].commands[j].args.forEach(function(el, ind){
           argsObj[el] = args[ind];
         })
-        return this.views[key].commands[j].method(args);
+        return this.views[key].commands[j].method(argsObj);
       }
     }
   }
