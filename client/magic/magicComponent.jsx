@@ -1,27 +1,74 @@
 // Temp setstate
+// Crazy things happening here. Refactor later.
 var setSuggestions;
 var currentSuggestions;
+
+// var MagicStore = function(){
+//   var state = {
+//     args: null,
+//   };
+//   return {
+//     toggleArgs: function(){
+//       state.args = !state.args;
+//     },
+//     getState: function(){
+//       return state;
+//     }
+//   }
+// };
+
+// var magicStore = MagicStore();
+
 var passSuggestions = function(data){
   currentSuggestions = data;
   setSuggestions(data);
 };
 var MagicInput = React.createClass({
+  getInitialState: function(){
+    return {
+      args: null,
+      currentCommand: null
+    }
+  },
   handleInput: function(e){
+    var el = document.getElementById('terminal');
     if (e.key === 'Enter') {
-      var el = document.getElementById('terminal');
-      var value = el.value;
-      magic.callCommand(currentSuggestions.suggestions[0]);
-      el.value = "";
-      passSuggestions({suggestions:[]});
+      if(!this.state.args && currentSuggestions.suggestions[0]){
+        el.value = el.value += ' ';
+        this.setState({
+          args: [],
+          currentCommand: currentSuggestions.suggestions[0]
+        })
+        passSuggestions({suggestions:[]});
+      }else{
+        var value = el.value;
+        args = value.split(' ').slice(1);
+        magic.callCommand(this.state.currentCommand, args);
+        el.value = '';
+        this.setState({
+          args: null,
+          currentCommand: null
+        })
+      }
     }
   },
   onChange: function(e){
-    var results = magic.search(e.target.value);
-    passSuggestions({suggestions: results});
+    if(!this.state.args){
+      var results = magic.search(e.target.value);
+      passSuggestions({suggestions: results});
+    }
   },
   render: function() {
+    var nodes = [<input onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}/>];
+    if(this.state.args){
+      nodes.push(
+        <h3>Enter args for command : {this.state.currentCommand.name}</h3>
+      )
+    }
     return (
-      <input onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}/>
+      <div>
+        {nodes}
+      </div>
     );
   }
 });
