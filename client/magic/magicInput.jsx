@@ -37,7 +37,12 @@ var MagicInput = React.createClass({
     }
   },
   render: function() {
-    var nodes = [<input onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}/>];
+    var nodes = [
+      <div className="input-field col s10">
+        <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
+        <input type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}/>
+      </div>
+    ];
     if(this.state.args){
       nodes.push(
         <h3>Enter args for command : {this.state.currentCommand.name}</h3>
