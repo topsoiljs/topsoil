@@ -43,6 +43,7 @@ var MagicInput = React.createClass({
       }else{
         var value = el.value;
         args = value.split(' ').slice(1);
+        eventBus.emit('master');
         magic.callCommand(this.state.currentCommand, args);
         el.value = '';
         this.setState({
@@ -65,35 +66,6 @@ var MagicInput = React.createClass({
         <h3>Enter args for command : {this.state.currentCommand.name}</h3>
       )
     }
-    return (
-      <div>
-        {nodes}
-      </div>
-    );
-  }
-});
-
-var MagicSuggestions = React.createClass({
-  componentDidMount: function(){
-    console.log('setting suggestions');
-    setSuggestions = this.setState.bind(this);
-  },
-  getInitialState: function(){
-    return {suggestions:[]};
-  },
-  render: function() {
-    var nodes = [];
-    this.state.suggestions.forEach(function(suggestion){
-      nodes.push(
-        <li>
-          {suggestion.name} |
-          {suggestion.description}
-        </li>
-        )
-      nodes.push(
-        <div></div>
-      )
-    })
     return (
       <div>
         {nodes}
