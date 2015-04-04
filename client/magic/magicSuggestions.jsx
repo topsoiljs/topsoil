@@ -1,9 +1,9 @@
 var MagicSuggestions = React.createClass({
   render: function() {
     var nodes = [];
-    this.props.suggestions.forEach(function(suggestion){
+    this.props.suggestions.forEach(function(suggestion, ind){
       var sugNode;
-      if(suggestion.selected){
+      if(ind === this.props.suggestionActive){
         console.log(suggestion);
         sugNode = (<li>
           <div className="collapsible-header active-item"> {suggestion.name} | {suggestion.description} | arguments: {JSON.stringify(suggestion.args).slice(1, -1)}</div>
@@ -14,7 +14,7 @@ var MagicSuggestions = React.createClass({
         </li>)
       }
       nodes.push(sugNode);
-    })
+    }.bind(this))
     return (
       <ul className="collection" data-collapsible="accordion">
         {nodes}

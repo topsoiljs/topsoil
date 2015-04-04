@@ -3,24 +3,31 @@ var MagicInput = React.createClass({
     return {
       args: null,
       currentCommand: null,
-      suggestions: []
+      suggestions: [],
+      suggestionActive: -1
     }
   },
   handleShortcut: function(e){
     if(e.which === 9){
       e.preventDefault();
+      this.setState({
+        suggestionActive: (this.state.suggestionActive + 1) % this.state.suggestions.length
+      });
     }
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
     if (e.key === 'Enter') {
-      if(!this.state.args && this.state.suggestions[0]){
-        this.state.suggestions[0].selected = true;
+      if(this.state.suggestionActive < 0){
+        this.state.suggestionActive = 0;
+      }
+      if(!this.state.args && this.state.suggestions[this.state.suggestionActive]){
         el.value = el.value += ' ';
         this.setState({
           args: [],
-          currentCommand: this.state.suggestions[0],
-          suggestions: this.state.suggestions
+          currentCommand: this.state.suggestions[this.state.suggestionActive],
+          suggestions: this.state.suggestions,
+          suggestionActive: this.state.suggestionActive
         })
       }else{
         var value = el.value;
@@ -32,7 +39,8 @@ var MagicInput = React.createClass({
         this.setState({
           args: null,
           currentCommand: null,
-          suggestions: []
+          suggestions: [],
+          suggestionActive: -1
         })
       }
     }
@@ -46,6 +54,8 @@ var MagicInput = React.createClass({
     }
   },
   render: function() {
+    console.log(this.state.suggestionActive);
+
     var nodes = [
       <div className="input-field col s12">
         <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
@@ -58,7 +68,7 @@ var MagicInput = React.createClass({
           {nodes}
         </div>
         <div className="row">
-          <MagicSuggestions suggestions={this.state.suggestions}/>
+          <MagicSuggestions suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions}/>
         </div>
       </div>
     );
