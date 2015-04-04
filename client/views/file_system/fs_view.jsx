@@ -5,7 +5,7 @@ function ViewStore() {
   var methods = {
     getFiles: function(args){
           var dir = args.directory;
-          console.log(dir);
+          console.log(args, dir);
           var UID = Math.random();
           socket.emit('fs.ls', {
             dir: dir,

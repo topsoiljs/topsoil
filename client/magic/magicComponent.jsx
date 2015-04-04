@@ -1,15 +1,41 @@
 // Temp setstate
+// Crazy things happening here. Refactor later.
 var setSuggestions;
 var currentSuggestions;
+
+var MagicStore = function(){
+  var state = {
+    args: false
+  };
+  return {
+    toggleArgs: function(){
+      state.args = !state.args;
+    },
+    getState: function(){
+      return state;
+    }
+  }
+};
+
+
+
 var passSuggestions = function(data){
   currentSuggestions = data;
   setSuggestions(data);
 };
 var MagicInput = React.createClass({
+  componentDidMount: function(){
+    eventBus.register('magic', function(){
+      this.setState(magicStore.getState());
+    }.bind(this))
+  },
   handleInput: function(e){
     if (e.key === 'Enter') {
-      var el = document.getElementById('terminal');
-      var value = el.value;
+      if(!argsState){
+        argsState = true;
+        var el = document.getElementById('terminal');
+        var value = el.value;
+      }
       args = value.split(' ').slice(1);
       magic.callCommand(currentSuggestions.suggestions[0], args);
       el.value = "";
