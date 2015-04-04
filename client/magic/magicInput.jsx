@@ -8,10 +8,20 @@ var MagicInput = React.createClass({
     }
   },
   handleShortcut: function(e){
-    if(e.which === 9){
+    // Tab or down
+    if(e.which === 9 || e.which === 40){
       e.preventDefault();
       this.setState({
         suggestionActive: (this.state.suggestionActive + 1) % this.state.suggestions.length
+      });
+      // Up
+    }else if(e.which === 38){
+      var active = (this.state.suggestionActive - 1) % this.state.suggestions.length;
+      if(active < 0){
+        active = this.state.suggestions.length-1;
+      }
+      this.setState({
+        suggestionActive: active
       });
     }
   },
