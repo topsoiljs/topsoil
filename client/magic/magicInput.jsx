@@ -31,7 +31,9 @@ var MagicInput = React.createClass({
   onChange: function(e){
     if(!this.state.args){
       var results = magic.search(e.target.value);
-      eventBus.emit('suggestions', results);
+      this.setState({
+        suggestions: results
+      })
     }
   },
   render: function() {
@@ -44,6 +46,7 @@ var MagicInput = React.createClass({
     return (
       <div>
         {nodes}
+        <MagicSuggestions suggestions={this.state.suggestions}/>
       </div>
     );
   }
