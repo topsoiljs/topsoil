@@ -6,7 +6,7 @@ utility.wrapperResponse = function(err:string, data:string){
     return {
         err: err,
         data: data
-    }
+    };
 };
 
 utility.parseCommand = function(c){
@@ -15,7 +15,7 @@ utility.parseCommand = function(c){
     return {
         command: command,
         args: args
-    }
+    };
 };
 
 module.exports = utility;

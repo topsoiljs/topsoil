@@ -13,28 +13,32 @@ fsAPI.readFile = fsWrapper(function(path, cb){
 
 fsAPI.writeFile = fsWrapper(fs.writeFile, ['dir', 'data']);
 
+fsAPI.append = fsWrapper(fs.append, ['dir', 'data']);
+
 module.exports = fsAPI;
 
 function fsWrapper(fsCallback, args){
     return function(socket){
         return function(opts){
-            console.log('received args', args);
-
             //Set values for default directory and data if noy provided, need to delete this later
 
             if(!opts.dir) opts.dir = '/';
             console.log('options are ', opts);
 
-            var emit = function(err, data){
-                console.log('emit to', opts.uid);
-                console.log('response object', utility.wrapperResponse(err, data));
-                socket.emit(opts.uid, utility.wrapperResponse(err, data));
-            };
+
             var arguments = args.map(function(arg){
                 return opts[arg];
             });
-            arguments.push(emit);
-            console.log(fsCallback);
+
+            //check to see if there are additional arguments passed in
+            if(opts.options){
+                arguments.push(opts.options);
+            }
+
+            //push in a callback function that emits data to server
+            arguments.push(function(err, data){
+                socket.emit(opts.uid, utility.wrapperResponse(err, data));
+            });
             fsCallback.apply(null, arguments);
         }
     }
