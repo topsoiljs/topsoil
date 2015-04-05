@@ -13,16 +13,17 @@ class State implements StateStore {
   }
 
   get(session: string, key: string) : string {
-    if(this.store.session){
-      if(this.store.session[key]){
-        return this.store.session[key];
+    if(this.store[session]){
+      if(this.store[session][key]){
+        return this.store[session][key];
       }
     };
     throw new Error('not found');
   }
 
   put(session: string, key: string, value: string) {
-    this.store.session = this.store.session || value;
+    this.store[session] = this.store[session] || {};
+    this.store[session][key] = value;
   }
 }
 
@@ -40,12 +41,12 @@ interface StateAPI {
 
 var routes : StateAPI = <StateAPI>{
   put: <Route>{
-    method: 'PUT',
+    method: 'POST',
     path: '/state/{session}/{key}',
     handler: function(request, reply){
       if(request.params.session && request.params.key){
-        console.log(request.payload);
-        // state.put(request.params.session, request.params.key, request.payload);
+        var data : string = typeof request.payload === 'object' ? JSON.stringify(request.payload) : request.payload;
+        state.put(request.params.session, request.params.key, data);
         reply(201);
       }else{
         reply(new Error('need session and key'));
@@ -56,7 +57,17 @@ var routes : StateAPI = <StateAPI>{
     method: 'GET',
     path: '/state/{session}/{key}',
     handler: function(request, reply){
-      reply(request.params);
+      var data : string;
+      try {
+        if(request.params.key && request.params.session){
+          data = state.get(request.params.session, request.params.key);
+          reply(data);
+        }else{
+          throw new Error('need session and key');
+        }
+      }catch(e){
+        reply(404);
+      }
     }
   }
 };
