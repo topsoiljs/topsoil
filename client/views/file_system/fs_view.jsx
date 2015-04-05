@@ -3,19 +3,17 @@ function ViewStore() {
   var socket = io();
 
   var methods = {
-    getFiles: function(args){
-          var dir = args.directory;
-          var UID = Math.random();
-          socket.emit('fs.ls', {
-            dir: dir,
-            uid: UID
-          });
-          socket.on(UID, function(data){
-            //data.err
-            //data.data
-            state.files = data.data;
-            eventBus.emit('filesystem');
-          })
+    listFiles: function(args){
+      var dir = args.directory;
+      var UID = Math.random();
+      socket.emit('fs.ls', {
+        dir: dir,
+        uid: UID
+      });
+      socket.on(UID, function(data){
+        state.files = data.data;
+        eventBus.emit('filesystem');
+      })
     },
     hideFiles: function(){
       console.log('hidefiles');
@@ -26,10 +24,11 @@ function ViewStore() {
       var path = args.path;
       var UID = Math.random();
       socket.emit('fs.readFile', {
-        dir: dir,
+        dir: path,
         uid: UID
       });
       socket.on(UID, function(data){
+        console.log(data, 'received');
         state = {
           files: [],
           fileData: data.data
@@ -71,10 +70,11 @@ var FilesystemComponent = React.createClass({
     var fileText = this.state.files.map(function(filename) {
       return (<p> {filename} </p>)
     });
-
+    var fileData = this.state.fileData;
     return (<div>
        Filesystem
        {fileText}
+       {fileData}
        <a id="show" href="">show files</a>
     </div>);
   }
