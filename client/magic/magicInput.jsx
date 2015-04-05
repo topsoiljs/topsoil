@@ -4,7 +4,8 @@ var MagicInput = React.createClass({
       args: null,
       currentCommand: null,
       suggestions: [],
-      suggestionActive: -1
+      suggestionActive: -1,
+      preArgsLength: 0
     }
   },
   handleShortcut: function(e){
@@ -33,15 +34,17 @@ var MagicInput = React.createClass({
       }
       if(!this.state.args && this.state.suggestions[this.state.suggestionActive]){
         el.value = el.value += ' ';
+        this.state.preArgsLength = el.value.length;
         this.setState({
           args: [],
           currentCommand: this.state.suggestions[this.state.suggestionActive],
           suggestions: this.state.suggestions,
-          suggestionActive: this.state.suggestionActive
+          suggestionActive: this.state.suggestionActive,
+          preArgsLength: this.state.preArgsLength
         })
       }else{
         var value = el.value;
-        args = value.split(' ').slice(1);
+        args = value.slice(this.state.preArgsLength).split(' ');
         magic.callCommand(this.state.currentCommand, args);
         this.state.currentCommand.selected = false;
         el.value = '';
@@ -49,7 +52,8 @@ var MagicInput = React.createClass({
           args: null,
           currentCommand: null,
           suggestions: [],
-          suggestionActive: -1
+          suggestionActive: -1,
+          preArgsLength: 0
         })
       }
     }
