@@ -5,7 +5,6 @@ function ViewStore() {
   var methods = {
     getFiles: function(args){
           var dir = args.directory;
-          console.log(args, dir);
           var UID = Math.random();
           socket.emit('fs.ls', {
             dir: dir,
@@ -22,6 +21,21 @@ function ViewStore() {
       console.log('hidefiles');
       state.files = [];
       eventBus.emit('filesystem');
+    },
+    readFile: function(args){
+      var path = args.path;
+      var UID = Math.random();
+      socket.emit('fs.readFile', {
+        dir: dir,
+        uid: UID
+      });
+      socket.on(UID, function(data){
+        state = {
+          files: [],
+          fileData: data.data
+        };
+        eventBus.emit('filesystem');
+      })
     },
     renderView: function(){
 
@@ -71,12 +85,12 @@ magic.registerView({
   name: 'filesystem',
   commands: [
      {
-      name: "getFiles",
+      name: "listFiles",
       description: 'lists files in directory',
       args: ['directory'],
       tags: ['show files', 'list files', 'display files'],
       categories: ['read'],
-      method: viewStore["getFiles"]
+      method: viewStore["listFiles"]
     },
     {
       name: "hideFiles",
@@ -93,6 +107,14 @@ magic.registerView({
       tags: ['show filesystem view'],
       categories: ['ui'],
       method: viewStore["renderView"]
+    },
+    {
+      name: "readFile",
+      description: 'reads specified file',
+      args: ['path'],
+      tags: ['read file'],
+      categories: ['read'],
+      method: viewStore["readFile"]
     }
     ],
   category: 'filesystem',
