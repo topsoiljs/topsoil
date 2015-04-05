@@ -1,5 +1,30 @@
 /// <reference path="../../typings/node/node.d.ts"/>
 /// <reference path="../utility/utility.ts"/>
+interface StateStore {
+  get: (session: string, key: string) => string;
+  put: (session: string, key: string, value: string) => void;
+}
+
+class State implements StateStore {
+  private store;
+
+  constructor( parameters) {
+    this.store = {};
+  }
+
+  get(session: string, key: string) : string {
+    if(this.store.session){
+      if(this.store.session[key]){
+        return this.store.session[key];
+      }
+    };
+    throw new Error('not found');
+  }
+
+  put(session: string, key: string, value: string) {
+    this.store.session = this.store.session || value;
+  }
+}
 
 interface Route {
   method: string;
