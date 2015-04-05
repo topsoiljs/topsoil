@@ -33,7 +33,7 @@ gulp.task('stylus', function() {
 });
 
 gulp.task('ts', function () {
-  var tsApp = gulp.src('server-typescript/*.ts')
+  var tsApp = gulp.src('server-typescript/**/*.ts')
                   .pipe(plumber())
                   .pipe(ts({
                       declarationFiles: true,
@@ -42,7 +42,7 @@ gulp.task('ts', function () {
                   }));
 
 
-  var tsServer = gulp.src('server-typescript/server/*.ts')
+  var tsServer = gulp.src('server-typescript/server/**/*.ts')
                      .pipe(plumber())
                      .pipe(ts({
                          declarationFiles: true,
@@ -50,14 +50,21 @@ gulp.task('ts', function () {
                          module: "commonjs"
                      }));
 
-    var processAPI = gulp.src('server-typescript/server/processAPIs/*.ts')
+    var processAPI = gulp.src('server-typescript/server/processAPIs/**/*.ts')
         .pipe(ts({
             declarationFiles: true,
             noExternalResolve: false,
             module: "commonjs"
         }));
 
-    var utility = gulp.src('server-typescript/server/utility/*.ts')
+    var utility = gulp.src('server-typescript/server/utility/**/*.ts')
+        .pipe(ts({
+            declarationFiles: true,
+            noExternalResolve: false,
+            module: "commonjs"
+        }));
+
+    var processAPI = gulp.src('server-typescript/server/stateAPI/**/*.ts')
         .pipe(ts({
             declarationFiles: true,
             noExternalResolve: false,

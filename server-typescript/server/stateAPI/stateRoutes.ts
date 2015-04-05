@@ -1,41 +1,35 @@
 /// <reference path="../../typings/node/node.d.ts"/>
 /// <reference path="../utility/utility.ts"/>
 
-
-
-interface PutOpts {
-  key: string;
-  value: <any>;
-}
-
-interface PutAPI {
-  (opts: PutOpts) : void;
-}
-
-interface GetOpts {
-  key: string;
-}
-
-interface GetAPI {
-  (opts: GetOpts) : void;
+interface Route {
+  method: string;
+  path: string;
 }
 
 interface StateAPI {
-  put: (socket: <any>) : PutAPI;
-  get: (socket: <any>) : GetAPI;
+  put: Route;
+  get: Route;
 }
 
-var api = <StateAPI>{};
+var routes : StateAPI = <StateAPI>{
+  put: <Route>{
+    method: 'PUT',
+    path: '/state/{session}/{key}',
+    handler: function(request, reply){
 
-api.put = function(socket){
-  return function(opts){
+    }
+  },
+  get: <Route>{
+    method: 'GET',
+    path: '/state/{session}/{key}',
+    handler: function(request, reply){
 
+    }
+  }
+};
+
+module.exports = function(server){
+  for(var key in routes){
+    server.route(routes[key]);
   }
 }
-
-api.get = function(socket){
-  return function(opts){
-
-  }
-}
-
