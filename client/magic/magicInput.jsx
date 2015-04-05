@@ -42,7 +42,6 @@ var MagicInput = React.createClass({
       }else{
         var value = el.value;
         args = value.split(' ').slice(1);
-        eventBus.emit('master');
         magic.callCommand(this.state.currentCommand, args);
         this.state.currentCommand.selected = false;
         el.value = '';

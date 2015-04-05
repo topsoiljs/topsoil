@@ -4,7 +4,6 @@ var MagicSuggestions = React.createClass({
     this.props.suggestions.forEach(function(suggestion, ind){
       var sugNode;
       if(ind === this.props.suggestionActive){
-        console.log(suggestion);
         sugNode = (<li>
           <div className="collapsible-header active-item"> {suggestion.name} | {suggestion.description} | arguments: {JSON.stringify(suggestion.args).slice(1, -1)}</div>
         </li>)
