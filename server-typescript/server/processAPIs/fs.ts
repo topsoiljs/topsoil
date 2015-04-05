@@ -93,7 +93,13 @@ function listAllFilesAndDirs (data, cb){
   }, result));
 }
 
+fsAPI.unlink = fsWrapper(fs.unlink, ['dir']);
+
 fsAPI.append = fsWrapper(fs.append, ['dir', 'data']);
+
+fsAPI.mkdir = fsWrapper(fs.mkdir, ['dir']);
+
+fsAPI.rmdir = fsWrapper(fs.rmdir, ['dir']);
 
 module.exports = fsAPI;
 
