@@ -16,14 +16,14 @@ var routes : StateAPI = <StateAPI>{
     method: 'PUT',
     path: '/state/{session}/{key}',
     handler: function(request, reply){
-
+      reply(request.params);
     }
   },
   get: <Route>{
     method: 'GET',
     path: '/state/{session}/{key}',
     handler: function(request, reply){
-
+      reply(request.params);
     }
   }
 };

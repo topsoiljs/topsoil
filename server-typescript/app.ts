@@ -6,7 +6,7 @@
 
 var Hapi = require("hapi");
 var processManager = require('./server/processManager');
-
+var stateRoutes = require('./server/stateAPI/stateRoutes');
 //import validation = require('./server/Server');
 //// Create a server with a host and port
 var server = new Hapi.Server();
@@ -50,6 +50,8 @@ io.on('connection', function(socket){
   //        });
   //});
 });
+
+stateRoutes(server);
 
 server.route({
     method: 'GET',
