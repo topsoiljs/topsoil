@@ -93,36 +93,61 @@ function listAllFilesAndDirs (data, cb){
   }, result));
 }
 
+fsAPI.append = fsWrapper(fs.append, ['dir', 'data']);
+
 module.exports = fsAPI;
 
-function fsStreamWrapper(createStream, args, mode : number, options?){
-  // Mode 0=read, 1=write, 2=duplex
-  // Options will be default options passed in as last argument
-  return function(opts){
-    if(!opts.dir) opts.dir = '/';
+function fsStreamWrapper(createStream, args, mode: number, options?) {
+    // Mode 0=read, 1=write, 2=duplex
+    // Options will be default options passed in as last argument
+    return function(opts) {
+        if (!opts.dir) opts.dir = '/';
 
-    var arguments = args.map(function(arg){
-        return opts[arg];
-    });
-    //check to see if there are additional arguments passed in
-    if(opts.options){
-        arguments.push(opts.options);
-    }else{
-        arguments.push(options);
+        var arguments = args.map(function(arg) {
+            return opts[arg];
+        });
+        //check to see if there are additional arguments passed in
+        if (opts.options) {
+            arguments.push(opts.options);
+        } else {
+            arguments.push(options);
+        }
+        var stream = createStream.apply(null, arguments);
+        var returnStream;
+        if (mode === 1) {
+            returnStream = createGenericStreamFunc(function(chunk: string, enc: string, cb) {
+                stream.write(chunk + '\n');
+                cb(null, chunk);
+            })
+        } else {
+            returnStream = stream;
+        }
     }
-    var stream = createStream.apply(null, arguments);
-    var returnStream;
-    if(mode === 1){
-      returnStream = createGenericStreamFunc(function(chunk : string, enc : string, cb){
-        stream.write(chunk + '\n');
-        cb(null, chunk);
-      })
-    }else{
-      returnStream = stream;
-    }
+}
 
+function fsWrapper(fsCallback, args){
+    return function(socket){
+        return function(opts){
+            //Set values for default directory and data if noy provided, need to delete this later
+            if(!opts.dir) opts.dir = '/Users/Derek/Desktop/topsoil';
+
+            var arguments = args.map(function(arg){
+                return opts[arg];
+            });
+
+            //check to see if there are additional arguments passed in
+            if(opts.options){
+                arguments.push(opts.options);
+            }
+
+            //push in a callback function that emits data to server
+            arguments.push(function(err, data){
+                socket.emit(opts.uid, utility.wrapperResponse(err, data));
+            });
+            fsCallback.apply(null, arguments);
+        }
+    }
     return returnStream;
-  }
 };
 
 function fsSingleWrapper(fsCallback){
