@@ -8,7 +8,7 @@ interface StateStore {
 class State implements StateStore {
   private store;
 
-  constructor( parameters) {
+  constructor() {
     this.store = {};
   }
 
@@ -26,6 +26,8 @@ class State implements StateStore {
   }
 }
 
+var state = new State();
+
 interface Route {
   method: string;
   path: string;
@@ -41,7 +43,13 @@ var routes : StateAPI = <StateAPI>{
     method: 'PUT',
     path: '/state/{session}/{key}',
     handler: function(request, reply){
-      reply(request.params);
+      if(request.params.session && request.params.key){
+        console.log(request.payload);
+        // state.put(request.params.session, request.params.key, request.payload);
+        reply(201);
+      }else{
+        reply(new Error('need session and key'));
+      }
     }
   },
   get: <Route>{
