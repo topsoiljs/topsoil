@@ -13,14 +13,20 @@ fsAPI.readFile = fsWrapper(function(path, cb){
 
 fsAPI.writeFile = fsWrapper(fs.writeFile, ['dir', 'data']);
 
+fsAPI.unlink = fsWrapper(fs.unlink, ['dir']);
+
 fsAPI.append = fsWrapper(fs.append, ['dir', 'data']);
+
+fsAPI.mkdir = fsWrapper(fs.mkdir, ['dir']);
+
+fsAPI.rmdir = fsWrapper(fs.rmdir, ['dir']);
 
 module.exports = fsAPI;
 
 function fsWrapper(fsCallback, args){
     return function(socket){
         return function(opts){
-            //Set values for default directory and data if noy provided, need to delete this later
+            //Set values for default directory and data if not provided, need to delete this later
 
             if(!opts.dir) opts.dir = '/';
             console.log('options are ', opts);
