@@ -1,10 +1,59 @@
+function ViewStore() {
+  var state = {files: []};
+  var socket = io();
+
+  var methods = {
+    listFiles: function(args){
+      var dir = args.directory;
+      var UID = Math.random();
+      socket.emit('fs.ls', {
+        dir: dir,
+        uid: UID
+      });
+      socket.on(UID, function(data){
+        state.files = data.data;
+        eventBus.emit('filesystem');
+      })
+    },
+    hideFiles: function(){
+      state.files = [];
+      eventBus.emit('filesystem');
+    },
+    readFile: function(args){
+      var path = args.path;
+      var UID = Math.random();
+      socket.emit('fs.readFile', {
+        dir: path,
+        uid: UID
+      });
+      socket.on(UID, function(data){
+        console.log(data, 'received');
+        state = {
+          files: [],
+          fileData: data.data
+        };
+        eventBus.emit('filesystem');
+      })
+    },
+    renderView: function(){
+
+    },
+    getState: function() {
+      return state;
+    }
+  }
+
+  return methods;
+}
+
+var viewStore = ViewStore();
+
 var FilesystemComponent = React.createClass({
   getInitialState: function() {
     return viewStore.getState();
   },
   componentDidMount: function() {
     eventBus.register("filesystem", function() {
-      console.log(this);
       this.setState(viewStore.getState());
     }.bind(this));
   },
