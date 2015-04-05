@@ -3,25 +3,38 @@ function ViewStore() {
   var socket = io();
 
   var methods = {
-    getFiles: function(args){
-          var dir = args.directory;
-          console.log(args, dir);
-          var UID = Math.random();
-          socket.emit('fs.ls', {
-            dir: dir,
-            uid: UID
-          });
-          socket.on(UID, function(data){
-            //data.err
-            //data.data
-            state.files = data.data;
-            eventBus.emit('filesystem');
-          })
+    listFiles: function(args){
+      var dir = args.directory;
+      var UID = Math.random();
+      socket.emit('fs.ls', {
+        dir: dir,
+        uid: UID
+      });
+      socket.on(UID, function(data){
+        state.files = data.data;
+        eventBus.emit('filesystem');
+      })
     },
     hideFiles: function(){
       console.log('hidefiles');
       state.files = [];
       eventBus.emit('filesystem');
+    },
+    readFile: function(args){
+      var path = args.path;
+      var UID = Math.random();
+      socket.emit('fs.readFile', {
+        dir: path,
+        uid: UID
+      });
+      socket.on(UID, function(data){
+        console.log(data, 'received');
+        state = {
+          files: [],
+          fileData: data.data
+        };
+        eventBus.emit('filesystem');
+      })
     },
     renderView: function(){
 
@@ -57,10 +70,11 @@ var FilesystemComponent = React.createClass({
     var fileText = this.state.files.map(function(filename) {
       return (<p> {filename} </p>)
     });
-
+    var fileData = this.state.fileData;
     return (<div>
        Filesystem
        {fileText}
+       {fileData}
        <a id="show" href="">show files</a>
     </div>);
   }
@@ -71,12 +85,12 @@ magic.registerView({
   name: 'filesystem',
   commands: [
      {
-      name: "getFiles",
+      name: "listFiles",
       description: 'lists files in directory',
       args: ['directory'],
       tags: ['show files', 'list files', 'display files'],
       categories: ['read'],
-      method: viewStore["getFiles"]
+      method: viewStore["listFiles"]
     },
     {
       name: "hideFiles",
@@ -93,6 +107,14 @@ magic.registerView({
       tags: ['show filesystem view'],
       categories: ['ui'],
       method: viewStore["renderView"]
+    },
+    {
+      name: "readFile",
+      description: 'reads specified file',
+      args: ['path'],
+      tags: ['read file'],
+      categories: ['read'],
+      method: viewStore["readFile"]
     }
     ],
   category: 'filesystem',

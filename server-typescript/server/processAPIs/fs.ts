@@ -7,7 +7,9 @@ var fsAPI = <any> {};
 
 fsAPI.ls = fsWrapper(fs.readdir, ['dir']);
 
-fsAPI.readFile = fsWrapper(fs.readFile, ['dir']);
+fsAPI.readFile = fsWrapper(function(path, cb){
+    fs.readFile(path, {encoding: 'utf8'}, cb)
+}, ['dir']);
 
 fsAPI.writeFile = fsWrapper(fs.writeFile, ['dir', 'data']);
 
