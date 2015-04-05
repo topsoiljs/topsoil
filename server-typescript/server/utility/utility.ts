@@ -3,6 +3,7 @@
 var utility = <any> {};
 
 utility.wrapperResponse = function(err:string, data:string){
+    if(!data) data = '';
     return {
         err: err,
         data: data
