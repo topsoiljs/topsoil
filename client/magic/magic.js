@@ -28,7 +28,6 @@ Magic.prototype.search = function(terms){
   var terms = terms.split(' ');
   var results = [];
   // Brute force search for now
-  console.log(terms);
   _.each(this.views, function(view){
     view.commands.forEach(function(command){
       var descriptionMatch = true;
