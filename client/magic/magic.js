@@ -25,21 +25,34 @@ Magic.prototype.search = function(terms){
   if(terms === ''){
     return [];
   };
-
+  var terms = terms.split(' ');
+  console.log(terms);
   var results = [];
   // Brute force search for now
   _.each(this.views, function(view){
     view.commands.forEach(function(command){
-      if(command.description.indexOf(terms) > -1){
+      var descriptionMatch = true;
+      for(var k=0;k<terms.length;k++){
+        descriptionMatch = descriptionMatch && (command.description.indexOf(terms[k]) > -1);
+      }
+      if(descriptionMatch){
         results.push(command);
         return;
       }
-      if(command.name.indexOf(terms) > -1){
+      var nameMatch = true;
+      for(var k=0;k<terms.length;k++){
+        nameMatch = nameMatch && (command.name.indexOf(terms[k]) > -1);
+      }
+      if(nameMatch){
         results.push(command);
         return;
       };
       for(var i=0;i<command.tags.length;i++){
-        if(command.tags[i].indexOf(terms) > -1){
+        var tagMatch = true;
+        for(var k=0;k<terms.length;k++){
+          tagMatch = tagMatch && (command.tags[i].indexOf(terms[k]) > -1);
+        }
+        if(tagMatch){
           results.push(command);
           return;
         }
