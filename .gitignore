@@ -36,5 +36,9 @@ typings
 #DS_Store
 .DS_Store
 
+deploy
 
 bower_components
+
+*.css
+*.html
