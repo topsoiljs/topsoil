@@ -14,15 +14,38 @@ var FilesystemComponent = React.createClass({
     }
   },
   render: function() {
-    var filesInDir = this.state.files.map(function(filename) {
-      return (<li className="collection-item"> {filename} </li>)
-    });
+    var nodes = [];
+    var currentCol = [];
+    for(var i=0;i<this.state.files.length;i++){
+      if(i % 15 === 0){
+        nodes.push(
+          <div className="col">
+            <ul className="collection">
+              {currentCol}
+            </ul>
+          </div>
+          )
+        currentCol = [];
+      }else{
+        currentCol.push(<li className="collection-item"> {this.state.files[i]} </li>)
+      }
+    }
+    if(currentCol.length > 0){
+      nodes.push(
+        <div className="col">
+          <ul className="collection">
+            {currentCol}
+          </ul>
+        </div>
+        )
+    }
+
     var fileData = this.state.fileData;
     return (<row>
        Filesystem
-       <ul className="collection">
-         {filesInDir}
-       </ul>
+       <row>
+        {nodes}
+       </row>
        {fileData}
        <a id="show" href="">show files</a>
     </row>);
