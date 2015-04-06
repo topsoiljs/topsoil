@@ -26,6 +26,7 @@ Magic.prototype.search = function(terms){
     return [];
   };
   var terms = terms.split(' ');
+  console.log(terms);
   var results = [];
   // Brute force search for now
   _.each(this.views, function(view){
@@ -47,7 +48,11 @@ Magic.prototype.search = function(terms){
         return;
       };
       for(var i=0;i<command.tags.length;i++){
-        if(command.tags[i].indexOf(terms) > -1){
+        var tagMatch = true;
+        for(var k=0;k<terms.length;k++){
+          tagMatch = tagMatch && (command.tags[i].indexOf(terms[k]) > -1);
+        }
+        if(tagMatch){
           results.push(command);
           return;
         }

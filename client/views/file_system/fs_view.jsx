@@ -1,5 +1,8 @@
 function ViewStore() {
-  var state = {files: []};
+  var state = {
+    files: [],
+    fileData: ''
+  };
   var socket = io();
 
   var methods = {
@@ -28,13 +31,17 @@ function ViewStore() {
         uid: UID
       });
       socket.on(UID, function(data){
-        console.log(data, 'received');
-        state = {
-          files: [],
-          fileData: data.data
-        };
+        state.fileDate = data.data;
         eventBus.emit('filesystem');
       })
+    },
+    makeDirectory: function(args){
+      var path = args.path;
+      var UID = Math.random();
+      socket.emit('fs.mkdir', {
+        dir: path,
+        uid: UID
+      });
     },
     renderView: function(){
 
@@ -88,7 +95,7 @@ magic.registerView({
       name: "listFiles",
       description: 'lists files in directory',
       args: ['directory'],
-      tags: ['show files', 'list files', 'display files'],
+      tags: ['show files', 'list files', 'display files', 'ls'],
       categories: ['read'],
       method: viewStore["listFiles"]
     },
@@ -115,6 +122,14 @@ magic.registerView({
       tags: ['read file'],
       categories: ['read'],
       method: viewStore["readFile"]
+    },
+    {
+      name: "makeDirectory",
+      description: 'makes directory at path',
+      args: ['path'],
+      tags: ['make directory mkdir filesystem'],
+      categories: ['read'],
+      method: viewStore["makeDirectory"]
     }
     ],
   category: 'filesystem',
