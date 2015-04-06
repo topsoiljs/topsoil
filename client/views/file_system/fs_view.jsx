@@ -1,79 +1,3 @@
-function ViewStore() {
-  var state = {
-    files: [],
-    fileData: ''
-  };
-  var socket = io();
-
-  var methods = {
-    listFiles: function(args){
-      var dir = args.directory;
-      var UID = Math.random();
-      socket.emit('fs.ls', {
-        dir: dir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        state.files = data.data;
-        eventBus.emit('filesystem');
-      })
-    },
-    hideFiles: function(){
-      console.log('hidefiles');
-      state.files = [];
-      eventBus.emit('filesystem');
-    },
-    readFile: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.readFile', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        state.fileDate = data.data;
-        eventBus.emit('filesystem');
-      })
-    },
-    makeDirectory: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.mkdir', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        if(data.err){
-          console.log(data.err);
-        }
-      })
-    },
-    removeDirectory: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.rmdir', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        if(data.err){
-          console.log(data.err);
-        }
-      })
-    },
-    renderView: function(){
-
-    },
-    getState: function() {
-      return state;
-    }
-  }
-
-  return methods;
-}
-
-var viewStore = ViewStore();
-
 var FilesystemComponent = React.createClass({
   getInitialState: function() {
     return viewStore.getState();
@@ -88,23 +12,22 @@ var FilesystemComponent = React.createClass({
       e.preventDefault();
       viewStore.getFiles();
     }
-    console.log("mounted");
   },
   render: function() {
-    console.log("FS render");
-    var fileText = this.state.files.map(function(filename) {
-      return (<p> {filename} </p>)
+    var filesInDir = this.state.files.map(function(filename) {
+      return (<li className="collection-item"> {filename} </li>)
     });
     var fileData = this.state.fileData;
-    return (<div>
+    return (<row>
        Filesystem
-       {fileText}
+       <ul className="collection">
+         {filesInDir}
+       </ul>
        {fileData}
        <a id="show" href="">show files</a>
-    </div>);
+    </row>);
   }
 });
-
 
 magic.registerView({
   name: 'filesystem',
@@ -161,4 +84,3 @@ magic.registerView({
   category: 'filesystem',
   component: FilesystemComponent
 });
-
