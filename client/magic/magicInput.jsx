@@ -67,8 +67,6 @@ var MagicInput = React.createClass({
     }
   },
   render: function() {
-    console.log(this.state.suggestionActive);
-
     var nodes = [
       <div className="input-field col s12">
         <i className="mdi-hardware-keyboard-arrow-right prefix"></i>

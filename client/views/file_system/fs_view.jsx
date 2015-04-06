@@ -42,6 +42,11 @@ function ViewStore() {
         dir: path,
         uid: UID
       });
+      socket.on(UID, function(data){
+        if(data.err){
+          console.log(data.err);
+        }
+      })
     },
     renderView: function(){
 
