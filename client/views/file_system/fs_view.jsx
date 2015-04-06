@@ -48,6 +48,19 @@ function ViewStore() {
         }
       })
     },
+    removeDirectory: function(args){
+      var path = args.path;
+      var UID = Math.random();
+      socket.emit('fs.rmdir', {
+        dir: path,
+        uid: UID
+      });
+      socket.on(UID, function(data){
+        if(data.err){
+          console.log(data.err);
+        }
+      })
+    },
     renderView: function(){
 
     },
@@ -135,6 +148,14 @@ magic.registerView({
       tags: ['make directory mkdir filesystem'],
       categories: ['read'],
       method: viewStore["makeDirectory"]
+    },
+    {
+      name: "removeDirectory",
+      description: 'removes directory at path',
+      args: ['path'],
+      tags: ['remove directory rm filesystem'],
+      categories: ['write'],
+      method: viewStore["removeDirectory"]
     }
     ],
   category: 'filesystem',
