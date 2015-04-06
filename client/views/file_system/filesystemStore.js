@@ -31,7 +31,7 @@ function ViewStore() {
         uid: UID
       });
       socket.on(UID, function(data){
-        state.fileDate = data.data;
+        state.fileData = data.data;
         eventBus.emit('filesystem');
       })
     },

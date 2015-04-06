@@ -7,11 +7,6 @@ var FilesystemComponent = React.createClass({
       console.log(this);
       this.setState(viewStore.getState());
     }.bind(this));
-
-    document.getElementById("show").onclick = function(e) {
-      e.preventDefault();
-      viewStore.getFiles();
-    }
   },
   render: function() {
     var nodes = [];
@@ -42,12 +37,11 @@ var FilesystemComponent = React.createClass({
 
     var fileData = this.state.fileData;
     return (<row>
-       Filesystem
+       <h4>Filesystem</h4>
        <row>
         {nodes}
        </row>
        {fileData}
-       <a id="show" href="">show files</a>
     </row>);
   }
 });
