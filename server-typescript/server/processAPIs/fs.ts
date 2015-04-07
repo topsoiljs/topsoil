@@ -46,6 +46,7 @@ function fsWrapper(fsCallback, args){
             arguments.push(function(err, data){
                 socket.emit(opts.uid, utility.wrapperResponse(err, data));
             });
+
             fsCallback.apply(null, arguments);
         }
     }

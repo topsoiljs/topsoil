@@ -11,7 +11,7 @@ var fs = require('./processAPIs/fs');
 
 module.exports = function(){
     var api = <any> {};
-    //api.terminal = terminal;
+    api.terminal = terminal;
     api.fs = fs;
     return api;
 };
