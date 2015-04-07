@@ -11,6 +11,7 @@ var watch = require('gulp-watch');
 var react = require('gulp-react');
 var concat = require('gulp-concat');
 var plumber = require('gulp-plumber');
+var mocha = require('gulp-mocha');
 
 gulp.task('jade', function () {
   var YOUR_LOCALS = {};
@@ -92,6 +93,11 @@ gulp.task('tsw', function () {
 });
 gulp.task('jsx-w', function () {
   gulp.watch("**/*.jsx", ["jsx"])
+});
+
+gulp.task('test', function () {
+    return gulp.src('./test/apiTest.js', {read: false})
+        .pipe(mocha({reporter: 'nyan'}));
 });
 
 gulp.task('build-all', ['jade', 'stylus', 'ts', 'jsx']);
