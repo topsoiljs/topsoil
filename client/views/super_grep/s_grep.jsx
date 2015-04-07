@@ -161,6 +161,9 @@ var SGrepComponent = React.createClass({
     return (
       <div>
         SUPER GREP
+        <div className="inputText" ref="inputText">
+        </div>
+        <div className="results">
         <p>
           Current Selection: /{selection}/
         </p>
@@ -170,13 +173,12 @@ var SGrepComponent = React.createClass({
         <p>
           Open file: {this.state.openFile}
         </p>
-        <div className="inputText" ref="inputText">
-        </div>
         {
          this.state.results.map(function(result) {
            return (<p>{result.line} <a href="">{result.lineNum}</a></p>)   
          })
-        }    
+        }   
+        </div> 
       </div>
     );
   }
