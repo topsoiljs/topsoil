@@ -28,9 +28,10 @@ function fsWrapper(fsCallback, args){
         return function(opts){
             //Set values for default directory and data if not provided, need to delete this later
 
-            if(!opts.dir) opts.dir = '/';
-            console.log('options are ', opts);
-
+            // if(!opts.dir) opts.dir = '/';
+            if(!opts.dir){
+                socket.emit(opts.uid, utility.wrapperResponse({ errno: 99, code: 'CUSTOM', desc: 'No directory given' }, null));
+            }
 
             var arguments = args.map(function(arg){
                 return opts[arg];

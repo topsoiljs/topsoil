@@ -37,6 +37,26 @@ describe("File System View APIs",function(){
     })
   });
 
+  it('should throw an error if path is invalid', function(done){
+    var client = io('http://localhost:8000/',{'force new connection':true});
+    var UID = Math.random();
+
+    client.on('connect', function(data){
+      client.emit('fs.mkdir',{
+        dir: null,
+        uid: UID
+      });
+      client.on(UID, function(data){
+        console.log(data);
+        assert.typeOf(data, 'object', 'receive an object back');
+        assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
+        assert.equal(data.err.errno, 99, 'get custom error code');
+        client.disconnect();
+        done();
+      });
+    })
+  });
+
   it('should be able to create a file', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
     var UID = Math.random();
