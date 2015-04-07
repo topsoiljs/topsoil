@@ -15,7 +15,7 @@ fsAPI.writeFile = fsWrapper(fs.writeFile, ['dir', 'data']);
 
 fsAPI.unlink = fsWrapper(fs.unlink, ['dir']);
 
-fsAPI.append = fsWrapper(fs.append, ['dir', 'data']);
+fsAPI.append = fsWrapper(fs.appendFile, ['dir', 'data']);
 
 fsAPI.mkdir = fsWrapper(fs.mkdir, ['dir']);
 

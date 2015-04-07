@@ -44,7 +44,7 @@ describe("File System View APIs",function(){
     client.on('connect', function(data){
       client.emit('fs.writeFile',{
         dir: testFilePath,
-        data: 'console.log("this is a test")',
+        data: 'console.log("this is a test");',
         uid: UID
       });
       client.on(UID, function(data){
@@ -56,6 +56,34 @@ describe("File System View APIs",function(){
       });
     })
   });
+
+  it('should be able to append to a file', function(done){
+    var client = io('http://localhost:8000/',{'force new connection':true});
+    var UID = Math.random();
+    var newUID = Math.random();
+    var testFilePath = currentDir + '/randomTestFolder/test.js'
+    client.on('connect', function(data){
+      client.emit('fs.append',{
+        dir: testFilePath,
+        data: '2',
+        uid: UID
+      });
+      client.on(UID, function(data){
+        assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
+        assert.isTrue(fs.existsSync(testFilePath), 'created a test file');
+        client.emit('fs.readFile', {
+          dir: testFilePath,
+          uid: newUID
+        });
+      });
+      client.on(newUID, function(data){
+        assert.equal('console.log("this is a test");2', data.data, 'get appended result');
+        client.disconnect();
+        done();
+      })
+    })
+  });
+
 
   it('should list all files in directory with ls', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
