@@ -22,7 +22,7 @@ io.on('connection', function(socket){
   console.log("a user is connected");
 
   var api = processManager();
-  //console.log(api);
+  console.log(api);
 
     function setupAPI(socket){
         for(var namespace in api){
