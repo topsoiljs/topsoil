@@ -8,7 +8,9 @@ function GrepStore() {
                regex: {},
                activeRegex: null,
                gotFile: false,
-               results: []};
+               results: [],
+               currentDir: "No current Dir Set. Please type 'open file' into the magic bar",
+               openFile: "No open file set."};
 
   var socket = io();
 
@@ -28,6 +30,11 @@ function GrepStore() {
       var path = args.path;
       var UID = Math.random();
       
+      var pathArr = path.split("/");
+      state.openFile = pathArr[pathArr.length - 1];
+      pathArr.pop()
+      state.currentDir = pathArr.join("/");
+
       socket.emit('fs.readFile', {
         dir: path,
         uid: UID
@@ -64,8 +71,8 @@ function GrepStore() {
       var regexArg = state.regex[state.activeRegex].selection; 
       socket.emit('terminal.run', {
         cmd: 'grep',
-        args: ["-n", regexArg, "app.ts"],
-        dir: "/Users/brianzindler/code/js/topsoil/server-typescript",
+        args: ["-n", regexArg, state.openFile],
+        dir: state.currentDir,
         uid: UID
       });
 
@@ -83,9 +90,12 @@ function GrepStore() {
 
         state.results = results;
         eventBus.emit('s_grep');
-
-        console.log("return data", results);
       })
+    },
+
+    setDir: function(args) {
+      state.currentDir = args.dir;
+      eventBus.emit('s_grep');      
     },
 
     getState: function() {
@@ -125,7 +135,6 @@ var SGrepComponent = React.createClass({
 
     inputTextDOM.addEventListener("mouseup", function() {
       grepStore.grep();
-      console.log("up");
     });
 
     this.setState({myCodeMirror: myCodeMirror})
@@ -149,18 +158,27 @@ var SGrepComponent = React.createClass({
     }
     
 
-    return (<div>
-       SUPER GREP
-       <p>/{selection}/</p>
-       <div className="inputText" ref="inputText">
-       </div>
-       {
-        this.state.results.map(function(result) {
-          return (<p>{result.line} <a href="">{result.lineNum}</a></p>)   
-        })
-       }
-       
-    </div>);
+    return (
+      <div>
+        SUPER GREP
+        <p>
+          Current Selection: /{selection}/
+        </p>
+        <p>
+          Current Directory: {this.state.currentDir}
+        </p>
+        <p>
+          Open file: {this.state.openFile}
+        </p>
+        <div className="inputText" ref="inputText">
+        </div>
+        {
+         this.state.results.map(function(result) {
+           return (<p>{result.line} <a href="">{result.lineNum}</a></p>)   
+         })
+        }    
+      </div>
+    );
   }
 });
 
@@ -175,6 +193,14 @@ magic.registerView({
       tags: ['get file', 'open', 'display file'],
       categories: ['open'],
       method: grepStore['openFile']
+    },
+    {
+      name: "setDirectory",
+      description: "sets the directory for the super grep view",
+      args: ['dir'],
+      tags: ["set dir", "folder", "current dir"],
+      categories: ['set'],
+      method: grepStore['setDir']
     }
   ],
   category: 'filesystem',
