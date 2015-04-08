@@ -21,7 +21,7 @@ utility.parseCommand = function(c){
 };
 
 utility.makeProcess = function(socket, cmd, opts, cb){
-    var proc = spawn('git', opts.args, {cwd: opts.dir});
+    var proc = spawn(cmd, opts.args, {cwd: opts.dir});
     var result = '';
 
     try{
@@ -30,6 +30,7 @@ utility.makeProcess = function(socket, cmd, opts, cb){
         });
 
         proc.stdout.on('end', function(){
+            console.log(utility.splitLines(result));
             socket.emit(opts.uid, utility.wrapperResponse(null, cb(result)));
         });
 
@@ -37,8 +38,12 @@ utility.makeProcess = function(socket, cmd, opts, cb){
             socket.emit(opts.uid, utility.wrapperResponse(e, null));
         });
     } catch(err){
-        console.log(err);
+        console.log('caught an error in the try block', err);
     }
+};
+
+utility.splitLines = function(str){
+  return str.trim().split('\n');
 };
 
 module.exports = utility;

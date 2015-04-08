@@ -32,6 +32,4 @@ terminalAPI.run = function(socket) {
      }
   };  
 }
-
-
 module.exports = terminalAPI;

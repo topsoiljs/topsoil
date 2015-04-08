@@ -5,9 +5,9 @@ var utility = require('../utility/utility');
 var gitAPI = <any> {};
 
 //wrapper function will take in a callback that process the outputs into workable JSON format
-gitAPI.status = gitWrapper('status', function(data){console.log(data); return data});
+gitAPI.status = gitWrapper('status', parseStatus);
 
-gitAPI.history = gitWrapper('history', function(data){console.log(data); return data;});
+//gitAPI.log = gitWrapper('log', function(data){console.log(data); return data;});
 
 module.exports = gitAPI;
 
@@ -22,4 +22,27 @@ function gitWrapper(cmd,cb){
             utility.makeProcess(socket, 'git', opts, cb);
         }
     }
+}
+
+function parseStatus(str:String){
+    var emptyResult = {
+        staged: [],
+        unstaged: [],
+        untracked: []
+    };
+
+    return utility.splitLines(str).reduce(function(result,element){
+        var marker = element.substr(0,3);
+        console.log('the marker is ', marker);
+        if(marker == '?? '){
+            result.untracked.push(element.slice(3));
+        }
+        if(marker.charAt(0) === 'M') {
+            result.staged.push(element.slice(3));
+        }
+        if(marker.charAt(1) === 'M') {
+            result.unstaged.push(element.slice(3));
+        }
+        return result;
+    }, emptyResult);
 }

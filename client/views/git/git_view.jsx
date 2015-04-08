@@ -10,7 +10,7 @@ function gitViewStore() {
       var UID = Math.random();
       socket.emit('git.status', {
         cmd: 'git',
-        args: [],
+        args: ['-s'],
         dir: state.currentDir,
         uid: UID
       });
