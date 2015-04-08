@@ -31,6 +31,7 @@ function fsWrapper(fsCallback, args){
             // if(!opts.dir) opts.dir = '/';
             if(!opts.dir){
                 socket.emit(opts.uid, utility.wrapperResponse({ errno: 99, code: 'CUSTOM', desc: 'No directory given' }, null));
+                return;
             }
 
             var arguments = args.map(function(arg){
