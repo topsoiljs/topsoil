@@ -1,6 +1,6 @@
 function gitViewStore() {
   console.log('git view is loaded');
-  var state = {status: {},
+  var state = {status: false,
                currentDir: '/Users/Derek/Desktop/topsoil'};
   var socket = io();
 
@@ -43,37 +43,40 @@ var GitComponent = React.createClass({
     }.bind(this));
   },
   render: function() {
-    var nodes = [];
-    var currentCol = [];
-    // for(var i=0;i<this.state.files.length;i++){
-    //   if(i % 15 === 0){
-    //     nodes.push(
-    //       <div className="col">
-    //         <ul className="collection">
-    //           {currentCol}
-    //         </ul>
-    //       </div>
-    //       )
-    //     currentCol = [];
-    //   }else{
-    //     currentCol.push(<li className="collection-item"> {this.state.files[i]} </li>)
-    //   }
-    // }
-    // if(currentCol.length > 0){
-    //   nodes.push(
-    //     <div className="col">
-    //       <ul className="collection">
-    //         {currentCol}
-    //       </ul>
-    //     </div>
-    //     )
-    // }
 
-    var status = this.state.status;
+    if(this.state.status){
+      var staged = this.state.status.staged.map(function(file){
+              return <li>{file}</li>
+            });
+
+      var unstaged = this.state.status.unstaged.map(function(file){
+              return <li>{file}</li>
+            });
+
+      var untracked = this.state.status.untracked.map(function(file){
+              return <li>{file}</li>
+            });
+    }
+
     return (<row>
        <h4>Git View</h4>
        <row>
-        {nodes}
+        <h5>Staged</h5>
+          <ul>
+            {staged}
+          </ul>
+       </row>
+       <row>
+        <h5>unstaged</h5>
+          <ul>
+            {unstaged}
+          </ul>
+       </row>
+       <row>
+        <h5>Untracked</h5>
+          <ul>
+            {untracked}
+          </ul>
        </row>
        {status}
     </row>);
@@ -87,7 +90,7 @@ magic.registerView({
       name: "status",
       description: 'current git status',
       args: ['directory'],
-      tags: ['show files', 'list files', 'display files', 'ls'],
+      tags: ['show git', 'git', 'status', 'ls'],
       categories: ['read'],
       method: gitViewStore["status"]
     }

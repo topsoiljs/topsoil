@@ -30,7 +30,6 @@ utility.makeProcess = function(socket, cmd, opts, cb){
         });
 
         proc.stdout.on('end', function(){
-            console.log(utility.splitLines(result));
             socket.emit(opts.uid, utility.wrapperResponse(null, cb(result)));
         });
 
@@ -43,7 +42,7 @@ utility.makeProcess = function(socket, cmd, opts, cb){
 };
 
 utility.splitLines = function(str){
-  return str.trim().split('\n');
+  return str.split('\n');
 };
 
 module.exports = utility;
