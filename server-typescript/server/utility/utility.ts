@@ -45,4 +45,12 @@ utility.splitLines = function(str){
   return str.split('\n');
 };
 
+utility.identity = function(data){
+    if(!data){
+        console.log('no data passed');
+        return '';
+    }
+    return data;
+}
+
 module.exports = utility;

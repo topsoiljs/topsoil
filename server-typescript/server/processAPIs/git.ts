@@ -7,11 +7,14 @@ var gitAPI = <any> {};
 //wrapper function will take in a callback that process the outputs into workable JSON format
 gitAPI.status = gitWrapper('status', parseStatus);
 
+gitAPI.add = gitWrapper('add', utility.identity);
+
+gitAPI.reset = gitWrapper('reset', utility.identity);
 //gitAPI.log = gitWrapper('log', function(data){console.log(data); return data;});
 
 module.exports = gitAPI;
 
-function gitWrapper(cmd,cb){
+function gitWrapper(cmd:String,cb:Function){
     return function(socket){
         return function(opts){
             if(!opts.dir){
@@ -26,6 +29,7 @@ function gitWrapper(cmd,cb){
 
 function parseStatus(str:String){
     var emptyResult = {
+        newfile: [],
         staged: [],
         unstaged: [],
         untracked: []
@@ -39,6 +43,9 @@ function parseStatus(str:String){
         }
         if(marker.charAt(0) === 'M') {
             result.staged.push(element.slice(3));
+        }
+        if(marker.charAt(0) === 'A') {
+            result.newfile.push(element.slice(3));
         }
         if(marker.charAt(1) === 'M') {
             result.unstaged.push(element.slice(3));

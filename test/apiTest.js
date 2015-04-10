@@ -163,7 +163,6 @@ describe("File System View APIs",function(){
   }); 
 });
 
-
 describe("Git View APIs",function(){
   it('should be able to call git status', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
@@ -171,7 +170,6 @@ describe("Git View APIs",function(){
 
     client.on('connect', function(data){
       client.emit('git.status', {
-        cmd: 'git',
         args: ['-s'],
         dir: currentDir,
         uid: UID
@@ -179,6 +177,7 @@ describe("Git View APIs",function(){
       client.on(UID, function(data){
         assert.typeOf(data, 'object', 'receive an object back');
         assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
+        assert.isTrue(data.data.hasOwnProperty('newfile'));
         assert.isTrue(data.data.hasOwnProperty('staged'));
         assert.isTrue(data.data.hasOwnProperty('unstaged'));
         assert.isTrue(data.data.hasOwnProperty('untracked'));
@@ -191,7 +190,6 @@ describe("Git View APIs",function(){
   it('should be able to create a file, see it in untracked and stage it', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
     var UID = Math.random();
-    var newUID = Math.random();
     var testFilePath = currentDir + '/randomTestFolder/test.js'
 
     fs.mkdirSync(currentDir+'/randomTestFolder');
@@ -199,7 +197,6 @@ describe("Git View APIs",function(){
 
     client.on('connect', function(data){
       client.emit('git.status', {
-        cmd: 'git',
         args: ['-s'],
         dir: currentDir,
         uid: UID
@@ -207,22 +204,80 @@ describe("Git View APIs",function(){
 
       client.on(UID, function(data){
         assert.typeOf(data, 'object', 'receive an object back');
-        assert.isTrue(data.data.untracked.indexOf('randomTestFolder/')>=0, 'untracked folder shows up in untracked')
+        assert.isTrue(data.data.untracked.indexOf('randomTestFolder/')>=0, 'untracked folder shows up in untracked');
         client.emit('git.add', {
-          cmd: 'git',
           args: ['randomTestFolder/'],
           dir: currentDir,
           uid: UID
         });
-      });
-
-      client.on(newUID, function(data){
-        assert.typeOf(data, 'object', 'receive an object back');
-        assert.isTrue(data.data.untracked.indexOf('randomTestFolder/')<0, 'test folder no longer shows up in untracked');
-        assert.isTrue(data.data.staged.indexOf('randomTestFolder/')>0, 'test folder should now show up in the staged area');
         client.disconnect();
         done();
-      })
+      });
     })
   });
+
+  it('should see a path under new files', function(done){
+    var client = io('http://localhost:8000/',{'force new connection':true});
+    var UID = Math.random();
+
+    client.on('connect', function(data){
+      client.emit('git.status', {
+        args: ['-s'],
+        dir: currentDir,
+        uid: UID
+      });
+
+      client.on(UID, function(data){
+        assert.typeOf(data, 'object', 'receive an object back');
+        console.log(data.data);
+        assert.isTrue(data.data.newfile.indexOf('randomTestFolder/test.js')>=0, 'untracked folder shows up in untracked')
+        client.disconnect();
+        done();
+
+      });
+    })
+  });
+
+  it('should be able to reset staged files', function(done){
+    var client = io('http://localhost:8000/',{'force new connection':true});
+    var UID = Math.random();
+
+    client.on('connect', function(data){
+      client.emit('git.reset', {
+        args: ['HEAD', 'randomTestFolder/test.js'],
+        dir: currentDir,
+        uid: UID
+      });
+
+      client.on(UID, function(data){
+        assert.typeOf(data, 'object', 'receive an object back');
+        client.disconnect();
+        done();
+
+      });
+    })
+  });
+
+  it('should be able to see the file is now in untracked again', function(done){
+    var client = io('http://localhost:8000/',{'force new connection':true});
+    var UID = Math.random();
+
+    client.on('connect', function(data){
+      client.emit('git.status', {
+        args: ['-s'],
+        dir: currentDir,
+        uid: UID
+      });
+
+      client.on(UID, function(data){
+        assert.typeOf(data, 'object', 'receive an object back');
+        assert.isTrue(data.data.untracked.indexOf('randomTestFolder/')>=0, 'untracked folder shows up in untracked');
+        fs.unlinkSync(currentDir+'/randomTestFolder/test.js');
+        fs.rmdirSync(currentDir+'/randomTestFolder');
+        client.disconnect();
+        done();
+      });
+    })
+  });
+
 })
