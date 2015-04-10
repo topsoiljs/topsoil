@@ -10,3 +10,5 @@ terminalAPI.callCommand = function(opts, infoHandler) {
 };
 
 module.exports = terminalAPI;
+
+

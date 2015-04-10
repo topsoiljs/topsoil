@@ -71,7 +71,7 @@ function listAllFilesAndDirs (data, cb){
        file
        folder
        file
-
+       
      ./dir_path2
        file
        ..
