@@ -11,25 +11,24 @@ var terminalAPI = <any> {};
 
 terminalAPI.run = function(socket) {
   return function(opts){   
-
-     console.log(opts);
-     var proc = spawn(opts.cmd, opts.args, {cwd: opts.dir});
+     utility.makeProcess(socket, opts.cmd, opts)
+     // var proc = spawn(opts.cmd, opts.args, {cwd: opts.dir});
   
-     try{
-        proc.stdout.on('data', function(data){
-          function ab2str(buf) {
-            return String.fromCharCode.apply(null, new Uint16Array(buf));
-          }
+     // try{
+     //    proc.stdout.on('data', function(data){
+     //      function ab2str(buf) {
+     //        return String.fromCharCode.apply(null, new Uint16Array(buf));
+     //      }
 
-          socket.emit(opts.uid, utility.wrapperResponse(false, ab2str(data)));
-        });
+     //      socket.emit(opts.uid, utility.wrapperResponse(false, ab2str(data)));
+     //    });
 
-        proc.stdout.on('error', function(e){
-          console.log(e);
-        });
-     } catch(err){
-        console.log(err);
-     }
+     //    proc.stdout.on('error', function(e){
+     //      console.log(e);
+     //    });
+     // } catch(err){
+     //    console.log(err);
+     // }
   };  
 }
 module.exports = terminalAPI;

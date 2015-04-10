@@ -101,8 +101,23 @@ function GrepStore() {
       })
     },
 
+    getFiles: function() {
+      var UID = Math.random();
+      console.log("getFiles");
+      socket.emit('fs.listAllFilesAndDirs', {
+        dir: state.currentDir,
+        uid: UID
+      });
+
+      socket.on(UID, function(data){
+      
+        console.log(data);
+      })
+    },
+
     setDir: function(args) {
       state.currentDir = args.dir;
+      methods.getFiles();
       eventBus.emit('s_grep');      
     },
 
