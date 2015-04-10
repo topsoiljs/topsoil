@@ -140,4 +140,12 @@ utility.interleave = function(arr1: Array<any>, arr2: Array<any>) {
   }, []);
 }
 
+utility.identity = function(data){
+    if(!data){
+        console.log('no data passed');
+        return '';
+    }
+    return data;
+}
+
 module.exports = utility;
