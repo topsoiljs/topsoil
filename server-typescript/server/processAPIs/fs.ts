@@ -1,5 +1,6 @@
 /// <reference path="../../typings/node/node.d.ts"/>
 /// <reference path="../utility/utility.ts"/>
+/// <reference path="terminal.ts"/>
 var fs = require('fs');
 var utility = require('../utility/utility');
 
@@ -20,6 +21,15 @@ fsAPI.append = fsWrapper(fs.appendFile, ['dir', 'data']);
 fsAPI.mkdir = fsWrapper(fs.mkdir, ['dir']);
 
 fsAPI.rmdir = fsWrapper(fs.rmdir, ['dir']);
+
+function listAllFilesAndDirs(dir: string, callback: function) {
+
+  
+  
+  return result;
+}
+
+fsAPI.listAllFilesAndDirs = fsWrapper(listAllFilesAndDirs, ['dir']);
 
 module.exports = fsAPI;
 

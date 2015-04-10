@@ -67,6 +67,14 @@ function GrepStore() {
     },
 
     grep: function() {
+
+      //Specify directory to grep it recursively
+      //Specify file to grep it.
+      //When a dir is specified which file is displayed?
+      //Could list out all of the files in the dir... and click to open one as an example..
+
+      //How should the user ignore files?
+
       var UID = Math.random();
       var regexArg = state.regex[state.activeRegex].selection; 
       socket.emit('terminal.run', {
@@ -161,24 +169,26 @@ var SGrepComponent = React.createClass({
     return (
       <div>
         SUPER GREP
-        <div className="inputText" ref="inputText">
+        <div className="row">
+          <p>
+            Current Selection: /{selection}/
+          </p>
+          <p>
+            Current Directory: {this.state.currentDir}
+          </p>
+          <p>
+            Open file: {this.state.openFile}
+          </p>
+          <div className="inputText" ref="inputText">
+          </div>
+          <div className="results">
+            {
+             this.state.results.map(function(result) {
+               return (<p>{result.line} <a href="">{result.lineNum}</a></p>)   
+             })
+            }   
+          </div>
         </div>
-        <div className="results">
-        <p>
-          Current Selection: /{selection}/
-        </p>
-        <p>
-          Current Directory: {this.state.currentDir}
-        </p>
-        <p>
-          Open file: {this.state.openFile}
-        </p>
-        {
-         this.state.results.map(function(result) {
-           return (<p>{result.line} <a href="">{result.lineNum}</a></p>)   
-         })
-        }   
-        </div> 
       </div>
     );
   }
