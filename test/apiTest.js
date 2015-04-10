@@ -47,7 +47,6 @@ describe("File System View APIs",function(){
         uid: UID
       });
       client.on(UID, function(data){
-        console.log(data);
         assert.typeOf(data, 'object', 'receive an object back');
         assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
         assert.equal(data.err.errno, 99, 'get custom error code');
@@ -189,5 +188,41 @@ describe("Git View APIs",function(){
     })
   });
 
+  it('should be able to create a file, see it in untracked and stage it', function(done){
+    var client = io('http://localhost:8000/',{'force new connection':true});
+    var UID = Math.random();
+    var newUID = Math.random();
+    var testFilePath = currentDir + '/randomTestFolder/test.js'
 
+    fs.mkdirSync(currentDir+'/randomTestFolder');
+    fs.writeFileSync(testFilePath, 'this is data');
+
+    client.on('connect', function(data){
+      client.emit('git.status', {
+        cmd: 'git',
+        args: ['-s'],
+        dir: currentDir,
+        uid: UID
+      });
+
+      client.on(UID, function(data){
+        assert.typeOf(data, 'object', 'receive an object back');
+        assert.isTrue(data.data.untracked.indexOf('randomTestFolder/')>=0, 'untracked folder shows up in untracked')
+        client.emit('git.add', {
+          cmd: 'git',
+          args: ['randomTestFolder/'],
+          dir: currentDir,
+          uid: UID
+        });
+      });
+
+      client.on(newUID, function(data){
+        assert.typeOf(data, 'object', 'receive an object back');
+        assert.isTrue(data.data.untracked.indexOf('randomTestFolder/')<0, 'test folder no longer shows up in untracked');
+        assert.isTrue(data.data.staged.indexOf('randomTestFolder/')>0, 'test folder should now show up in the staged area');
+        client.disconnect();
+        done();
+      })
+    })
+  });
 })
