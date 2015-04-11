@@ -45,7 +45,7 @@ function parseStatus(str:String){
             result.staged.push(element.slice(3));
         }
         if(marker.charAt(0) === 'A') {
-            result.newfile.push(element.slice(3));
+            result.staged.push(element.slice(3));
         }
         if(marker.charAt(1) === 'M') {
             result.unstaged.push(element.slice(3));
