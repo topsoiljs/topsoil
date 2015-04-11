@@ -86,6 +86,8 @@ var GitComponent = React.createClass({
 
     return (<row>
        <h4>Git View</h4>
+       <GitButton fileName = '.' action='add' label='Add All'/>
+       <GitButton fileName = '.' action='reset' label='Reset All'/>
        <row>
         <h5>Staged</h5>
           <ul >
@@ -115,7 +117,7 @@ var GitStaged = React.createClass({
     return (
       <li>
         {fileName}
-        <GitUnstageButton fileName = {fileName}/>
+        <GitButton fileName = {fileName} action='reset'/>
       </li>
     );
   }
@@ -127,8 +129,8 @@ var GitUnstaged = React.createClass({
     return (
       <li>
         {fileName}
-        <GitAddButton fileName = {fileName}/>
-        <GitDiffButton fileName = {fileName}/>
+        <GitButton fileName = {fileName} action='add'/>
+        <GitButton fileName = {fileName} action='difference'/>
       </li>
     );
   }
@@ -140,51 +142,27 @@ var GitUntracked = React.createClass({
     return (
       <li>
         {fileName}
-        <GitAddButton fileName = {fileName}/>
+        <GitButton fileName = {fileName} action='add'/>
       </li>
     );
   }
 });
 
-var GitAddButton = React.createClass({
+var GitButton = React.createClass({
   handleAddClick: function(e){
-    gitViewStore.add(this.props.fileName);
+    gitViewStore[this.props.action](this.props.fileName);
   },
   render: function(){
+    if(!this.props.label){
+      this.props.label = this.props.action;
+    }
     return (
       <button onClick={this.handleAddClick}>
-        Add
+        {this.props.label}
       </button>
     )
   }
-});
-
-var GitUnstageButton = React.createClass({
-  handleUnstageClick: function(e){
-    gitViewStore.reset(this.props.fileName);
-  },
-  render: function(){
-    return (
-      <button onClick={this.handleUnstageClick}>
-        Reset
-      </button>
-    )
-  }
-});
-
-var GitDiffButton = React.createClass({
-  handleDiffClick: function(e){
-    console.log('git difference clicked on');
-    // gitViewStore.add(this.props.fileName);
-  },
-  render: function(){
-    return (
-      <button onClick={this.handleDiffClick}>
-        Difference
-      </button>
-    )
-  }
-});
+})
 
 magic.registerView({
   name: 'git',
