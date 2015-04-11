@@ -22,7 +22,6 @@ io.on('connection', function(socket){
   console.log("a user is connected");
 
   var api = processManager();
-  console.log(api);
 
     function setupAPI(socket){
         for(var namespace in api){
@@ -30,25 +29,8 @@ io.on('connection', function(socket){
                 socket.on(namespace + '.' + methodName, api[namespace][methodName](socket))
             }
         }
-        //api.forEach(function(methods, namespace){
-        //    methods.forEach(function(methodFunc, methodName){
-        //        socket.on(namespace + '.' + methodName, methodFunc(socket));
-        //    })
-        //})
     }
-
     setupAPI(socket);
-
-  //  socket.on('input', function(c){
-  //    var ls = processManager();
-  //    ls.run(c)
-  //        .success(function(data){
-  //            console.log('success', data);
-  //        })
-  //        .error(function(error){
-  //            console.log('error', error);
-  //        });
-  //});
 });
 
 stateRoutes(server);
