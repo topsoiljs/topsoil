@@ -9,6 +9,7 @@ var createGenericStreamFunc = streaming.createGenericStream;
 var createSpawnStreamFunc = streaming.createSpawnStream;
 var createDuplexStream = streaming.createDuplexStream;
 var exec = require('child_process').exec;
+var createSocketOutStream = require('../streaming/streaming').createSocketOutStream;
 
 var fsAPI = <any> {};
 

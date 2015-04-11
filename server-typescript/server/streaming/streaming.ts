@@ -42,6 +42,23 @@ interface chunkHandler {
   (chunk : string, enc : string, cb : any) : void
 }
 
+var createOutStream = function(socket, id : string){
+  return through(function(chunk, enc, cb){
+    socket.emit(id, String(chunk));
+    cb(null, chunk);
+  })
+};
+
+var createInStream = function(socket, id : string){
+  var stream = through(function(chunk, enc, cb){
+    cb(null, chunk);
+  })
+  socket.on(id, function(data){
+    stream.write(data '\n');
+  })
+  return stream;
+};
+
 var createGenericStream = function(chunkHandler : chunkHandler){
   return through(chunkHandler);
 };
@@ -80,3 +97,5 @@ exports.createBufferToStringStream = createBufferToStringStream;
 exports.createSpawnStream = createSpawnStream;
 exports.createDuplexStream = createDuplex;
 exports.createInfoSocket = createInfoSocket;
+exports.createOutStream = createOutStream;
+
