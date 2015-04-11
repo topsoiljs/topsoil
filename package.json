@@ -4,6 +4,7 @@
   "private": true,
   "description": "The topsoil for your terminal.",
   "dependencies": {
+    "event-stream": "^3.3.0",
     "hapi": "^8.4.0",
     "lodash": "^3.6.0",
     "nodemon": "^1.3.7",
