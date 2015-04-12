@@ -4,13 +4,12 @@
 //Gotta do a mouse up to a mouse down
 
 function GrepStore() {
-  var state = {file: "", 
+  var state = {dir: "", 
+               activeFile: "",
+               files: [],
                regex: {},
                activeRegex: null,
-               gotFile: false,
-               results: [],
-               currentDir: "No current Dir Set. Please type 'open file' into the magic bar",
-               openFile: "No open file set."};
+               results: []};
 
   var socket = io();
 
@@ -43,7 +42,7 @@ function GrepStore() {
       socket.on(UID, function(data){
         state.file = data.data;
         eventBus.emit('s_grep');
-      })
+      });
     },
 
     changeRegexSelection: function(newSelection) {
@@ -56,12 +55,6 @@ function GrepStore() {
       } else {
         state.regex[state.activeRegex].selection = newSelection;
       }
-
-      eventBus.emit('s_grep');
-    },
-
-    getFile: function() {
-      state.gotFile = true;
 
       eventBus.emit('s_grep');
     },
@@ -79,7 +72,7 @@ function GrepStore() {
       var regexArg = state.regex[state.activeRegex].selection; 
       socket.emit('terminal.run', {
         cmd: 'grep',
-        args: ["-n", regexArg, state.openFile],
+        args: ["-nR", regexArg, state.dir],
         dir: state.currentDir,
         uid: UID
       });
@@ -89,11 +82,14 @@ function GrepStore() {
         //Remove empty last line
         lines.pop();
 
+        //Need to know if it is a dir or file?
+
         var results = lines.map(function(str) {
           var splitStr = str.split(":");
-          var lineNum = splitStr[0];
-          splitStr.shift();
-          return {lineNum: lineNum, line: splitStr.join("")};
+          var lineNum = splitStr[1];
+          var filename = splitStr[0];
+          splitStr = splitStr.slice(2);
+          return {lineNum: lineNum, line: splitStr.join(""), filename: filename};
         })
 
         state.results = results;
@@ -101,24 +97,74 @@ function GrepStore() {
       })
     },
 
-    getFiles: function() {
+    _getFiles: function(dir, cb) {
       var UID = Math.random();
-      console.log("getFiles");
+      
       socket.emit('fs.listAllFilesAndDirs', {
-        dir: state.currentDir,
+        dir: dir,
         uid: UID
       });
 
       socket.on(UID, function(data){
+        cb(data.data);
+      });
+    },
+
+    _addFiles: function(filesystem) {
+      filesystem.files.forEach(function(file) {
+        state.files.push(filesystem.pwd + "/" + file); 
+      });
+
+      var folders = filesystem.folders;
+
+      for(var key in folders) {
+        methods._addFiles(folders[key]);
+      }
+    },
+
+    _setFile: function(filePath) {
+      console.log("filePath", filePath);
+      var UID = Math.random();
       
-        console.log(data);
-      })
+      socket.emit('fs.readFile', {
+        dir: filePath,
+        uid: UID
+      });
+
+      socket.on(UID, function(data){
+        console.log("data", data);
+        state.activeFile = filePath;
+        state.file = data.data;
+        eventBus.emit('s_grep');
+      });      
     },
 
     setDir: function(args) {
-      state.currentDir = args.dir;
-      methods.getFiles();
-      eventBus.emit('s_grep');      
+      var path = args.path;
+
+      if(path.indexOf(".") > -1) {
+        var splitPath = path.split("/");
+        var lastIndex = splitPath.length - 1;
+
+        // state.dir = path
+        // state.files.push(path);
+        // console.log(state.files[0]);
+        // methods._setFile(state.files[0]);
+
+        state.dir = splitPath.slice(0, lastIndex).join("/");
+        state.files.push(state.dir + "/" + splitPath[lastIndex]);
+
+        methods._setFile(state.files[0]);
+
+      } else {
+        state.dir = path;
+        methods._getFiles(path, function(filesystem) {
+          methods._addFiles(filesystem);
+          methods._setFile(state.files[0]);
+        });
+      }
+
+      eventBus.emit('s_grep');
     },
 
     getState: function() {
@@ -135,6 +181,10 @@ var SGrepComponent = React.createClass({
   getInitialState: function() {
     return grepStore.getState();
   },
+  selectCallback: function(e) {
+    //Should probs have a open file component.
+    grepStore._setFile(e.target.value); 
+  },
   componentDidMount: function() {
     eventBus.register("s_grep", function() {
       this.setState(grepStore.getState());
@@ -150,10 +200,8 @@ var SGrepComponent = React.createClass({
 
     myCodeMirror.on("cursorActivity", function(codeMirror) {
       var selection = codeMirror.getSelection();
-
-      if(this.state.gotFile) {
-        grepStore.changeRegexSelection(selection);  
-      }
+      grepStore.changeRegexSelection(selection);  
+      
     }.bind(this))
 
     inputTextDOM.addEventListener("mouseup", function() {
@@ -163,10 +211,8 @@ var SGrepComponent = React.createClass({
     this.setState({myCodeMirror: myCodeMirror})
   },
   componentWillUpdate: function(nextProps, nextState) {
-
     //Could make this happen only once when it inits the nextState.file?
-    if(nextState.file && !this.state.gotFile) {
-      grepStore.getFile()
+    if((nextState.activeFile !== this.state.activeFile)) {
       nextState.myCodeMirror.setValue(nextState.file);  
     }
     
@@ -180,7 +226,6 @@ var SGrepComponent = React.createClass({
       selection = activeRegex.selection;
     }
     
-
     return (
       <div>
         SUPER GREP
@@ -189,11 +234,15 @@ var SGrepComponent = React.createClass({
             Current Selection: /{selection}/
           </p>
           <p>
-            Current Directory: {this.state.currentDir}
+            Current Directory: {this.state.dir}
           </p>
-          <p>
-            Open file: {this.state.openFile}
-          </p>
+          <select onChange={this.selectCallback} className="browser-default">
+            {
+              this.state.files.map(function(file) {
+                return (<option value={file}>{file}</option>);
+              })
+            }
+          </select>
           <div className="inputText" ref="inputText">
           </div>
           <div className="results">
@@ -211,20 +260,12 @@ var SGrepComponent = React.createClass({
 
 
 magic.registerView({
-  name: 'super grep',
+  name: 'super grep', 
   commands: [
-    {
-      name: "openFile",
-      description: 'opens a file in a directory',
-      args: ['path'],
-      tags: ['get file', 'open', 'display file'],
-      categories: ['open'],
-      method: grepStore['openFile']
-    },
     {
       name: "setDirectory",
       description: "sets the directory for the super grep view",
-      args: ['dir'],
+      args: ['path'],
       tags: ["set dir", "folder", "current dir"],
       categories: ['set'],
       method: grepStore['setDir']

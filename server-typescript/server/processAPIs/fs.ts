@@ -72,7 +72,7 @@ fsAPI.listAllFilesAndDirs = function(socket) {
         var files = filterDirs(foldersAndFiles.slice(1));
         var folderArr = _.range(0, folder.length).map(function() { return "folders" });
 
-        return utility.updateIn(result, utility.interleave(folderArr, folder), {files: files, folders: {}, pwd: opts.dir + folder.join("/")});
+        return utility.updateIn(result, utility.interleave(folderArr, folder), {files: files, folders: {}, pwd: opts.dir + "/" + folder.join("/")});
       }, result);
     })
   }
