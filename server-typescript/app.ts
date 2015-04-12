@@ -1,6 +1,3 @@
-/**
- * Created by Derek on 3/24/15.
- */
 /// <reference path="typings/hapi/hapi.d.ts"/>
 /// <reference path="./server/processManager.ts"/>
 
@@ -23,14 +20,14 @@ io.on('connection', function(socket){
 
   var api = processManager();
 
-    function setupAPI(socket){
-        for(var namespace in api){
-            for(var methodName in api[namespace]){
-                socket.on(namespace + '.' + methodName, api[namespace][methodName](socket))
-            }
-        }
-    }
-    setupAPI(socket);
+  function setupAPI(socket){
+      for(var namespace in api){
+          for(var methodName in api[namespace]){
+              socket.on(namespace + '.' + methodName, api[namespace][methodName](socket))
+          }
+      }
+  }
+  setupAPI(socket);
 });
 
 stateRoutes(server);
