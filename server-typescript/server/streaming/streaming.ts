@@ -14,7 +14,11 @@ var createInStream = function(socket, id : string){
     cb(null, chunk);
   })
   socket.on(id, function(data){
-    stream.write(data '\n');
+    if(!data.end){
+      stream.write(data.payload + '\n');
+    }else{
+      stream.end();
+    }
   })
   return stream;
 };
@@ -42,8 +46,11 @@ server.on('connection', function(socket){
 var client = ioClient('http://localhost:8002');
 var secret = "101";
 client.emit('newthing', secret);
+var end = false;
 setInterval(function(){
-  client.emit(secret, "random");
+  client.emit(secret, {payload: "random" + Date.now(), end: end});
 }, 500)
-
+setTimeout(function(){
+  end = true;
+}, 1500)
 exports.createOutStream = createOutStream;
