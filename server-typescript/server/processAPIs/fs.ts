@@ -10,6 +10,7 @@ var createSpawnStreamFunc = streaming.createSpawnStream;
 var createDuplexStream = streaming.createDuplexStream;
 var exec = require('child_process').exec;
 var createSocketOutStream = require('../streaming/streaming').createSocketOutStream;
+var createGenericStreamFunc = require('../streaming/streaming').createGenericStream;
 
 var fsAPI = <any> {};
 
@@ -105,31 +106,39 @@ fsAPI.rmdir = fsWrapper(fs.rmdir, ['dir']);
 module.exports = fsAPI;
 
 function fsStreamWrapper(createStream, args, mode: number, options?) {
-    // Mode 0=read, 1=write, 2=duplex
-    // Options will be default options passed in as last argument
-    return function(opts) {
-        if (!opts.dir) opts.dir = '/';
+  // Mode 0=read, 1=write, 2=duplex
+  // Options will be default options passed in as last argument
+  return function(opts) {
+    if (!opts.dir) opts.dir = '/';
 
-        var arguments = args.map(function(arg) {
-            return opts[arg];
-        });
-        //check to see if there are additional arguments passed in
-        if (opts.options) {
-            arguments.push(opts.options);
-        } else {
-            arguments.push(options);
-        }
-        var stream = createStream.apply(null, arguments);
-        var returnStream;
-        if (mode === 1) {
-            returnStream = createGenericStreamFunc(function(chunk: string, enc: string, cb) {
-                stream.write(chunk + '\n');
-                cb(null, chunk);
-            })
-        } else {
-            returnStream = stream;
-        }
+    var arguments = args.map(function(arg) {
+      return opts[arg];
+    });
+    //check to see if there are additional arguments passed in
+    if (opts.options) {
+      arguments.push(opts.options);
+    } else {
+      arguments.push(options);
     }
+    var stream = createStream.apply(null, arguments);
+    var returnStream;
+    if (mode === 1) {
+      returnStream = createGenericStreamFunc(function(chunk: string, enc: string, cb) {
+        stream.write(chunk + '\n');
+        cb(null, chunk);
+      })
+    } else {
+      returnStream = stream;
+    }
+  }
+}
+
+function fsSingleWrapper(fsCallback){
+  return createGenericStreamFunc(function(chunk : string, enc : string, cb){
+    fsCallback(chunk, function(err, data){
+      cb(err, data);
+    })
+  })
 }
 
 function fsSingleWrapper(fsCallback){
