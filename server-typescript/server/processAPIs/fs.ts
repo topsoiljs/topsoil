@@ -11,9 +11,9 @@ var fsAPI = <any> {};
 
 fsAPI.ls = fsWrapper(fs.readdir, ['dir']);
 
-fsAPI.readFile = fsStreamWrapper(fs.createReadStream, ['dir']);
+fsAPI.readFile = fsStreamWrapper(fs.createReadStream, ['dir'], 0);
 
-fsAPI.writeFile = fsWrapper(fs.writeFile, ['dir', 'data']);
+fsAPI.writeFile = fsStreamWrapper(fs.createWriteStream, ['dir'], 1);
 
 fsAPI.unlink = fsWrapper(fs.unlink, ['dir']);
 
@@ -80,7 +80,8 @@ fsAPI.listAllFilesAndDirs = function(socket) {
 
 module.exports = fsAPI;
 
-function fsStreamWrapper(createStream, args){
+function fsStreamWrapper(createStream, args, mode : number){
+  // Mode 0=read, 1=write, 2=duplex
   return function(opts){
     if(!opts.dir) opts.dir = '/';
 
@@ -92,9 +93,18 @@ function fsStreamWrapper(createStream, args){
     if(opts.options){
         arguments.push(opts.options);
     }
-
     var stream = createStream.apply(null, arguments);
-    return stream;
+    var returnStream;
+    if(mode === 1){
+      returnStream = createGenericStreamFunc(function(chunk : string, enc : string, cb){
+        stream.write(chunk);
+        cb();
+      })
+    }else{
+      returnStream = stream;
+    }
+
+    return returnStream;
   }
 };
 

@@ -4,6 +4,7 @@ var ioClient = require('socket.io-client');
 var _ = require('lodash');
 
 var createReadFileStream = require('./fs').readFile;
+var createWriteFileStream = require('./fs').writeFile;
 
 var streaming = require('../streaming/streaming');
 var createGenericStreamFunc = streaming.createGenericStream;
@@ -29,7 +30,8 @@ var server = io(8002);
 // })
 
 var commands = {
-  'fs.readFile': createReadFileStream
+  'fs.readFile': createReadFileStream,
+  'fs.writeFile': createWriteFileStream
 };
 
 server.on('connection', function(socket){
@@ -47,8 +49,24 @@ server.on('connection', function(socket){
 
 var client = ioClient('http://localhost:8002');
 
+// client.emit('chain', {
+//   uid: 'test',
+//   commands: [
+//     {
+//       name: 'fs.readFile',
+//       opts: {
+//         dir: '/Users/johntan/output04.txt'
+//       }
+//     },
+//   ]
+// });
+
+// client.on('test', function(data){
+//   console.log("TEST DATA", data);
+// });
+
 client.emit('chain', {
-  uid: 'test',
+  uid: 'copy',
   commands: [
     {
       name: 'fs.readFile',
@@ -56,9 +74,21 @@ client.emit('chain', {
         dir: '/Users/johntan/output04.txt'
       }
     },
+    {
+      name: 'fs.writeFile',
+      opts: {
+        dir: '/Users/johntan/testout.txt'
+      }
+    },
   ]
 });
 
-client.on('test', function(data){
+client.on('copy', function(data){
   console.log("TEST DATA", data);
 });
+
+// setInterval(function(){
+//   client.emit('write', {
+//     payload:Math.random().toString()
+//   });
+// }, 500)
