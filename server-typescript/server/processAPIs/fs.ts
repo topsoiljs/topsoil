@@ -4,8 +4,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 var utility = require('../utility/utility');
-var createSocketOutStream = require('../streaming/streaming').createSocketOutStream;
-
+var createGenericStreamFunc = require('../streaming/streaming').createGenericStream;
 var fsAPI = <any> {};
 
 fsAPI.ls = fsWrapper(fs.readdir, ['dir']);
@@ -81,17 +80,21 @@ fsAPI.listAllFilesAndDirs = function(socket) {
 
 module.exports = fsAPI;
 
+function fsSingleWrapper(fsCallback){
+  return createGenericStreamFunc(function(chunk : string, enc : string, cb){
+    fsCallback(chunk, function(err, data){
+      cb(err, data);
+    })
+  })
+}
+
+
 function fsWrapper(fsCallback, args){
     return function(socket){
         return function(opts){
-            var socketStream = createSocketOutStream(socket, opts.uid);
             //Set values for default directory and data if not provided, need to delete this later
 
             if(!opts.dir) opts.dir = '/';
-            // if(!opts.dir){
-            //     socket.emit(opts.uid, utility.wrapperResponse({ errno: 99, code: 'CUSTOM', desc: 'No directory given' }, null));
-            //     return;
-            // }
 
             var arguments = args.map(function(arg){
                 return opts[arg];

@@ -23,6 +23,14 @@ var createInStream = function(socket, id : string){
   return stream;
 };
 
+interface chunkHandler {
+  (chunk : string, enc : string, cb : any) : void
+}
+
+var createGenericStream = function(chunkHandler : chunkHandler){
+  return through(chunkHandler);
+};
+
 // var io = require('socket.io');
 // var ioClient = require('socket.io-client');
 
@@ -55,3 +63,4 @@ var createInStream = function(socket, id : string){
 // }, 1500)
 exports.createOutStream = createOutStream;
 exports.createInStream = createInStream;
+exports.createGenericStream = createGenericStream;
