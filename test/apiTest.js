@@ -160,7 +160,7 @@ describe("File System View APIs",function(){
         done();
       });
     })
-  }); 
+  });
 });
 
 describe("Git View APIs",function(){

@@ -9,9 +9,7 @@ var fsAPI = <any> {};
 
 fsAPI.ls = fsWrapper(fs.readdir, ['dir']);
 
-fsAPI.readFile = fsWrapper(function(path, cb){
-    fs.readFile(path, {encoding: 'utf8'}, cb)
-}, ['dir']);
+fsAPI.readFile = fsStreamWrapper(fs.createReadStream, ['dir']);
 
 fsAPI.writeFile = fsWrapper(fs.writeFile, ['dir', 'data']);
 
@@ -80,14 +78,33 @@ fsAPI.listAllFilesAndDirs = function(socket) {
 
 module.exports = fsAPI;
 
-function fsSingleWrapper(fsCallback){
-  return createGenericStreamFunc(function(chunk : string, enc : string, cb){
-    fsCallback(chunk, function(err, data){
-      cb(err, data);
-    })
-  })
-}
+function fsStreamWrapper(createStream, args){
+  return function(opts){
+    if(!opts.dir) opts.dir = '/';
 
+    var arguments = args.map(function(arg){
+        return opts[arg];
+    });
+
+    //check to see if there are additional arguments passed in
+    if(opts.options){
+        arguments.push(opts.options);
+    }
+
+    var stream = createStream.apply(null, arguments);
+    return stream;
+  }
+};
+
+function fsSingleWrapper(fsCallback, args){
+  return function(){
+    return createGenericStreamFunc(function(chunk : string, enc : string, cb){
+      fsCallback(chunk, function(err, data){
+        cb(err, data);
+      })
+    })
+  }
+};
 
 function fsWrapper(fsCallback, args){
     return function(socket){
