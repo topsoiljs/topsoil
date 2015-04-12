@@ -5,7 +5,7 @@ var es = require('event-stream');
 var createOutStream = function(socket, id : string){
   return through(function(chunk, enc, cb){
     socket.emit(id, String(chunk));
-    cb(null, chunk);
+    cb();
   })
 };
 

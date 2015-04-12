@@ -4,7 +4,9 @@
 var fs = require('fs');
 var _ = require('lodash');
 var utility = require('../utility/utility');
-var createGenericStreamFunc = require('../streaming/streaming').createGenericStream;
+var streaming = require('../streaming/streaming');
+var createGenericStreamFunc = streaming.createGenericStream;
+
 var fsAPI = <any> {};
 
 fsAPI.ls = fsWrapper(fs.readdir, ['dir']);
