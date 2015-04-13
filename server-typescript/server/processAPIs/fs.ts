@@ -131,29 +131,3 @@ function fsSingleWrapper(fsCallback){
     })
   }
 };
-
-function fsWrapper(fsCallback, args){
-    return function(socket){
-        return function(opts){
-            //Set values for default directory and data if not provided, need to delete this later
-
-            if(!opts.dir) opts.dir = '/';
-
-            var arguments = args.map(function(arg){
-                return opts[arg];
-            });
-
-            //check to see if there are additional arguments passed in
-            if(opts.options){
-                arguments.push(opts.options);
-            }
-
-            //push in a callback function that emits data to server
-            arguments.push(function(err, data){
-                socket.emit(opts.uid, utility.wrapperResponse(err, data));
-            });
-
-            fsCallback.apply(null, arguments);
-        }
-    }
-}
