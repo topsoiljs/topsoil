@@ -10,7 +10,8 @@ interface listenerFunc {
 var terminalAPI = <any> {};
 
 terminalAPI.run = function(socket) {
-  return function(opts){   
+  return function(opts){
+     console.log(opts);
      utility.makeProcess(socket, opts.cmd, opts)
   };  
 }
