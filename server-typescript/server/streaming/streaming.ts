@@ -14,7 +14,7 @@ var createOutStream = function(socket, id : string){
 
 var createInStream = function(socket, id : string){
   var stream = through(function(chunk, enc, cb){
-    cb(null, chunk);
+    cb(null, String(chunk));
   })
   socket.on(id, function(data){
     if(!data.end){
@@ -41,8 +41,19 @@ var createBufferToStringStream = function(){
 };
 
 var createSpawnStream = function(command, args, options){
-  var stream = spawn.apply(null, arguments);
-  return es.duplex(stream.stdin, stream.stdout);
+  // var argsArr = Array.prototype.slice.call(arguments);
+  // console.log(argsArr);
+  options = options || {};
+  options.stdio = ['pipe', 'pipe'];
+
+  return through(function(chunk, enc, cb){
+    var stream = spawn(command, args, options);
+    stream.stdin.write(String(chunk));
+    stream.stdin.end();
+    stream.stdout.on('data', function(d){
+      cb(null, String(d));
+    })
+  });
 }
 
 exports.createOutStream = createOutStream;

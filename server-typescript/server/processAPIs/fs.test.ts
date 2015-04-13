@@ -10,6 +10,7 @@ var createAppendFileStream = require('./fs').appendFile;
 var createMakeDirectoryStream = require('./fs').mkdir;
 var createRemoveDirectoryStream = require('./fs').rmdir;
 var listAllFilesAndFolders = require('./fs').listAllFilesAndDirs;
+var createCommandStream = require('./terminal').callCommand;
 
 var streaming = require('../streaming/streaming');
 var createGenericStreamFunc = streaming.createGenericStream;
@@ -40,16 +41,17 @@ var commands = {
   'fs.appendFile': createAppendFileStream,
   'fs.makeDirectory': createMakeDirectoryStream,
   'fs.removeDirectory': createRemoveDirectoryStream,
-  'fs.listRecursive': listAllFilesAndFolders
+  'fs.listRecursive': listAllFilesAndFolders,
+  'terminal.callCommand': createCommandStream
 };
 
 server.on('connection', function(socket){
   socket.on('chain', function(opts){
-    var d = domain.create();
-    d.on('error', function(err){
-      console.log('error while making chain', err);
-    })
-    d.run(function(){
+    // var d = domain.create();
+    // d.on('error', function(err){
+    //   console.log('error while making chain', err);
+    // })
+    // d.run(function(){
       var inStream = createInSocketStream(socket, opts.uid);
       var outStream = createOutSocketStream(socket, opts.uid);
       var current = inStream;
@@ -61,7 +63,7 @@ server.on('connection', function(socket){
         }
       });
       current.pipe(outStream);
-    })
+    // })
   })
 });
 
@@ -174,4 +176,28 @@ var client = ioClient('http://localhost:8002');
 //   client.emit('listall', {
 //     payload: String(data)
 //   });
+// })
+
+
+// client.emit('chain', {
+//   uid: 'grep',
+//   commands: [
+//     {
+//       name: 'fs.readFile',
+//       opts: {
+//         dir: '/Users/johntan/code/topsoil/client/magic/magicInput.jsx'
+//       }
+//     },
+//     {
+//       name: 'terminal.callCommand',
+//       opts: {
+//         cmd: 'grep',
+//         args: ['magic']
+//       }
+//     }
+//   ]
+// });
+
+// client.on('grep', function(data){
+//   console.log('returned', data);
 // })

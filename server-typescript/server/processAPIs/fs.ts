@@ -113,7 +113,7 @@ function fsStreamWrapper(createStream, args, mode : number, options?){
     var returnStream;
     if(mode === 1){
       returnStream = createGenericStreamFunc(function(chunk : string, enc : string, cb){
-        stream.write(chunk);
+        stream.write(chunk + '\n');
         cb();
       })
     }else{
@@ -133,7 +133,7 @@ function fsSingleWrapper(fsCallback){
         }else if(typeof data !== 'string'){
           data = String(data);
         }
-        cb(err, data);
+        cb(err, data + '\n');
       })
     })
   }
