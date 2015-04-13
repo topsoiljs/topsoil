@@ -4,7 +4,6 @@ function FilesystemViewStore() {
     fileData: ''
   };
   var streams = {};
-  var socket = io();
 
   var methods = {
     listFiles: function(args){
@@ -13,7 +12,6 @@ function FilesystemViewStore() {
         dir = '/';
       }
       streams['fs.ls'] = createNewStream({
-        socket: socket,
         command: 'fs.ls',
         cb: function(data){
           state.files = data.data.split('\n');
@@ -30,7 +28,6 @@ function FilesystemViewStore() {
     },
     readFile: function(args){
       streams['fs.readFile'] = createNewStream({
-        socket: socket,
         command: 'fs.readFile',
         cb: function(data){
           state.fileData = data.data;
@@ -41,7 +38,6 @@ function FilesystemViewStore() {
     },
     makeDirectory: function(args){
       streams['fs.mkdir'] = createNewStream({
-        socket: socket,
         command: 'fs.mkdir',
         cb: function(){
           eventBus.emit('filesystem');
@@ -51,7 +47,6 @@ function FilesystemViewStore() {
     },
     removeDirectory: function(args){
       streams['fs.mkdir'] = createNewStream({
-        socket: socket,
         command: 'fs.mkdir',
         cb: function(){
           eventBus.emit('filesystem');
