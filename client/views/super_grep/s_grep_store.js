@@ -55,7 +55,6 @@ function GrepStore() {
     },
 
     grep: function() {
-
       //Specify directory to grep it recursively
       //Specify file to grep it.
       //When a dir is specified which file is displayed?
@@ -64,32 +63,36 @@ function GrepStore() {
       //How should the user ignore files?
 
       var UID = Math.random();
-      var regexArg = state.regex[state.activeRegex].selection; 
-      socket.emit('terminal.run', {
-        cmd: 'grep',
-        args: ["-nR", regexArg, state.dir],
-        dir: state.currentDir,
-        uid: UID
-      });
 
-      socket.on(UID, function(data){
-        var lines = data.data.split("\n");
-        //Remove empty last line
-        lines.pop();
+      if(state.regex[state.activeRegex] && state.regex[state.activeRegex].selection) {
+        var regexArg = state.regex[state.activeRegex].selection; 
 
-        //Need to know if it is a dir or file?
-
-        var results = lines.map(function(str) {
-          var splitStr = str.split(":");
-          var lineNum = splitStr[1];
-          var filename = splitStr[0];
-          splitStr = splitStr.slice(2);
-          return {lineNum: lineNum, line: splitStr.join(""), filename: filename};
+        socket.emit('terminal.run', {
+          cmd: 'grep',
+          args: ["-nR", regexArg, state.dir],
+          dir: state.currentDir,
+          uid: UID
+        });
+  
+        socket.on(UID, function(data){
+          var lines = data.data.split("\n");
+          //Remove empty last line
+          lines.pop();
+  
+          //Need to know if it is a dir or file?
+  
+          var results = lines.map(function(str) {
+            var splitStr = str.split(":");
+            var lineNum = splitStr[1];
+            var filename = splitStr[0];
+            splitStr = splitStr.slice(2);
+            return {lineNum: lineNum, line: splitStr.join(""), filename: filename};
+          })
+  
+          state.results = results;
+          eventBus.emit('s_grep');
         })
-
-        state.results = results;
-        eventBus.emit('s_grep');
-      })
+      }  
     },
 
     _getFiles: function(dir, cb) {
