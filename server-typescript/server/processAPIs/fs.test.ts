@@ -9,6 +9,7 @@ var createWriteFileStream = require('./fs').writeFile;
 var createAppendFileStream = require('./fs').appendFile;
 var createMakeDirectoryStream = require('./fs').mkdir;
 var createRemoveDirectoryStream = require('./fs').rmdir;
+var listAllFilesAndFolders = require('./fs').listAllFilesAndDirs;
 
 var streaming = require('../streaming/streaming');
 var createGenericStreamFunc = streaming.createGenericStream;
@@ -38,14 +39,15 @@ var commands = {
   'fs.writeFile': createWriteFileStream,
   'fs.appendFile': createAppendFileStream,
   'fs.makeDirectory': createMakeDirectoryStream,
-  'fs.removeDirectory': createRemoveDirectoryStream
+  'fs.removeDirectory': createRemoveDirectoryStream,
+  'fs.listRecursive': listAllFilesAndFolders
 };
 
 server.on('connection', function(socket){
   socket.on('chain', function(opts){
     var d = domain.create();
     d.on('error', function(err){
-      console.log('error while making chain');
+      console.log('error while making chain', err);
     })
     d.run(function(){
       var inStream = createInSocketStream(socket, opts.uid);
@@ -139,14 +141,31 @@ var client = ioClient('http://localhost:8002');
 //   ]
 // });
 
+// client.emit('chain', {
+//   uid: 'rmdir',
+//   commands: [
+//     {
+//       name: 'fs.removeDirectory',
+//       opts: {
+//         initialData: '/Users/johntan/testdirectorys.tst'
+//       }
+//     },
+//   ]
+// });
+
+
 client.emit('chain', {
-  uid: 'rmdir',
+  uid: 'listall',
   commands: [
     {
-      name: 'fs.removeDirectory',
+      name: 'fs.listRecursive',
       opts: {
-        initialData: '/Users/johntan/testdirectorys.tst'
+        initialData: '/Users/johntan/code/topsoil/client'
       }
     },
   ]
 });
+
+client.on('listall', function(data){
+  console.log('returned', data);
+})

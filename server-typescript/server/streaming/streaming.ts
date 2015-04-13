@@ -48,3 +48,4 @@ exports.createOutStream = createOutStream;
 exports.createInStream = createInStream;
 exports.createGenericStream = createGenericStream;
 exports.createBufferToStringStream = createBufferToStringStream;
+exports.createSpawnStream = createSpawnStream;
