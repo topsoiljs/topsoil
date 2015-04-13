@@ -17,7 +17,3 @@ var createNewStream = function(options){
     }
   }
 };
-
-var createNewChainStream = function(options){
-
-};
