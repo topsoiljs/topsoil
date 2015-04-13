@@ -21,13 +21,13 @@ fsAPI.ls = function(opts){
   return listStream;
 };
 
-fsAPI.readFile = fsStreamWrapper(fs.createReadStream, ['dir'], 0);
+fsAPI.readFile = fsStreamWrapper(fs.createReadStream, ['path'], 0);
 
-fsAPI.writeFile = fsStreamWrapper(fs.createWriteStream, ['dir'], 1);
+fsAPI.writeFile = fsStreamWrapper(fs.createWriteStream, ['path'], 1);
 
 fsAPI.unlink = fsSingleWrapper(fs.unlink);
 
-fsAPI.appendFile = fsStreamWrapper(fs.createWriteStream, ['dir'], 1, {
+fsAPI.appendFile = fsStreamWrapper(fs.createWriteStream, ['path'], 1, {
   flags: 'a'
 });
 

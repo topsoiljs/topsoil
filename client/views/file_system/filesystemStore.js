@@ -29,41 +29,34 @@ function FilesystemViewStore() {
       eventBus.emit('filesystem');
     },
     readFile: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.readFile', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        state.fileData = data.data;
-        eventBus.emit('filesystem');
+      streams['fs.readFile'] = createNewStream({
+        socket: socket,
+        command: 'fs.readFile',
+        cb: function(data){
+          state.fileData = data.data;
+          eventBus.emit('filesystem');
+        },
+        opts: args
       })
     },
     makeDirectory: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.mkdir', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        if(data.err){
-          console.log(data.err);
-        }
+      streams['fs.mkdir'] = createNewStream({
+        socket: socket,
+        command: 'fs.mkdir',
+        cb: function(){
+          eventBus.emit('filesystem');
+        },
+        opts: args
       })
     },
     removeDirectory: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.rmdir', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        if(data.err){
-          console.log(data.err);
-        }
+      streams['fs.mkdir'] = createNewStream({
+        socket: socket,
+        command: 'fs.mkdir',
+        cb: function(){
+          eventBus.emit('filesystem');
+        },
+        opts: args
       })
     },
     renderView: function(){
