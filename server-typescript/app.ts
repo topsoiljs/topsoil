@@ -28,8 +28,8 @@ io.on('connection', function(socket){
           for(var methodName in api[namespace]){
             ((socket, methodName, namespace) => {
               socket.on(namespace + '.' + methodName, function(opts){
-                var inStream = createInSocketStream(socket, opts.uid);
-                var outStream = createOutSocketStream(socket, opts.uid);
+                var inStream = createInSocketStream(socket, opts._uid);
+                var outStream = createOutSocketStream(socket, opts._uid);
                 var commandStream = api[namespace][methodName](opts);
                 inStream.pipe(commandStream).pipe(outStream);
                 if(opts.initialData){

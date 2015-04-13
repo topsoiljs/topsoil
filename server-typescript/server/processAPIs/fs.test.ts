@@ -169,3 +169,9 @@ var client = ioClient('http://localhost:8002');
 // client.on('listall', function(data){
 //   console.log('returned', data);
 // })
+
+// process.stdin.on('data', function(data){
+//   client.emit('listall', {
+//     payload: String(data)
+//   });
+// })
