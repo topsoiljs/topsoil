@@ -35,23 +35,20 @@ var createNewStream = function(options){
         }
       }
   */
-
-
-
+  var socket = window._globalSocket;
   var command = options.command;
   var opts = options.opts;
   var cb = options.cb;
   opts.initialData = options.initialData;
 
-  var UID = Math.random().toString(36) + Math.random().toString(36);
-  opts._uid = UID;
+  opts._uid = uuid.v4();
 
-  window._globalSocket.emit(command, opts);
-  window._globalSocket.on(UID, cb);
+  socket.emit(command, opts);
+  socket.on(opts._uid, cb);
 
   return {
     emit: function(data){
-      window._globalSocket.emit(UID, data);
+      socket.emit(opts._uid, data);
     }
   }
 };
