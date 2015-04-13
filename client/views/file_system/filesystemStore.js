@@ -1,4 +1,4 @@
-function ViewStore() {
+function FilesystemViewStore() {
   var state = {
     files: [],
     fileData: ''
@@ -9,12 +9,15 @@ function ViewStore() {
     listFiles: function(args){
       var dir = args.directory;
       var UID = Math.random();
+      if(!dir || dir.length === 0){
+        dir = '/'
+      };
       socket.emit('fs.ls', {
-        dir: dir,
-        uid: UID
+        uid: UID,
+        initialData: dir
       });
       socket.on(UID, function(data){
-        state.files = data.data;
+        state.files = data.data.split('\n');
         eventBus.emit('filesystem');
       })
     },
@@ -71,6 +74,3 @@ function ViewStore() {
 
   return methods;
 }
-
-var viewStore = ViewStore();
-

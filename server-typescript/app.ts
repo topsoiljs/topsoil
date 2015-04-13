@@ -13,7 +13,7 @@ var server = new Hapi.Server();
 
 server.connection({
     host: 'localhost',
-    port: 8000
+    port: 8001
 });
 
 var io = require('socket.io')(server.listener);
@@ -26,6 +26,7 @@ io.on('connection', function(socket){
   function setupAPI(socket){
       for(var namespace in api){
           for(var methodName in api[namespace]){
+            ((socket, methodName, namespace) => {
               socket.on(namespace + '.' + methodName, function(opts){
                 var inStream = createInSocketStream(socket, opts.uid);
                 var outStream = createOutSocketStream(socket, opts.uid);
@@ -35,6 +36,7 @@ io.on('connection', function(socket){
                   inStream.write(opts.initialData);
                 }
               })
+            })(socket, methodName, namespace)
           }
       }
   }

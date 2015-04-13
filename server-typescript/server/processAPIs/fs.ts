@@ -12,7 +12,14 @@ var es = require('event-stream');
 
 var fsAPI = <any> {};
 
-fsAPI.ls = fsSingleWrapper(fs.readdir);
+fsAPI.ls = function(opts){
+  var listStream = createGenericStreamFunc(function(data : string, enc : string, cb){
+    exec('ls ' + data, function(err, out, stderr){
+      cb(null, out);
+    })
+  });
+  return listStream;
+};
 
 fsAPI.readFile = fsStreamWrapper(fs.createReadStream, ['dir'], 0);
 
@@ -120,7 +127,7 @@ function fsStreamWrapper(createStream, args, mode : number, options?){
 function fsSingleWrapper(fsCallback){
   return function(){
     return createGenericStreamFunc(function(chunk, enc : string, cb){
-      fsCallback(String(chunk), function(err, data){
+      fsCallback(chunk.toString('utf8'), function(err, data){
         if(typeof data === 'object'){
           data = JSON.stringify(data);
         }else if(typeof data !== 'string'){

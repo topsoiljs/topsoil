@@ -1,62 +1,12 @@
-function ViewStore() {
-  var state = {files: []};
-  var socket = io();
-
-  var methods = {
-    listFiles: function(args){
-      var dir = args.directory;
-      var UID = Math.random();
-      socket.emit('fs.ls', {
-        dir: dir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        state.files = data.data;
-        eventBus.emit('filesystem');
-      })
-    },
-    hideFiles: function(){
-      state.files = [];
-      eventBus.emit('filesystem');
-    },
-    readFile: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      state.fileData = '';
-      eventBus.emit('filesystem');
-      socket.emit('fs.readFile', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        console.log(data, 'received');
-        state = {
-          files: [],
-          fileData: state.fileData += data.data
-        };
-        eventBus.emit('filesystem');
-      })
-    },
-    renderView: function(){
-
-    },
-    getState: function() {
-      return state;
-    }
-  }
-
-  return methods;
-}
-
-var viewStore = ViewStore();
+var fsViewStore = FilesystemViewStore();
 
 var FilesystemComponent = React.createClass({
   getInitialState: function() {
-    return viewStore.getState();
+    return fsViewStore.getState();
   },
   componentDidMount: function() {
     eventBus.register("filesystem", function() {
-      this.setState(viewStore.getState());
+      this.setState(fsViewStore.getState());
     }.bind(this));
   },
   render: function() {
@@ -106,7 +56,7 @@ magic.registerView({
       args: ['directory'],
       tags: ['show files', 'list files', 'display files', 'ls'],
       categories: ['read'],
-      method: viewStore["listFiles"]
+      method: fsViewStore["listFiles"]
     },
     {
       name: "hideFiles",
@@ -114,7 +64,7 @@ magic.registerView({
       args: ['directory'],
       tags: ['hide files', 'remove fileview', "don't display files"],
       categories: ['ui'],
-      method: viewStore["hideFiles"]
+      method: fsViewStore["hideFiles"]
     },
     {
       name: "renderFilesystem",
@@ -122,7 +72,7 @@ magic.registerView({
       args: ['directory'],
       tags: ['show filesystem view'],
       categories: ['ui'],
-      method: viewStore["renderView"]
+      method: fsViewStore["renderView"]
     },
     {
       name: "readFile",
@@ -130,7 +80,7 @@ magic.registerView({
       args: ['path'],
       tags: ['read file'],
       categories: ['read'],
-      method: viewStore["readFile"]
+      method: fsViewStore["readFile"]
     },
     {
       name: "makeDirectory",
@@ -138,7 +88,7 @@ magic.registerView({
       args: ['path'],
       tags: ['make directory mkdir filesystem'],
       categories: ['read'],
-      method: viewStore["makeDirectory"]
+      method: fsViewStore["makeDirectory"]
     },
     {
       name: "removeDirectory",
@@ -146,7 +96,7 @@ magic.registerView({
       args: ['path'],
       tags: ['remove directory rm filesystem'],
       categories: ['write'],
-      method: viewStore["removeDirectory"]
+      method: fsViewStore["removeDirectory"]
     }
     ],
   category: 'filesystem',

@@ -5,7 +5,9 @@ var spawn = require('child_process').spawn;
 
 var createOutStream = function(socket, id : string){
   return through(function(chunk, enc, cb){
-    socket.emit(id, String(chunk));
+    socket.emit(id, {
+      data: chunk.toString('utf8'),
+    });
     cb();
   })
 };

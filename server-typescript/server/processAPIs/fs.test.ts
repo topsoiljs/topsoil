@@ -154,18 +154,18 @@ var client = ioClient('http://localhost:8002');
 // });
 
 
-client.emit('chain', {
-  uid: 'listall',
-  commands: [
-    {
-      name: 'fs.listRecursive',
-      opts: {
-        initialData: '/Users/johntan/code/topsoil/client'
-      }
-    },
-  ]
-});
+// client.emit('chain', {
+//   uid: 'listall',
+//   commands: [
+//     {
+//       name: 'fs.listRecursive',
+//       opts: {
+//         initialData: '/Users/johntan/code/topsoil/client'
+//       }
+//     },
+//   ]
+// });
 
-client.on('listall', function(data){
-  console.log('returned', data);
-})
+// client.on('listall', function(data){
+//   console.log('returned', data);
+// })
