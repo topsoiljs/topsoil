@@ -3,22 +3,24 @@ function FilesystemViewStore() {
     files: [],
     fileData: ''
   };
+  var streams = {};
   var socket = io();
 
   var methods = {
     listFiles: function(args){
       var dir = args.directory;
-      var UID = Math.random();
       if(!dir || dir.length === 0){
-        dir = '/'
-      };
-      socket.emit('fs.ls', {
-        uid: UID,
+        dir = '/';
+      }
+      streams['fs.ls'] = createNewStream({
+        socket: socket,
+        command: 'fs.ls',
+        cb: function(data){
+          state.files = data.data.split('\n');
+          eventBus.emit('filesystem');
+        },
+        opts: args,
         initialData: dir
-      });
-      socket.on(UID, function(data){
-        state.files = data.data.split('\n');
-        eventBus.emit('filesystem');
       })
     },
     hideFiles: function(){
