@@ -22,7 +22,6 @@ var EditableText = React.createClass({
           <span onDoubleClick={this.setEditable}>{this.props.processText(this.props.text)}</span>
         </p>
       )  
-    }
-    
+    } 
   }
 });
