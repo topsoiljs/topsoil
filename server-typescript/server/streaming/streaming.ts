@@ -1,6 +1,7 @@
 var through = require('through2');
 var gulp = require('gulp');
 var es = require('event-stream');
+var spawn = require('child_process').spawn;
 
 var createOutStream = function(socket, id : string){
   return through(function(chunk, enc, cb){
@@ -31,36 +32,19 @@ var createGenericStream = function(chunkHandler : chunkHandler){
   return through(chunkHandler);
 };
 
-// var io = require('socket.io');
-// var ioClient = require('socket.io-client');
+var createBufferToStringStream = function(){
+  return through.obj(function(chunk, enc, cb){
+    var buffed = new Buffer(chunk._contents);
+    cb(null, String(buffed));
+  })
+};
 
-// var convertToBuffer = function(){
-//   return through.obj(function(chunk, enc, cb){
-//     var buffed = new Buffer(chunk._contents);
-//     cb(null, String(buffed));
-//   })
-// };
-// var server = io(8002);
+var createSpawnStream = function(command, args, options){
+  var stream = spawn.apply(null, arguments);
+  return es.duplex(stream.stdin, stream.stdout);
+}
 
-// server.on('connection', function(socket){
-//   socket.on('newthing', function(id){
-//     console.log(id);
-//     var iostream = createOutStream(socket, id);
-//     var instream = createInStream(socket, id);
-//     instream
-//       .pipe(process.stdout)
-//   })
-// })
-// var client = ioClient('http://localhost:8002');
-// var secret = "101";
-// client.emit('newthing', secret);
-// var end = false;
-// setInterval(function(){
-//   client.emit(secret, {payload: "random" + Date.now(), end: end});
-// }, 500)
-// setTimeout(function(){
-//   end = true;
-// }, 1500)
 exports.createOutStream = createOutStream;
 exports.createInStream = createInStream;
 exports.createGenericStream = createGenericStream;
+exports.createBufferToStringStream = createBufferToStringStream;

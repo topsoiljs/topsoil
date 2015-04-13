@@ -9,7 +9,7 @@ var createGenericStreamFunc = streaming.createGenericStream;
 
 var fsAPI = <any> {};
 
-fsAPI.ls = fsWrapper(fs.readdir, ['dir']);
+fsAPI.ls = fsSingleWrapper(fs.readdir);
 
 fsAPI.readFile = fsStreamWrapper(fs.createReadStream, ['dir'], 0);
 
