@@ -82,7 +82,7 @@ fsAPI.listAllFilesAndDirs = function(socket) {
 
 module.exports = fsAPI;
 
-function fsStreamWrapper(createStream, args, mode : number, options){
+function fsStreamWrapper(createStream, args, mode : number, options?){
   // Mode 0=read, 1=write, 2=duplex
   // Options will be default options passed in as last argument
   return function(opts){
