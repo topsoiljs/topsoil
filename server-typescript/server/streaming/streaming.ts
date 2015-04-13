@@ -34,8 +34,7 @@ var createGenericStream = function(chunkHandler : chunkHandler){
 
 var createBufferToStringStream = function(){
   return through.obj(function(chunk, enc, cb){
-    var buffed = new Buffer(chunk._contents);
-    cb(null, String(buffed));
+    cb(null, String(chunk));
   })
 };
 

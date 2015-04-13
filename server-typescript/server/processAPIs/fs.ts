@@ -7,6 +7,8 @@ var utility = require('../utility/utility');
 var streaming = require('../streaming/streaming');
 var createGenericStreamFunc = streaming.createGenericStream;
 var createSpawnStreamFunc = streaming.createSpawnStream;
+var exec = require('child_process').exec;
+var es = require('event-stream');
 
 var fsAPI = <any> {};
 
@@ -27,8 +29,13 @@ fsAPI.mkdir = fsSingleWrapper(fs.mkdir);
 fsAPI.rmdir = fsSingleWrapper(fs.rmdir);
 
 fsAPI.listAllFilesAndDirs = function(opts){
-  var listStream = createSpawnStreamFunc('ls', ['-R']);
-  return listStream.pipe(fsSingleWrapper(listAllFilesAndDirs)());
+  var listStream = createGenericStreamFunc(function(data : string, enc : string, cb){
+    exec('ls -R ' + data, function(err, out, stderr){
+      cb(null, out);
+    })
+  });
+  var streamOut = listStream.pipe(fsSingleWrapper(listAllFilesAndDirs)());
+  return es.duplex(listStream, streamOut);
 };
 
 function listAllFilesAndDirs (data, cb){
