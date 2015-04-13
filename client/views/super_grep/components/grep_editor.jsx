@@ -1,21 +1,37 @@
 var SGrepEditor = React.createClass({
-  render: function() {
-    var splitRegex;
-    if(this.props.regex) {
-      splitRegex = this.props.regex.split("");   
+  getInitialState: function() {
+    return {isContentEditable: false};
+  },
+  doubleClick: function() {
+    this.setState({isContentEditable: true});
+    console.log(this.state);
+  },
+  processText: function(text) {
+
+    var splitText;
+    if(text) {
+      splitText = text.split("");   
     } else {
-      splitRegex = [];
+      splitText = [];
     }
-    
+
+    return splitText.map(function(character, ind) {
+      return (<span className="regexEditor" id={ind}>{character}</span>);
+    });
+  },
+  changeFunc: function(e) {
+    console.log(e.target.value);
+    grepStore.changeRegexSelection(e.target.value); 
+  },
+  render: function() {
     return (
-      <p>
-        Current Selection: 
-        /{
-           splitRegex.map(function(regexSymbol, ind) {
-             return (<span className="regexEditor" id={ind}>{regexSymbol}</span>);
-           })
-          }/ 
-      </p>
+      <div>
+        <p>
+          Current Selection: 
+        </p>
+        <EditableText changeFunc={this.changeFunc} processText={this.processText} text={this.props.regex} />
+      </div>
+      
     )
   }
 })

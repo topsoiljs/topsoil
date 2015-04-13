@@ -12,7 +12,7 @@ var GrepResults = React.createClass({
       <div className="results">
         {
          this.props.results.map(function(result) {
-           return (<p>{result.line} <a href="" onClick={that.goToFile(result.filename)}>{result.lineNum}</a></p>)   
+           return (<p>{result.line} [{result.filename} <a href="" onClick={that.goToFile(result.filename)}>{result.lineNum}</a>]</p>)   
          })
         }   
       </div>
