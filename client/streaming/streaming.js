@@ -11,10 +11,13 @@ var createNewStream = function(options){
 
   socket.emit(command, opts);
   socket.on(UID, cb);
-  console.log(opts)
   return {
     emit: function(data){
       socket.emit(UID, data);
     }
   }
-}
+};
+
+var createNewChainStream = function(options){
+
+};

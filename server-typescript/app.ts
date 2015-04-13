@@ -39,6 +39,25 @@ io.on('connection', function(socket){
             })(socket, methodName, namespace)
           }
       }
+      socket.on('chain', function(opts){
+        var d = domain.create();
+        d.on('error', function(err){
+          console.log('error while making chain', err);
+        })
+        d.run(function(){
+          var inStream = createInSocketStream(socket, opts._uid);
+          var outStream = createOutSocketStream(socket, opts._uid);
+          var current = inStream;
+          _.each(opts.commands, function(command){
+            var stream = commands[command.name](command.opts);
+            current = current.pipe(stream);
+            if(command.opts.initialData){
+              inStream.write(command.opts.initialData);
+            }
+          });
+          current.pipe(outStream);
+        })
+      })
   }
   setupAPI(socket);
 });
