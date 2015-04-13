@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var createReadFileStream = require('./fs').readFile;
 var createWriteFileStream = require('./fs').writeFile;
+var createAppendFileStream = require('./fs').appendFile;
 
 var streaming = require('../streaming/streaming');
 var createGenericStreamFunc = streaming.createGenericStream;
@@ -31,7 +32,8 @@ var server = io(8002);
 
 var commands = {
   'fs.readFile': createReadFileStream,
-  'fs.writeFile': createWriteFileStream
+  'fs.writeFile': createWriteFileStream,
+  'fs.appendFile': createAppendFileStream
 };
 
 server.on('connection', function(socket){
@@ -92,3 +94,21 @@ client.on('copy', function(data){
 //     payload:Math.random().toString()
 //   });
 // }, 500)
+
+client.emit('chain', {
+  uid: 'append',
+  commands: [
+    {
+      name: 'fs.appendFile',
+      opts: {
+        dir: '/Users/johntan/testout.txt'
+      }
+    },
+  ]
+});
+
+setInterval(function(){
+  client.emit('append', {
+    payload:Math.random().toString()
+  });
+}, 500)

@@ -17,7 +17,9 @@ fsAPI.writeFile = fsStreamWrapper(fs.createWriteStream, ['dir'], 1);
 
 fsAPI.unlink = fsWrapper(fs.unlink, ['dir']);
 
-fsAPI.append = fsWrapper(fs.appendFile, ['dir', 'data']);
+fsAPI.appendFile = fsStreamWrapper(fs.createWriteStream, ['dir'], 1, {
+  flags: 'a'
+});
 
 fsAPI.mkdir = fsWrapper(fs.mkdir, ['dir']);
 
@@ -80,18 +82,20 @@ fsAPI.listAllFilesAndDirs = function(socket) {
 
 module.exports = fsAPI;
 
-function fsStreamWrapper(createStream, args, mode : number){
+function fsStreamWrapper(createStream, args, mode : number, options){
   // Mode 0=read, 1=write, 2=duplex
+  // Options will be default options passed in as last argument
   return function(opts){
     if(!opts.dir) opts.dir = '/';
 
     var arguments = args.map(function(arg){
         return opts[arg];
     });
-
     //check to see if there are additional arguments passed in
     if(opts.options){
         arguments.push(opts.options);
+    }else{
+        arguments.push(options);
     }
     var stream = createStream.apply(null, arguments);
     var returnStream;
