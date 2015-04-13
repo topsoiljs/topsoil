@@ -15,15 +15,15 @@ fsAPI.readFile = fsStreamWrapper(fs.createReadStream, ['dir'], 0);
 
 fsAPI.writeFile = fsStreamWrapper(fs.createWriteStream, ['dir'], 1);
 
-fsAPI.unlink = fsWrapper(fs.unlink, ['dir']);
+fsAPI.unlink = fsSingleWrapper(fs.unlink);
 
 fsAPI.appendFile = fsStreamWrapper(fs.createWriteStream, ['dir'], 1, {
   flags: 'a'
 });
 
-fsAPI.mkdir = fsWrapper(fs.mkdir, ['dir']);
+fsAPI.mkdir = fsSingleWrapper(fs.mkdir);
 
-fsAPI.rmdir = fsWrapper(fs.rmdir, ['dir']);
+fsAPI.rmdir = fsSingleWrapper(fs.rmdir);
 
 fsAPI.listAllFilesAndDirs = function(socket) {
   return function(opts) {
@@ -112,10 +112,10 @@ function fsStreamWrapper(createStream, args, mode : number, options?){
   }
 };
 
-function fsSingleWrapper(fsCallback, args){
+function fsSingleWrapper(fsCallback){
   return function(){
-    return createGenericStreamFunc(function(chunk : string, enc : string, cb){
-      fsCallback(chunk, function(err, data){
+    return createGenericStreamFunc(function(chunk, enc : string, cb){
+      fsCallback(String(chunk), function(err, data){
         cb(err, data);
       })
     })

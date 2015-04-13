@@ -22,6 +22,8 @@ function ViewStore() {
     readFile: function(args){
       var path = args.path;
       var UID = Math.random();
+      state.fileData = '';
+      eventBus.emit('filesystem');
       socket.emit('fs.readFile', {
         dir: path,
         uid: UID
@@ -30,7 +32,7 @@ function ViewStore() {
         console.log(data, 'received');
         state = {
           files: [],
-          fileData: data.data
+          fileData: state.fileData += data.data
         };
         eventBus.emit('filesystem');
       })

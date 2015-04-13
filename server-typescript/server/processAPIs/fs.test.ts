@@ -2,10 +2,13 @@
 var io = require('socket.io');
 var ioClient = require('socket.io-client');
 var _ = require('lodash');
+var domain = require('domain');
 
 var createReadFileStream = require('./fs').readFile;
 var createWriteFileStream = require('./fs').writeFile;
 var createAppendFileStream = require('./fs').appendFile;
+var createMakeDirectoryStream = require('./fs').mkdir;
+var createRemoveDirectoryStream = require('./fs').rmdir;
 
 var streaming = require('../streaming/streaming');
 var createGenericStreamFunc = streaming.createGenericStream;
@@ -33,19 +36,30 @@ var server = io(8002);
 var commands = {
   'fs.readFile': createReadFileStream,
   'fs.writeFile': createWriteFileStream,
-  'fs.appendFile': createAppendFileStream
+  'fs.appendFile': createAppendFileStream,
+  'fs.makeDirectory': createMakeDirectoryStream,
+  'fs.removeDirectory': createRemoveDirectoryStream
 };
 
 server.on('connection', function(socket){
   socket.on('chain', function(opts){
-    var inStream = createInSocketStream(socket, opts.uid);
-    var outStream = createOutSocketStream(socket, opts.uid);
-    var current = inStream;
-    _.each(opts.commands, function(command){
-      var stream = commands[command.name](command.opts);
-      current = current.pipe(stream);
-    });
-    current.pipe(outStream);
+    var d = domain.create();
+    d.on('error', function(err){
+      console.log('error while making chain');
+    })
+    d.run(function(){
+      var inStream = createInSocketStream(socket, opts.uid);
+      var outStream = createOutSocketStream(socket, opts.uid);
+      var current = inStream;
+      _.each(opts.commands, function(command){
+        var stream = commands[command.name](command.opts);
+        current = current.pipe(stream);
+        if(command.opts.initialData){
+          inStream.write(command.opts.initialData);
+        }
+      });
+      current.pipe(outStream);
+    })
   })
 });
 
@@ -67,27 +81,27 @@ var client = ioClient('http://localhost:8002');
 //   console.log("TEST DATA", data);
 // });
 
-client.emit('chain', {
-  uid: 'copy',
-  commands: [
-    {
-      name: 'fs.readFile',
-      opts: {
-        dir: '/Users/johntan/output04.txt'
-      }
-    },
-    {
-      name: 'fs.writeFile',
-      opts: {
-        dir: '/Users/johntan/testout.txt'
-      }
-    },
-  ]
-});
+// client.emit('chain', {
+//   uid: 'copy',
+//   commands: [
+//     {
+//       name: 'fs.readFile',
+//       opts: {
+//         dir: '/Users/johntan/output04.txt'
+//       }
+//     },
+//     {
+//       name: 'fs.writeFile',
+//       opts: {
+//         dir: '/Users/johntan/testout.txt'
+//       }
+//     },
+//   ]
+// });
 
-client.on('copy', function(data){
-  console.log("TEST DATA", data);
-});
+// client.on('copy', function(data){
+//   console.log("TEST DATA", data);
+// });
 
 // setInterval(function(){
 //   client.emit('write', {
@@ -95,20 +109,44 @@ client.on('copy', function(data){
 //   });
 // }, 500)
 
+// client.emit('chain', {
+//   uid: 'append',
+//   commands: [
+//     {
+//       name: 'fs.appendFile',
+//       opts: {
+//         dir: '/Users/johntan/testout.txt'
+//       }
+//     },
+//   ]
+// });
+
+// setInterval(function(){
+//   client.emit('append', {
+//     payload:Math.random().toString()
+//   });
+// }, 500)
+
+// client.emit('chain', {
+//   uid: 'mkdir',
+//   commands: [
+//     {
+//       name: 'fs.makeDirectory',
+//       opts: {
+//         initialData: '/Users/johntan/testdirectorys.tst'
+//       }
+//     },
+//   ]
+// });
+
 client.emit('chain', {
-  uid: 'append',
+  uid: 'rmdir',
   commands: [
     {
-      name: 'fs.appendFile',
+      name: 'fs.removeDirectory',
       opts: {
-        dir: '/Users/johntan/testout.txt'
+        initialData: '/Users/johntan/testdirectorys.tst'
       }
     },
   ]
 });
-
-setInterval(function(){
-  client.emit('append', {
-    payload:Math.random().toString()
-  });
-}, 500)
