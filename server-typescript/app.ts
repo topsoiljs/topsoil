@@ -29,13 +29,19 @@ io.on('connection', function(socket){
           for(var methodName in api[namespace]){
             ((socket, methodName, namespace) => {
               socket.on(namespace + '.' + methodName, function(opts){
-                var inStream = createInSocketStream(socket, opts._uid);
-                var outStream = createOutSocketStream(socket, opts._uid);
-                var commandStream = api[namespace][methodName](opts);
-                inStream.pipe(commandStream).pipe(outStream);
-                if(opts.initialData){
-                  inStream.write(opts.initialData);
-                }
+                var d = domain.create();
+                d.on('error', function(err){
+                  console.log('error while making chain', err);
+                })
+                d.run(function(){
+                  var inStream = createInSocketStream(socket, opts._uid);
+                  var outStream = createOutSocketStream(socket, opts._uid);
+                  var commandStream = api[namespace][methodName](opts);
+                  inStream.pipe(commandStream).pipe(outStream);
+                  if(opts.initialData){
+                    inStream.write(opts.initialData);
+                  }
+                });
               })
             })(socket, methodName, namespace)
           }

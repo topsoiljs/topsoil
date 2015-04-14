@@ -127,14 +127,21 @@ function fsStreamWrapper(createStream, args, mode : number, options?){
 function fsSingleWrapper(fsCallback){
   return function(){
     return createGenericStreamFunc(function(chunk, enc : string, cb){
-      fsCallback(chunk.toString('utf8'), function(err, data){
-        if(typeof data === 'object'){
-          data = JSON.stringify(data);
-        }else if(typeof data !== 'string'){
-          data = String(data);
-        }
-        cb(err, data + '\n');
-      })
+      console.log('the callback is', cb);
+      try {
+        fsCallback(chunk.toString('utf8'), function(err, data){
+          if(typeof data === 'object'){
+            data = JSON.stringify(data);
+          }else if(typeof data !== 'string'){
+            data = String(data);
+          }
+          console.log(err);
+          cb(err, data + '\n');
+        })
+      }
+      catch(err){
+        cb(err);
+      }
     })
   }
 };

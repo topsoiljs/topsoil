@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var currentDir = __dirname;
 
 describe("Git View APIs",function(){
-  it('should be able to call git status', function(done){
+  xit('should be able to call git status', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
     var UID = Math.random();
 
@@ -27,7 +27,7 @@ describe("Git View APIs",function(){
     })
   });
 
-  it('should be able to create a file, see it in untracked and stage it', function(done){
+  xit('should be able to create a file, see xit in untracked and stage xit', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
     var UID = Math.random();
     var UID2 = Math.random();
@@ -61,7 +61,7 @@ describe("Git View APIs",function(){
     })
   });
 
-  it('should be able modify a file and see the difference', function(done){
+  xit('should be able modify a file and see the difference', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
     var UID = Math.random();
     var testFilePath = currentDir + '/randomTestFolder/test.js'
@@ -84,7 +84,7 @@ describe("Git View APIs",function(){
     })
   });
 
-  it('should see a path under new files', function(done){
+  xit('should see a path under new files', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
     var UID = Math.random();
 
@@ -105,7 +105,7 @@ describe("Git View APIs",function(){
     })
   });
 
-  it('should be able to reset staged files', function(done){
+  xit('should be able to reset staged files', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
     var UID = Math.random();
 
@@ -125,7 +125,7 @@ describe("Git View APIs",function(){
     })
   });
 
-  it('should be able to see the file is now in untracked again', function(done){
+  xit('should be able to see the file is now in untracked again', function(done){
     var client = io('http://localhost:8000/',{'force new connection':true});
     var UID = Math.random();
 
