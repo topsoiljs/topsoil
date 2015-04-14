@@ -1,21 +1,24 @@
-function ViewStore() {
+function FilesystemViewStore() {
   var state = {
     files: [],
     fileData: ''
   };
-  var socket = io();
+  var streams = {};
 
   var methods = {
     listFiles: function(args){
       var dir = args.directory;
-      var UID = Math.random();
-      socket.emit('fs.ls', {
-        dir: dir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        state.files = data.data;
-        eventBus.emit('filesystem');
+      if(!dir || dir.length === 0){
+        dir = '/';
+      }
+      streams['fs.ls'] = createNewStream({
+        command: 'fs.ls',
+        cb: function(data){
+          state.files = data.data.split('\n');
+          eventBus.emit('filesystem');
+        },
+        opts: args,
+        initialData: dir
       })
     },
     hideFiles: function(){
@@ -24,41 +27,31 @@ function ViewStore() {
       eventBus.emit('filesystem');
     },
     readFile: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.readFile', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        state.fileData = data.data;
-        eventBus.emit('filesystem');
+      streams['fs.readFile'] = createNewStream({
+        command: 'fs.readFile',
+        cb: function(data){
+          state.fileData = data.data;
+          eventBus.emit('filesystem');
+        },
+        opts: args
       })
     },
     makeDirectory: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.mkdir', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        if(data.err){
-          console.log(data.err);
-        }
+      streams['fs.mkdir'] = createNewStream({
+        command: 'fs.mkdir',
+        cb: function(){
+          eventBus.emit('filesystem');
+        },
+        opts: args
       })
     },
     removeDirectory: function(args){
-      var path = args.path;
-      var UID = Math.random();
-      socket.emit('fs.rmdir', {
-        dir: path,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        if(data.err){
-          console.log(data.err);
-        }
+      streams['fs.mkdir'] = createNewStream({
+        command: 'fs.mkdir',
+        cb: function(){
+          eventBus.emit('filesystem');
+        },
+        opts: args
       })
     },
     renderView: function(){
@@ -71,6 +64,3 @@ function ViewStore() {
 
   return methods;
 }
-
-var viewStore = ViewStore();
-

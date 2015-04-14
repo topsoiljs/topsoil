@@ -4,7 +4,7 @@
 //Gotta do a mouse up to a mouse down
 
 function GrepStore() {
-  var state = {dir: "", 
+  var state = {dir: "",
                activeFile: "",
                files: [],
                regex: {},
@@ -20,7 +20,7 @@ function GrepStore() {
   function newRegex(selection) {
     regexNameCount++
 
-    return {name: "regex" + regexNameCount, 
+    return {name: "regex" + regexNameCount,
             selection: selection};
   }
 
@@ -28,7 +28,7 @@ function GrepStore() {
     openFile: function(args){
       var path = args.path;
       var UID = Math.random();
-      
+
       var pathArr = path.split("/");
       state.openFile = pathArr[pathArr.length - 1];
       pathArr.pop()
@@ -69,7 +69,7 @@ function GrepStore() {
       //How should the user ignore files?
 
       var UID = Math.random();
-      var regexArg = state.regex[state.activeRegex].selection; 
+      var regexArg = state.regex[state.activeRegex].selection;
       socket.emit('terminal.run', {
         cmd: 'grep',
         args: ["-nR", regexArg, state.dir],
@@ -99,7 +99,7 @@ function GrepStore() {
 
     _getFiles: function(dir, cb) {
       var UID = Math.random();
-      
+
       socket.emit('fs.listAllFilesAndDirs', {
         dir: dir,
         uid: UID
@@ -112,7 +112,7 @@ function GrepStore() {
 
     _addFiles: function(filesystem) {
       filesystem.files.forEach(function(file) {
-        state.files.push(filesystem.pwd + "/" + file); 
+        state.files.push(filesystem.pwd + "/" + file);
       });
 
       var folders = filesystem.folders;
@@ -125,7 +125,7 @@ function GrepStore() {
     _setFile: function(filePath) {
       console.log("filePath", filePath);
       var UID = Math.random();
-      
+
       socket.emit('fs.readFile', {
         dir: filePath,
         uid: UID
@@ -136,7 +136,7 @@ function GrepStore() {
         state.activeFile = filePath;
         state.file = data.data;
         eventBus.emit('s_grep');
-      });      
+      });
     },
 
     setDir: function(args) {
@@ -183,7 +183,7 @@ var SGrepComponent = React.createClass({
   },
   selectCallback: function(e) {
     //Should probs have a open file component.
-    grepStore._setFile(e.target.value); 
+    grepStore._setFile(e.target.value);
   },
   componentDidMount: function() {
     eventBus.register("s_grep", function() {
@@ -194,14 +194,14 @@ var SGrepComponent = React.createClass({
 
     var myCodeMirror = CodeMirror(inputTextDOM, {
       value: "",
-      mode:  "javascript",  
+      mode:  "javascript",
       lineNumbers: true
     })
 
     myCodeMirror.on("cursorActivity", function(codeMirror) {
       var selection = codeMirror.getSelection();
-      grepStore.changeRegexSelection(selection);  
-      
+      grepStore.changeRegexSelection(selection);
+
     }.bind(this))
 
     inputTextDOM.addEventListener("mouseup", function() {
@@ -213,9 +213,9 @@ var SGrepComponent = React.createClass({
   componentWillUpdate: function(nextProps, nextState) {
     //Could make this happen only once when it inits the nextState.file?
     if((nextState.activeFile !== this.state.activeFile)) {
-      nextState.myCodeMirror.setValue(nextState.file);  
+      nextState.myCodeMirror.setValue(nextState.file);
     }
-    
+
   },
   render: function() {
 
@@ -225,7 +225,7 @@ var SGrepComponent = React.createClass({
     if(activeRegex) {
       selection = activeRegex.selection;
     }
-    
+
     return (
       <div>
         SUPER GREP
@@ -248,9 +248,9 @@ var SGrepComponent = React.createClass({
           <div className="results">
             {
              this.state.results.map(function(result) {
-               return (<p>{result.line} <a href="">{result.lineNum}</a></p>)   
+               return (<p>{result.line} <a href="">{result.lineNum}</a></p>)
              })
-            }   
+            }
           </div>
         </div>
       </div>
@@ -260,7 +260,7 @@ var SGrepComponent = React.createClass({
 
 
 magic.registerView({
-  name: 'super grep', 
+  name: 'super grep',
   commands: [
     {
       name: "setDirectory",
