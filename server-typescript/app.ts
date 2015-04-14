@@ -7,6 +7,7 @@ var stateRoutes = require('./server/stateAPI/stateRoutes');
 var streaming = require('./server/streaming/streaming');
 var createInSocketStream = streaming.createInStream;
 var createOutSocketStream = streaming.createOutStream;
+var domain = require('domain');
 //import validation = require('./server/Server');
 //// Create a server with a host and port
 var server = new Hapi.Server();
