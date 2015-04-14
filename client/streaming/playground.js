@@ -4,7 +4,7 @@ var createPlayground = function(){
       var randName = name;
       return {
         name: randName,
-        method: "(function(){return " + func.toString() + "})()";
+        method: "(function(){return " + func.toString() + "})()"
       }
     }
   }
