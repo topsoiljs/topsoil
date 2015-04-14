@@ -27,7 +27,7 @@ fsAPI.writeFile = fsStreamWrapper(fs.createWriteStream, ['path'], 1);
 
 fsAPI.unlink = fsSingleWrapper(fs.unlink);
 
-fsAPI.appendFile = fsStreamWrapper(fs.createWriteStream, ['path'], 1, {
+fsAPI.appendFile = fsStreamWrapper(fs.createWriteStream, ['path', 'data'], 1, {
   flags: 'a'
 });
 
@@ -98,6 +98,7 @@ function fsStreamWrapper(createStream, args, mode : number, options?){
   // Mode 0=read, 1=write, 2=duplex
   // Options will be default options passed in as last argument
   return function(opts){
+    console.log('the opts object here refers to ', opts);
     if(!opts.dir) opts.dir = '/';
 
     var arguments = args.map(function(arg){
@@ -109,12 +110,13 @@ function fsStreamWrapper(createStream, args, mode : number, options?){
     }else{
         arguments.push(options);
     }
+    console.log('the arguments are', arguments);
     var stream = createStream.apply(null, arguments);
     var returnStream;
     if(mode === 1){
       returnStream = createGenericStreamFunc(function(chunk : string, enc : string, cb){
         stream.write(chunk + '\n');
-        cb();
+        cb(null, chunk);
       })
     }else{
       returnStream = stream;
@@ -127,14 +129,15 @@ function fsStreamWrapper(createStream, args, mode : number, options?){
 function fsSingleWrapper(fsCallback){
   return function(){
     return createGenericStreamFunc(function(chunk, enc : string, cb){
-      fsCallback(chunk.toString('utf8'), function(err, data){
-        if(typeof data === 'object'){
-          data = JSON.stringify(data);
-        }else if(typeof data !== 'string'){
-          data = String(data);
-        }
-        cb(err, data + '\n');
-      })
+        fsCallback(chunk.toString('utf8'), function(err, data){
+          if(typeof data === 'object'){
+            data = JSON.stringify(data);
+          }else if(typeof data !== 'string'){
+            data = String(data);
+          }
+          console.log(err);
+          cb(err, data + '\n');
+        })
     })
   }
 };

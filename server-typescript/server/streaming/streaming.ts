@@ -1,3 +1,5 @@
+/// <reference path="../../typings/node/node.d.ts"/>
+
 var through = require('through2');
 var gulp = require('gulp');
 var es = require('event-stream');
