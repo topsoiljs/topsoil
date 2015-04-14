@@ -29,20 +29,6 @@ var createNewStream = function(options){
   }
 };
 
-
-describe("Chat Server",function(){
-
-  xit('should connect to server', function(done){
-    var client = io('http://localhost:8000/');
-    client.on('connect', function(data){
-      assert.typeOf(data, 'undefined', 'receive notice that it connected to server');
-      client.disconnect();
-      done();
-    })
-  });
-});
-
-
 describe("File System View APIs",function(){
 
   after(function(done){
@@ -82,100 +68,69 @@ describe("File System View APIs",function(){
     streams['fs.writeFile'] = createNewStream({
       command: 'fs.writeFile',
       cb: function(data){
-        assert.typeOf(data, 'object', 'receive an object back');
+        assert.typeOf(data, 'object', 'information has been written');
+        assert.isTrue(fs.existsSync(currentDir + '/randomTestFolder/test.js'), 'the new test file is created');
         done();
       },
       opts: {
         path: currentDir + '/randomTestFolder/test.js'
       }
     })
-
     streams['fs.writeFile'].emit('test data');
   });
 
-  xit('should be able to append to a file', function(done){
-    var client = io('http://localhost:8000/',{'force new connection':true});
-    var UID = Math.random();
-    var newUID = Math.random();
-    var testFilePath = currentDir + '/randomTestFolder/test.js'
-    client.on('connect', function(data){
-      client.emit('fs.append',{
-        dir: testFilePath,
-        data: '2',
-        uid: UID
-      });
-      client.on(UID, function(data){
-        assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
-        assert.isTrue(fs.existsSync(testFilePath), 'created a test file');
-        client.emit('fs.readFile', {
-          dir: testFilePath,
-          uid: newUID
-        });
-      });
-      client.on(newUID, function(data){
-        assert.equal('console.log("this is a test");2', data.data, 'get appended result');
-        client.disconnect();
+  it('should be able to append to a file', function(done){
+    streams['fs.appendFile'] = createNewStream({
+      command: 'fs.appendFile',
+      cb: function(data){
+        assert.typeOf(data, 'object', 'information has been written');
+        assert.isTrue(fs.existsSync(currentDir + '/randomTestFolder/test.js'), 'the new test file is created');
         done();
-      })
+      },
+      opts: {
+        path: currentDir + '/randomTestFolder/test.js'
+      }
+    })
+    streams['fs.appendFile'].emit('more test data');
+  });
+
+  it('should be able to read a file', function(done){
+    streams['fs.readFile'] = createNewStream({
+      command: 'fs.readFile',
+      cb: function(data){
+        var texts = data.data.split('\n');
+        assert.isTrue(texts[0]==='test data');
+        assert.isTrue(texts[1]==='more test data');
+        assert.typeOf(data, 'object', 'information has been written');
+        done();
+      },
+      opts: {
+        path: currentDir + '/randomTestFolder/test.js'
+      }
     })
   });
 
-
-  xit('should list all files in directory with ls', function(done){
-    var client = io('http://localhost:8000/',{'force new connection':true});
-    var UID = Math.random();
-    var testFilePath = currentDir + '/randomTestFolder';
-    client.on('connect', function(data){
-      client.emit('fs.ls',{
-        dir: testFilePath,
-        uid: UID
-      });
-      client.on(UID, function(data){
-        assert.typeOf(data, 'object', 'receive an object back');
-        assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
-        assert.deepEqual(data.data, ['test.js'], 'list current directory files');
-        client.disconnect();
+  it('should be able to remove a file', function(done){
+    streams['fs.unlink'] = createNewStream({
+      command: 'fs.unlink',
+      cb: function(data){
+        assert.isTrue(!fs.existsSync(currentDir + '/randomTestFolder/test.js'), 'test javascript file should be deleted');
         done();
-      });
+      },
+      opts: {},
+      initialData: currentDir + '/randomTestFolder/test.js'
     })
   });
 
-  xit('should be able to remove a file', function(done){
-    var client = io('http://localhost:8000/',{'force new connection':true});
-    var UID = Math.random();
-    var testFilePath = currentDir + '/randomTestFolder/test.js'
-    client.on('connect', function(data){
-      client.emit('fs.unlink',{
-        dir: testFilePath,
-        data: 'console.log("this is a test")',
-        uid: UID
-      });
-      client.on(UID, function(data){
-        assert.typeOf(data, 'object', 'receive an object back');
-        assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
-        assert.isFalse(fs.existsSync(testFilePath), 'created a test file');
-        client.disconnect();
+  it('should be able to remove an empty directory', function(done){
+    streams['fs.rmdir'] = createNewStream({
+      command: 'fs.rmdir',
+      cb: function(data){
+        assert.isTrue(!fs.existsSync(currentDir + '/randomTestFolder/'), 'test javascript file should be deleted');
         done();
-      });
-    })
-  });
-
-  xit('should be able to remove an empty directory', function(done){
-    var client = io('http://localhost:8000/',{'force new connection':true});
-    var UID = Math.random();
-
-    client.on('connect', function(data){
-      client.emit('fs.rmdir',{
-        dir: currentDir + '/randomTestFolder',
-        uid: UID
-      });
-      client.on(UID, function(data){
-        assert.typeOf(data, 'object', 'receive an object back');
-        assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
-        assert.isFalse(fs.existsSync(currentDir + '/randomTestFolder'), 'created a test directory');
-        client.disconnect();
-        done();
-      });
+      },
+      opts: {},
+      initialData: currentDir + '/randomTestFolder'
     })
   });
 });
