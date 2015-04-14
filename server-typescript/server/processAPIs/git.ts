@@ -10,7 +10,8 @@ gitAPI.status = gitWrapper('status', parseStatus);
 gitAPI.add = gitWrapper('add', utility.identity);
 
 gitAPI.reset = gitWrapper('reset', utility.identity);
-//gitAPI.log = gitWrapper('log', function(data){console.log(data); return data;});
+
+gitAPI.diff = gitWrapper('diff', parseDiff);
 
 module.exports = gitAPI;
 
@@ -34,10 +35,8 @@ function parseStatus(str:String){
         unstaged: [],
         untracked: []
     };
-
     return utility.splitLines(str).reduce(function(result,element){
         var marker = element.substr(0,3);
-        console.log('the marker is ', marker);
         if(marker == '?? '){
             result.untracked.push(element.slice(3));
         }
@@ -52,4 +51,29 @@ function parseStatus(str:String){
         }
         return result;
     }, emptyResult);
+}
+
+function parseDiff(str:String){
+    var result = {
+        file: '',
+        text: [],
+    };
+    result.text = utility.splitLines(str).slice(4).map(function(line){
+        return _parseDiffLine(_parseDiffAt(line));
+    }).filter(function(line){
+        return line[0] !== undefined;
+    });
+    return result;
+}
+
+function _parseDiffAt(str:String){
+    if(str[0]==='@'){
+        var result= str.split('@@');
+        return result[2];
+    }
+    return str;
+};
+
+function _parseDiffLine(str:String){
+    return [str[0], str.slice(1)];
 }

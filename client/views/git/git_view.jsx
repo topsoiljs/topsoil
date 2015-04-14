@@ -1,11 +1,16 @@
 function GitViewStore() {
   console.log('git view is loaded');
   var state = {status: false,
+               diff: {
+                staged: {},
+                unstaged: {}
+               },
                currentDir: '/Users/Derek/Desktop/topsoil'};
+
   var socket = io();
 
   var methods = {
-    status: function(args){
+    status: function(updateDiff){
       // var dir = args.directory;
       var UID = Math.random();
       socket.emit('git.status', {
@@ -15,9 +20,12 @@ function GitViewStore() {
         uid: UID
       });
       socket.on(UID, function(data){
-        console.log(data);
         state.status = data.data;
+        if(updateDiff){
+          methods.differenceAll(state.status);
+        }
         eventBus.emit('git');
+        console.log(state.status);
       })
     },
     add: function(data){
@@ -29,7 +37,7 @@ function GitViewStore() {
         uid: UID
       });
       socket.on(UID, function(data){
-        methods.status()
+        methods.status(true);
       })
     },
 
@@ -42,13 +50,45 @@ function GitViewStore() {
         uid: UID
       });
       socket.on(UID, function(data){
-        methods.status()
+        methods.status(true);
       })
+    },
+
+    difference: function(fileName, staging){
+      var self = this;
+      var UID = Math.random();
+      socket.emit('git.diff', {
+        args: ['--no-prefix', fileName],
+        dir: state.currentDir,
+        uid: UID
+      });
+      socket.on(UID, function(diff){
+        state.diff[staging][fileName] = diff.data.text;
+        eventBus.emit('git');
+      })
+    },
+
+    differenceAll : function(status){
+      // methods.newDiff();
+      status.unstaged.forEach(function(file){
+        methods.difference(file, 'unstaged');
+      })
+      status.staged.forEach(function(file){
+        methods.difference(file, 'staged');
+      })
+    },
+
+    newDiff : function(){
+      state.diff = {
+                    staged: {},
+                    unstaged: {}
+                   }
     },
 
     renderView: function(){
 
     },
+
     getState: function() {
       return state;
     }
@@ -69,14 +109,29 @@ var GitComponent = React.createClass({
     }.bind(this));
   },
   render: function() {
-
+    var self = this;
     if(this.state.status){
       var staged = this.state.status.staged.map(function(file){
               return <GitStaged fileName = {file}/>
             });
 
       var unstaged = this.state.status.unstaged.map(function(file){
-              return <GitUnstaged fileName = {file}/>
+              console.log('state file name is ', JSON.stringify(file));
+              console.log('state diff is ', self.state.diff);
+              if(self.state.diff.unstaged[file]){
+                return (
+                <div>
+                  <div><GitUnstaged fileName = {file}/></div>
+                  <div><GitDiff diff = {self.state.diff.unstaged[file]}/></div>
+                </div>
+                );
+              }
+
+              return (
+                <div>
+                  <div><GitUnstaged fileName = {file}/></div>
+                </div>
+                );
             });
 
       var untracked = this.state.status.untracked.map(function(file){
@@ -148,8 +203,27 @@ var GitUntracked = React.createClass({
   }
 });
 
+var GitDiff = React.createClass({
+  render: function(){
+    //should pass in a file and staging property
+    console.log("the property diff becomes this", this.props.diff);
+    console.log("the result array should be ",JSON.stringify(this.props.diff));
+
+    return (
+      <div>
+        See Difference here
+        {this.props.diff}
+      </div>
+    )
+  }
+});
+
 var GitButton = React.createClass({
   handleAddClick: function(e){
+    if(this.props.action ==='difference'){
+      gitViewStore[this.props.action](this.props.fileName, 'unstaged');
+      return;
+    }
     gitViewStore[this.props.action](this.props.fileName);
   },
   render: function(){

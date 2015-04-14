@@ -96,7 +96,7 @@ gulp.task('jsx-w', function () {
 });
 
 gulp.task('test', function () {
-    return gulp.src('./test/apiTest.js', {read: false})
+    return gulp.src(['./test/fsAPITest.js','./test/gitAPITest.js'], {read: false})
         .pipe(mocha({reporter: 'nyan'}));
 });
 
