@@ -7,7 +7,7 @@ function FilesystemViewStore() {
 
   var methods = {
     listFiles: function(args){
-      var dir = args.directory;
+      var dir = args.path;
       if(!dir || dir.length === 0){
         dir = '/';
       }
@@ -42,7 +42,7 @@ function FilesystemViewStore() {
         cb: function(){
           eventBus.emit('filesystem');
         },
-        opts: args
+        initialData: args.path
       })
     },
     removeDirectory: function(args){
@@ -51,7 +51,7 @@ function FilesystemViewStore() {
         cb: function(){
           eventBus.emit('filesystem');
         },
-        opts: args
+        initialData: args.path
       })
     },
     renderView: function(){

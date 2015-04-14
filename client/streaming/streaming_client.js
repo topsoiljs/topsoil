@@ -37,7 +37,7 @@ var createNewStream = function(options){
   */
   var socket = window._globalSocket;
   var command = options.command;
-  var opts = options.opts;
+  var opts = options.opts || {};
   var cb = options.cb;
   opts.initialData = options.initialData;
 
