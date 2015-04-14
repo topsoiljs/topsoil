@@ -1,4 +1,4 @@
-/// <reference path="../../typings/node/node.d.ts"/>
+/*/// <reference path="../../typings/node/node.d.ts"/>
 var io = require('socket.io');
 var ioClient = require('socket.io-client');
 var _ = require('lodash');
@@ -201,3 +201,4 @@ var client = ioClient('http://localhost:8002');
 // client.on('grep', function(data){
 //   console.log('returned', data);
 // })
+*/
