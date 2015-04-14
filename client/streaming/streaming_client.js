@@ -48,7 +48,9 @@ var createNewStream = function(options){
 
   return {
     emit: function(data){
-      socket.emit(opts._uid, data);
+      socket.emit(opts._uid, {
+        payload: data
+      });
     }
   }
 };

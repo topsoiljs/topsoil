@@ -22,7 +22,9 @@ var createNewStream = function(options){
 
   return {
     emit: function(data){
-      socket.emit(opts._uid, data);
+      socket.emit(opts._uid, {
+        payload: data
+      });
     }
   }
 };
@@ -76,25 +78,19 @@ describe("File System View APIs",function(){
     })
   });
 
-  xit('should be able to create a file', function(done){
-
-    var client = io('http://localhost:8000/',{'force new connection':true});
-    var UID = Math.random();
-    var testFilePath = currentDir + '/randomTestFolder/test.js'
-    client.on('connect', function(data){
-      client.emit('fs.writeFile',{
-        dir: testFilePath,
-        data: 'console.log("this is a test");',
-        uid: UID
-      });
-      client.on(UID, function(data){
+  it('should be able to write to a file', function(done){
+    streams['fs.writeFile'] = createNewStream({
+      command: 'fs.writeFile',
+      cb: function(data){
         assert.typeOf(data, 'object', 'receive an object back');
-        assert.isTrue(data.hasOwnProperty('err')&&data.hasOwnProperty('data'), 'object has "err" and "data" properties');
-        assert.isTrue(fs.existsSync(testFilePath), 'created a test file');
-        client.disconnect();
         done();
-      });
+      },
+      opts: {
+        path: currentDir + '/randomTestFolder/test.js'
+      }
     })
+
+    streams['fs.writeFile'].emit('test data');
   });
 
   xit('should be able to append to a file', function(done){
