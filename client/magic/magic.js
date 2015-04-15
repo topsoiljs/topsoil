@@ -9,7 +9,6 @@ Magic.prototype.registerView = function(viewObject){
   // Index commands
   _.each(viewObject.commands, function(el){
     el.view = viewObject;
-    console.log(el, 'inside each');
     this.commands[el.name] = el;
   }.bind(this))
 };
