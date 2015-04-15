@@ -37,7 +37,7 @@ fsAPI.rmdir = fsSingleWrapper(fs.rmdir);
 
 fsAPI.listAllFilesAndDirs = function(opts){
   var listStream = createGenericStreamFunc(function(data : string, enc : string, cb){
-    exec('ls -R ' + data, function(err, out, stderr){
+    exec('ls -R ' + data, {cwd: opts.cwd},function(err, out, stderr){
       cb(null, out);
     })
   });
@@ -46,6 +46,7 @@ fsAPI.listAllFilesAndDirs = function(opts){
 };
 
 function listAllFilesAndDirs (data, cb){
+
   function cleanFolder(folder: Array<string>) {
     if(_.first(folder) === ".") {
       folder = folder.slice(1);
