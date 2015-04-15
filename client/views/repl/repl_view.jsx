@@ -7,6 +7,13 @@ var ReplComponent = React.createClass({
       this.setState(replViewStore.getState());
     }.bind(this));
   },
+  handleInput: function(e){
+    var el = document.getElementById('replinput');
+    if (e.key === 'Enter') {
+      replViewStore.send(el.value);
+      el.value = "";
+    }
+  },
   render: function() {
     var nodes = [];
     var currentCol = [];
@@ -24,7 +31,7 @@ var ReplComponent = React.createClass({
        <row>
         {nodes}
        </row>
-       <input onKeyUp={this.handleInput}>
+       <input id="replinput" onKeyUp={this.handleInput}>
        </input>
     </div>);
   }

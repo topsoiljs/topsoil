@@ -16,6 +16,12 @@ function ReplViewStore() {
         initialData: '(function(){return "Welcome to your REPL"})()\n'
       })
     },
+    send: function(data){
+      if(streams['repl']){
+        data += '\n';
+        streams['repl'].emit(data);
+      }
+    },
     renderView: function(){
     },
     getState: function() {
