@@ -16,7 +16,7 @@ replAPI.start = function(options){
     cb(null, chunk);
   })
   options.input = inStream;
-  options.output = process.stdout;
+  options.output = outStream;
   repl.start(options);
   return createDuplexStream(inStream, outStream);
 }
