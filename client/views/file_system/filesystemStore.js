@@ -64,3 +64,62 @@ function FilesystemViewStore() {
 
   return methods;
 }
+
+var fsViewStore = FilesystemViewStore();
+
+magic.registerView({
+  name: 'filesystem',
+  commands: [
+     {
+      name: "listFiles",
+      description: 'lists files in directory',
+      args: ['path'],
+      tags: ['show files', 'list files', 'display files', 'ls'],
+      categories: ['read'],
+      method: fsViewStore["listFiles"]
+    },
+    {
+      name: "hideFiles",
+      description: 'hides files in directory view',
+      args: ['path'],
+      tags: ['hide files', 'remove fileview', "don't display files"],
+      categories: ['ui'],
+      method: fsViewStore["hideFiles"]
+    },
+    {
+      name: "renderFilesystem",
+      description: 'renders fileSystemView',
+      args: ['path'],
+      tags: ['show filesystem view'],
+      categories: ['ui'],
+      method: fsViewStore["renderView"]
+    },
+    {
+      name: "readFile",
+      description: 'reads specified file',
+      args: ['path'],
+      tags: ['read file'],
+      categories: ['read'],
+      method: fsViewStore["readFile"]
+    },
+    {
+      name: "makeDirectory",
+      description: 'makes directory at path',
+      args: ['path'],
+      tags: ['make directory mkdir filesystem'],
+      categories: ['read'],
+      method: fsViewStore["makeDirectory"]
+    },
+    {
+      name: "removeDirectory",
+      description: 'removes directory at path',
+      args: ['path'],
+      tags: ['remove directory rm filesystem'],
+      categories: ['write'],
+      method: fsViewStore["removeDirectory"]
+    }
+    ],
+  category: 'filesystem',
+  component: FilesystemComponent
+});
+
