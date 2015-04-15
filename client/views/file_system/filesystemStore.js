@@ -27,6 +27,7 @@ function FilesystemViewStore() {
       eventBus.emit('filesystem');
     },
     readFile: function(args){
+      console.log(args);
       streams['fs.readFile'] = createNewStream({
         command: 'fs.readFile',
         cb: function(data){

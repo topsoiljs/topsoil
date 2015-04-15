@@ -33,7 +33,7 @@ io.on('connection', function(socket){
                 var outStream = createOutSocketStream(socket, opts._uid);
                 var commandStream = api[namespace][methodName](opts);
                 inStream.pipe(commandStream).pipe(outStream);
-                if(opts.initialData){
+                if(opts.initialData !== undefined){
                   inStream.write(opts.initialData);
                 }
               })
