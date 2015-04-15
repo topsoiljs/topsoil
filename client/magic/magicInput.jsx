@@ -14,15 +14,39 @@ function isKey(event){
   return result;
 };
 
-var MagicInput = React.createClass({
-  getInitialState: function(){
-    return {
+function MagicInputStore (){
+  var initialState = {
       args: null,
       currentCommand: null,
       suggestions: [],
       suggestionActive: -1,
       preArgsLength: 0
+  };
+
+  var state = _.cloneDeep(initialState);
+
+  var methods = {
+    getState: function(){
+      return state;
+    },
+    resetState: function(){
+      state = _.cloneDeep(initialState);
     }
+  };
+
+  return methods;
+};
+
+var magicInputStore = MagicInputStore();
+
+var MagicInput = React.createClass({
+  componentDidMount: function(){
+    eventBus.register("magicInput", function() {
+      this.setState(magicInputStore.getState());
+    }.bind(this));
+  },
+  getInitialState: function(){
+    return magicInputStore.getState();
   },
   handleShortcut: function(e){
     // Tab or down
