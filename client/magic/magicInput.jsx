@@ -1,3 +1,19 @@
+window._keys = {
+  9: 'TAB',
+  40: 'DOWN_ARROW',
+  38: 'UP_ARROW',
+  13: 'ENTER'
+};
+
+function isKey(event){
+  var keycode = event.which;
+  var result = false;
+  for(var i=1;i<arguments.length;i++){
+    result = result || window._keys[keycode] === arguments[i]
+  }
+  return result;
+};
+
 var MagicInput = React.createClass({
   getInitialState: function(){
     return {
@@ -10,13 +26,13 @@ var MagicInput = React.createClass({
   },
   handleShortcut: function(e){
     // Tab or down
-    if(e.which === 9 || e.which === 40){
+    if(isKey(e, 'TAB', 'DOWN_ARROW')){
       e.preventDefault();
       this.setState({
         suggestionActive: (this.state.suggestionActive + 1) % this.state.suggestions.length
       });
       // Up
-    }else if(e.which === 38){
+    }else if(isKey(e, 'UP_ARROW')){
       var active = (this.state.suggestionActive - 1) % this.state.suggestions.length;
       if(active < 0){
         active = this.state.suggestions.length-1;
