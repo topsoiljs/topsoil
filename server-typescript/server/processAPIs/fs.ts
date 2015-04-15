@@ -7,8 +7,8 @@ var utility = require('../utility/utility');
 var streaming = require('../streaming/streaming');
 var createGenericStreamFunc = streaming.createGenericStream;
 var createSpawnStreamFunc = streaming.createSpawnStream;
+var createDuplexStream = streaming.createDuplexStream;
 var exec = require('child_process').exec;
-var es = require('event-stream');
 
 var fsAPI = <any> {};
 
@@ -42,7 +42,7 @@ fsAPI.listAllFilesAndDirs = function(opts){
     })
   });
   var streamOut = listStream.pipe(fsSingleWrapper(listAllFilesAndDirs)());
-  return es.duplex(listStream, streamOut);
+  return createDuplexStream(listStream, streamOut);
 };
 
 function listAllFilesAndDirs (data, cb){

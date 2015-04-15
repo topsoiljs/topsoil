@@ -14,6 +14,10 @@ var createOutStream = function(socket, id : string){
   })
 };
 
+var createDuplex = function(input, out){
+  return es.duplex(input, out);
+};
+
 var createInStream = function(socket, id : string){
   var stream = through(function(chunk, enc, cb){
     cb(null, String(chunk));
@@ -61,3 +65,4 @@ exports.createInStream = createInStream;
 exports.createGenericStream = createGenericStream;
 exports.createBufferToStringStream = createBufferToStringStream;
 exports.createSpawnStream = createSpawnStream;
+exports.createDuplexStream = createDuplex;
