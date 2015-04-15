@@ -1,69 +1,110 @@
-var MagicInput = React.createClass({
-  getInitialState: function(){
-    return {
+window._keys = {
+  9: 'TAB',
+  40: 'DOWN_ARROW',
+  38: 'UP_ARROW',
+  13: 'ENTER'
+};
+
+function isKey(event){
+  var keycode = event.which;
+  var result = false;
+  for(var i=1;i<arguments.length;i++){
+    result = result || window._keys[keycode] === arguments[i]
+  }
+  return result;
+};
+
+function MagicInputStore (eventName){
+  var initialState = {
       args: null,
       currentCommand: null,
       suggestions: [],
       suggestionActive: -1,
       preArgsLength: 0
+  };
+
+  var state = _.cloneDeep(initialState);
+  var render = function(){
+    eventBus.emit(eventName);
+  };
+  var methods = {
+    getState: function(){
+      return state;
+    },
+    resetState: function(){
+      state = _.cloneDeep(initialState);
+      render();
+    },
+    setActiveSuggestion: function(sug){
+      state.suggestionActive = sug;
+      render();
+    },
+    setCurrentCommand: function(command){
+      state.currentCommand = command;
+      state.args = [];
+      render();
+    },
+    setSuggestions: function(suggestions){
+      state.suggestions = suggestions;
+      render();
     }
+  };
+
+  return methods;
+};
+
+var magicInputStore = MagicInputStore('magicInput');
+
+var MagicInput = React.createClass({
+  componentDidMount: function(){
+    eventBus.register('magicInput', function() {
+      this.setState(magicInputStore.getState());
+    }.bind(this));
+  },
+  getInitialState: function(){
+    return magicInputStore.getState();
   },
   handleShortcut: function(e){
     // Tab or down
-    if(e.which === 9 || e.which === 40){
+    var state = magicInputStore.getState();
+    if(isKey(e, 'TAB', 'DOWN_ARROW')){
       e.preventDefault();
-      this.setState({
-        suggestionActive: (this.state.suggestionActive + 1) % this.state.suggestions.length
-      });
-      // Up
-    }else if(e.which === 38){
-      var active = (this.state.suggestionActive - 1) % this.state.suggestions.length;
+      magicInputStore.setActiveSuggestion((state.suggestionActive + 1) % state.suggestions.length)
+    // Up
+    }else if(isKey(e, 'UP_ARROW')){
+      e.preventDefault();
+      var active = (state.suggestionActive - 1) % state.suggestions.length;
       if(active < 0){
-        active = this.state.suggestions.length-1;
+        active = state.suggestions.length-1;
       }
-      this.setState({
-        suggestionActive: active
-      });
+      magicInputStore.setActiveSuggestion(active);
     }
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
-    if (e.key === 'Enter') {
-      if(this.state.suggestionActive < 0){
-        this.state.suggestionActive = 0;
+    var state = magicInputStore.getState();
+    if (isKey(e, 'ENTER')) {
+      if(state.suggestionActive < 0){
+        state.suggestionActive = 0;
       }
-      if(!this.state.args && this.state.suggestions[this.state.suggestionActive]){
+      if(!state.args && state.suggestions[state.suggestionActive]){
         el.value = el.value += ' ';
-        this.state.preArgsLength = el.value.length;
-        this.setState({
-          args: [],
-          currentCommand: this.state.suggestions[this.state.suggestionActive],
-          suggestions: this.state.suggestions,
-          suggestionActive: this.state.suggestionActive,
-          preArgsLength: this.state.preArgsLength
-        })
+        state.preArgsLength = el.value.length;
+        magicInputStore.setCurrentCommand(state.suggestions[state.suggestionActive]);
       }else{
         var value = el.value;
-        args = value.slice(this.state.preArgsLength).split(' ');
-        magic.callCommand(this.state.currentCommand, args);
-        this.state.currentCommand.selected = false;
+        args = value.slice(state.preArgsLength).split(' ');
+        magic.callCommand(state.currentCommand, args);
         el.value = '';
-        this.setState({
-          args: null,
-          currentCommand: null,
-          suggestions: [],
-          suggestionActive: -1,
-          preArgsLength: 0
-        })
+        magicInputStore.resetState();
       }
     }
   },
   onChange: function(e){
-    if(!this.state.args){
+    var state = magicInputStore.getState();
+    if(!state.args){
       var results = magic.search(e.target.value);
-      this.setState({
-        suggestions: results
-      })
+      magicInputStore.setSuggestions(results);
     }
   },
   render: function() {
