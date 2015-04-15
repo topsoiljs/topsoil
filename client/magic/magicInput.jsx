@@ -44,7 +44,7 @@ var MagicInput = React.createClass({
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
-    if (e.key === 'Enter') {
+    if (isKey(e, 'ENTER')) {
       if(this.state.suggestionActive < 0){
         this.state.suggestionActive = 0;
       }
