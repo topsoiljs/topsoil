@@ -1,32 +1,41 @@
 /// <reference path="../utility/utility.ts"/>
 var fs = require('fs');
 var utility = require('../utility/utility');
+var createSpawnStreamF = require('../streaming/streaming').createSpawnStream;
 
 var gitAPI = <any> {};
 
 //wrapper function will take in a callback that process the outputs into workable JSON format
-gitAPI.status = gitWrapper('status', parseStatus);
+gitAPI.status = gitWrapper('git', parseStatus);
 
-gitAPI.add = gitWrapper('add', utility.identity);
-
-gitAPI.reset = gitWrapper('reset', utility.identity);
-
-gitAPI.diff = gitWrapper('diff', parseDiff);
+//gitAPI.add = gitWrapper('add', utility.identity);
+//
+//gitAPI.reset = gitWrapper('reset', utility.identity);
+//
+//gitAPI.diff = gitWrapper('diff', parseDiff);
 
 module.exports = gitAPI;
 
-function gitWrapper(cmd:String,cb:Function){
-    return function(socket){
-        return function(opts){
-            if(!opts.dir){
-                socket.emit(opts.uid, utility.wrapperResponse({ errno: 99, code: 'CUSTOM', desc: 'No directory given' }, null));
-                return;
-            }
-            Array.prototype.unshift.call(opts.args,cmd);
-            utility.makeProcess(socket, 'git', opts, cb);
-        }
-    }
+function gitWrapper(command, parser) {
+    console.log('created this function');
+    return function(opts) {
+        var spawnStream = createSpawnStreamF(opts.cmd, opts.args, opts.opts, parser);
+        return spawnStream;
+    };
 }
+
+//function gitWrapper(cmd:String,cb:Function){
+//    return function(socket){
+//        return function(opts){
+//            if(!opts.dir){
+//                socket.emit(opts.uid, utility.wrapperResponse({ errno: 99, code: 'CUSTOM', desc: 'No directory given' }, null));
+//                return;
+//            }
+//            Array.prototype.unshift.call(opts.args,cmd);
+//            utility.makeProcess(socket, 'git', opts, cb);
+//        }
+//    }
+//}
 
 function parseStatus(str:String){
     var emptyResult = {
@@ -35,7 +44,8 @@ function parseStatus(str:String){
         unstaged: [],
         untracked: []
     };
-    return utility.splitLines(str).reduce(function(result,element){
+    var result = utility.splitLines(str).reduce(function(result,element){
+        console.log('element is ', element);
         var marker = element.substr(0,3);
         if(marker == '?? '){
             result.untracked.push(element.slice(3));
@@ -51,6 +61,8 @@ function parseStatus(str:String){
         }
         return result;
     }, emptyResult);
+
+    return JSON.stringify(result);
 }
 
 function parseDiff(str:String){

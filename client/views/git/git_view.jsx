@@ -11,25 +11,43 @@ function GitViewStore() {
                currentDir: '/Users/Derek/Desktop/topsoil'};
 
   var socket = io();
-
+  var streams = {};
   var methods = {
     status: function(updateDiff){
-      // var dir = args.directory;
-      var UID = Math.random();
-      socket.emit('git.status', {
-        cmd: 'git',
-        args: ['-s'],
-        dir: state.currentDir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        state.status = data.data;
-        if(updateDiff){
-          methods.differenceAll(state.status);
+
+      streams['git.status'] = createNewStream({
+        command: 'git.status',
+        opts: {
+          cwd: state.currentDir,
+          cmd: 'git',
+          args: ['status', '-s'],
+        },
+        cb: function(data){
+          console.log('we received data', data);
+          state.status = JSON.parse(data.data);
+          console.log('current status is ', state.status);
+          eventBus.emit('git');
         }
-        eventBus.emit('git');
-        console.log(state.status);
-      })
+        // initialData: currentDir
+      });
+
+      streams['git.status'].emit('something');
+      // var dir = args.directory;
+      // var UID = Math.random();
+      // socket.emit('git.status', {
+      //   cmd: 'git',
+      //   args: ['-s'],
+      //   dir: state.currentDir,
+      //   uid: UID
+      // });
+      // socket.on(UID, function(data){
+      //   state.status = data.data;
+      //   if(updateDiff){
+      //     methods.differenceAll(state.status);
+      //   }
+      //   eventBus.emit('git');
+      //   console.log(state.status);
+      // })
     },
     add: function(data){
       var self = this;
