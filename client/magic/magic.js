@@ -9,6 +9,7 @@ function generateSuffixes(word){
 var Magic = function(){
   this.views = {};
   this.commands = {};
+  // Start core commands search engine
   this._auto = new Bloodhound({
     name: 'magic',
     local: [],
