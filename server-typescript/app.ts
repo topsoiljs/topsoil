@@ -34,13 +34,14 @@ io.on('connection', function(socket){
                   console.log('error while making chain', err);
                 })
                 d.run(function(){
-                var inStream = createInSocketStream(socket, opts._uid);
-                var outStream = createOutSocketStream(socket, opts._uid);
-                var commandStream = api[namespace][methodName](opts);
-                inStream.pipe(commandStream).pipe(outStream);
-                if(opts.initialData !== undefined){
-                  inStream.write(opts.initialData);
-                }
+                  var inStream = createInSocketStream(socket, opts._uid);
+                  var outStream = createOutSocketStream(socket, opts._uid);
+                  var commandStream = api[namespace][methodName](opts);
+                  inStream.pipe(commandStream).pipe(outStream);
+                  if(opts.initialData !== undefined){
+                    inStream.write(opts.initialData);
+                  }
+                })
               })
             })(socket, methodName, namespace)
           }

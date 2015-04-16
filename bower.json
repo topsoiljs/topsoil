@@ -15,6 +15,8 @@
     "react": "~0.13.1",
     "materialize": "~0.96.0",
     "codemirror": "~5.1.0",
-    "node-uuid": "~1.4.3"
+    "node-uuid": "~1.4.3",
+    "bloodhound": "~1.0.4",
+    "typeahead.js": "~0.10.5"
   }
 }
