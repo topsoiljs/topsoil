@@ -28,7 +28,7 @@ var Magic = function(){
       return tokens;
     },
     queryTokenizer: function(q){
-      return [q]
+      return q.split(' ');
     }
   })
   this._auto.initialize();
@@ -45,9 +45,6 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command, args){
-  this._auto.get('t', function(sugs){
-    console.log(sugs);
-  });
   masterStore.openView(command.view.component);
   var argsObj = {};
   _.each(args, function(el, ind){
@@ -60,38 +57,9 @@ Magic.prototype.search = function(terms){
   if(terms === ''){
     return [];
   };
-  var terms = terms.split(' ');
-  var results = [];
-  // Brute force search for now
-  _.each(this.views, function(view){
-    view.commands.forEach(function(command){
-      var descriptionMatch = true;
-      for(var k=0;k<terms.length;k++){
-        descriptionMatch = descriptionMatch && (command.description.indexOf(terms[k]) > -1);
-      }
-      if(descriptionMatch){
-        results.push(command);
-        return;
-      }
-      var nameMatch = true;
-      for(var k=0;k<terms.length;k++){
-        nameMatch = nameMatch && (command.name.indexOf(terms[k]) > -1);
-      }
-      if(nameMatch){
-        results.push(command);
-        return;
-      };
-      for(var i=0;i<command.tags.length;i++){
-        var tagMatch = true;
-        for(var k=0;k<terms.length;k++){
-          tagMatch = tagMatch && (command.tags[i].indexOf(terms[k]) > -1);
-        }
-        if(tagMatch){
-          results.push(command);
-          return;
-        }
-      }
-    })
+  var results;
+  this._auto.get(terms, function(sugs){
+    results = sugs;
   });
 
   return results;
