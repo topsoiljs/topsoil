@@ -1,21 +1,53 @@
 var masterStore = require("../masterStore.js");
+function generateSuffixes(word){
+  return _.range(word.length).reduce(function(sum, el){
+    sum.push(word.slice(el))
+    return sum;
+  }, [])
+};
 
 var Magic = function(){
   this.views = {};
   this.commands = {};
+  this._auto = new Bloodhound({
+    name: 'magic',
+    local: [],
+    datumTokenizer: function(d){
+      var tokens = _.reduce(d, function(sum, el){
+        if(_.isString(el)){
+          return sum.concat(generateSuffixes(el));
+        }else if (_.isArray(el)){
+          var sub = sum.concat(_.reduce(el, function(sum, word){
+            return sum.concat(generateSuffixes(word))
+          }, []));
+          return sub;
+        }else {
+          return sum;
+        }
+      },[])
+      return tokens;
+    },
+    queryTokenizer: function(q){
+      return [q]
+    }
+  })
+  this._auto.initialize();
 };
 
 Magic.prototype.registerView = function(viewObject){
   this.views[viewObject.name] = viewObject;
-
   // Index commands
   _.each(viewObject.commands, function(el){
+    this._auto.add([el]);
     el.view = viewObject;
     this.commands[el.name] = el;
   }.bind(this))
 };
 
 Magic.prototype.callCommand = function(command, args){
+  this._auto.get('t', function(sugs){
+    console.log(sugs);
+  });
   masterStore.openView(command.view.component);
   var argsObj = {};
   _.each(args, function(el, ind){
