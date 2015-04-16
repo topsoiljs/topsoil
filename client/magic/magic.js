@@ -1,24 +1,25 @@
 var Magic = function(){
   this.views = {};
+  this.commands = {};
 };
 
 Magic.prototype.registerView = function(viewObject){
   this.views[viewObject.name] = viewObject;
+
+  // Index commands
+  _.each(viewObject.commands, function(el){
+    el.view = viewObject;
+    this.commands[el.name] = el;
+  }.bind(this))
 };
 
 Magic.prototype.callCommand = function(command, args){
-  for(var key in this.views){
-    for(var j=0;j<this.views[key].commands.length;j++){
-      if(this.views[key].commands[j].name === command.name){
-        masterStore.openView(this.views[key].component);
-        var argsObj = {};
-        this.views[key].commands[j].args.forEach(function(el, ind){
-          argsObj[el] = args[ind];
-        })
-        return this.views[key].commands[j].method(argsObj);
-      }
-    }
-  }
+  masterStore.openView(command.view.component);
+  var argsObj = {};
+  _.each(args, function(el, ind){
+    argsObj[el] = args[ind];
+  })
+  return command.method(argsObj);
 };
 
 Magic.prototype.search = function(terms){
@@ -26,7 +27,6 @@ Magic.prototype.search = function(terms){
     return [];
   };
   var terms = terms.split(' ');
-  console.log(terms);
   var results = [];
   // Brute force search for now
   _.each(this.views, function(view){
