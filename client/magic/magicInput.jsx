@@ -18,7 +18,6 @@ function isKey(event){
   }
   return result;
 };
-
 function MagicInputStore (eventName){
   var initialState = {
       args: null,
