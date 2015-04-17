@@ -1,3 +1,6 @@
+var eventBus = require("../../eventBus.js");
+var magic = require("../../magic/magic.js");
+
 function GitViewStore() {
   console.log('git view is loaded');
   var state = {status: false,

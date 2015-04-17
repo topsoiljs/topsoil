@@ -1,3 +1,8 @@
+var eventBus = require("../../eventBus.js");
+var magic = require("../../magic/magic.js");
+
+var fsViewStore = require("./fs_store.js");
+
 var FilesystemComponent = React.createClass({
   getInitialState: function() {
     return fsViewStore.getState();
@@ -44,7 +49,6 @@ var FilesystemComponent = React.createClass({
     </row>);
   }
 });
-var fsViewStore = FilesystemViewStore();
 
 magic.registerView({
   name: 'filesystem',

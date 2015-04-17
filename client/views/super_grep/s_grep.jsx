@@ -1,4 +1,9 @@
-var grepStore = GrepStore();
+var grepStore = require("./s_grep_store.js");
+var eventBus = require("../../eventBus.js");
+var magic = require("../../magic/magic.js");
+var FileViewer = require("./components/file_viewer.jsx");
+var GrepResults = require("./components/grep_results.jsx");
+var SGrepEditor = require("./components/grep_editor.jsx");
 
 var SGrepComponent = React.createClass({
   getInitialState: function() {

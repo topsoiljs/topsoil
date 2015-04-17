@@ -1,3 +1,5 @@
+var masterStore = require("../masterStore.js");
+
 var Magic = function(){
   this.views = {};
   this.commands = {};
@@ -67,4 +69,4 @@ Magic.prototype.getViews = function() {
   return this.views;
 };
 
-var magic = new Magic();
+module.exports = new Magic();

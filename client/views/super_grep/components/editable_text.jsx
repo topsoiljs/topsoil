@@ -1,3 +1,5 @@
+var grepStore = require("../s_grep_store.js");
+
 var EditableText = React.createClass({
   getInitialState: function() {
     return {isEditing: false};
@@ -25,3 +27,5 @@ var EditableText = React.createClass({
     } 
   }
 });
+
+module.exports = EditableText;

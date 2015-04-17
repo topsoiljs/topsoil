@@ -1,3 +1,7 @@
+var replViewStore = require("./repl_store.js");
+var magic = require("../../magic/magic.js");
+var eventBus = require("../../eventBus.js");
+
 var ReplComponent = React.createClass({
   getInitialState: function() {
     return replViewStore.getState();
@@ -37,7 +41,8 @@ var ReplComponent = React.createClass({
   }
 });
 
-var replViewStore = ReplViewStore();
+
+
 magic.registerView({
   name: 'repl',
   commands: [

@@ -21,3 +21,5 @@ var MagicSuggestions = React.createClass({
     );
   }
 });
+
+module.exports = MagicSuggestions;

@@ -1,4 +1,4 @@
-
+var eventBus = require("./eventBus.js");
 
 function MasterStore() {
   var activeView;
@@ -19,7 +19,4 @@ function MasterStore() {
   return masterStore; 
 }
 
-var masterStore = MasterStore();
-
-
-
+module.exports = MasterStore();

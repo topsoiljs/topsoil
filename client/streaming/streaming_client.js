@@ -54,3 +54,5 @@ var createNewStream = function(options){
     }
   }
 };
+
+module.exports = {createNewStream: createNewStream};

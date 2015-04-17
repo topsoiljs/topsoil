@@ -1,3 +1,5 @@
+var grepStore = require("../s_grep_store.js");
+
 var FileViewer = React.createClass({
 
   getInitialState: function() {
@@ -82,3 +84,5 @@ var FileViewer = React.createClass({
     return (<div className="inputText" ref="inputText"></div>)
   }
 })
+
+module.exports = FileViewer;

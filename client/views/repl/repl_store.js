@@ -1,3 +1,6 @@
+console.log(module);
+var eventBus = require("../../eventBus.js");
+
 function ReplViewStore() {
   var state = {
     output: []
@@ -32,3 +35,4 @@ function ReplViewStore() {
   return methods;
 }
 
+module.exports = ReplViewStore();

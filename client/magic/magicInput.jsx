@@ -1,3 +1,8 @@
+var MagicSuggestions = require("./magicSuggestions.jsx");
+var eventBus = require("../eventBus.js");
+var magic = require("./magic.js");
+
+
 window._keys = {
   9: 'TAB',
   40: 'DOWN_ARROW',
@@ -126,3 +131,5 @@ var MagicInput = React.createClass({
     );
   }
 });
+
+module.exports = MagicInput;
