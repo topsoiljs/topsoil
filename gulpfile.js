@@ -95,7 +95,7 @@ gulp.task('jsx', function(){
 gulp.task('browserify', function() {
   //Taken from: https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-transforms.md
   var b = browserify({
-    entries: ['./client/views/masterView.jsx', 
+    entries: ['./client/views/masterView.jsx',
               './client/views/super_grep/s_grep.jsx',
               './client/views/repl/repl_view.jsx',
               './client/views/git/git_view.jsx',
