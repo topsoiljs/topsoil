@@ -1,3 +1,6 @@
+var createNewStream = require("../../streaming/streaming_client.js").createNewStream;
+var eventBus = require("../../eventBus.js");
+
 function FilesystemViewStore() {
   var state = {
     files: [],
@@ -65,3 +68,5 @@ function FilesystemViewStore() {
 
   return methods;
 }
+
+module.exports = FilesystemViewStore();

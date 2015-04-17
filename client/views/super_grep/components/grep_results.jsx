@@ -1,3 +1,5 @@
+var grepStore = require("../s_grep_store.js")
+
 var GrepResults = React.createClass({
   goToFile: function(filename) {
     return function(e) {
@@ -19,3 +21,5 @@ var GrepResults = React.createClass({
     )
   }
 })
+
+module.exports = GrepResults;

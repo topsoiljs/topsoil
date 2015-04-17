@@ -1,3 +1,7 @@
+var masterStore = require("../masterStore.js");
+var MagicInput = require("../magic/magicInput.jsx");
+var eventBus = require("../eventBus.js")
+
 var MasterView = React.createClass({
   getInitialState: function() {
     return {activeView: null};
@@ -9,7 +13,6 @@ var MasterView = React.createClass({
   },
   render: function() {
     if(this.state.activeView) {
-
       return (<div className="row">
                 <div className="magicInput col s4">
                   <MagicInput/>

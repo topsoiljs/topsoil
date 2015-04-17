@@ -1,3 +1,7 @@
+var EditableText = require("./editable_text.jsx");
+var grepStore = require("../s_grep_store.js");
+
+
 var SGrepEditor = React.createClass({
   getInitialState: function() {
     return {isContentEditable: false};
@@ -35,3 +39,6 @@ var SGrepEditor = React.createClass({
     )
   }
 })
+
+module.exports = SGrepEditor;
+

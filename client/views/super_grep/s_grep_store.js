@@ -1,3 +1,6 @@
+var createNewStream = require("../../streaming/streaming_client.js").createNewStream
+var eventBus = require("../../eventBus.js");
+
 function GrepStore() {
   var state = {dir: "", 
                activeFile: "",
@@ -68,10 +71,17 @@ function GrepStore() {
           eventBus.emit('s_grep');
         }
 
+        
+
         streams['terminal.callCommand'] = createNewStream({
           command: 'terminal.callCommand',
           cb: grepCallback,
-          args: ["-nR", regexArg, state.dir]
+          opts: {
+            opts: {cwd: state.dir},
+            cmd: "grep",
+            args: ["-nR", regexArg, state.dir]
+          },
+          initialData: " "
         });
       }  
     },
@@ -148,3 +158,5 @@ function GrepStore() {
 
   return methods;
 }
+
+module.exports = GrepStore();
