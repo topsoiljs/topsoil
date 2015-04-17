@@ -67,6 +67,7 @@ Magic.prototype.search = function(terms){
     if(terms[i] === ':'){
       results.arguments = [];
       search = terms.slice(0, i);
+      results.arguments = terms.slice(i+1, terms.length);
       break;
     }
   };
@@ -76,6 +77,11 @@ Magic.prototype.search = function(terms){
   });
 
   return results;
+};
+
+Magic.prototype.searchArgs = function(currentCommand, terms){
+  console.log('searching args', currentCommand, terms);
+  return [];
 };
 
 Magic.prototype.getViews = function() {

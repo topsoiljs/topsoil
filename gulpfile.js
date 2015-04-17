@@ -106,6 +106,7 @@ gulp.task('browserify', function() {
   });
 
   return b.bundle()
+          .pipe(plumber())
           .pipe(source('app.js'))
           .pipe(buffer())
           .pipe(sourcemaps.init({loadMaps: true}))

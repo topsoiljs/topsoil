@@ -20,9 +20,10 @@ function isKey(event){
 };
 function MagicInputStore (eventName){
   var initialState = {
-      args: null,
+      args: [],
       currentCommand: null,
       suggestions: [],
+      argsSuggestions: [],
       suggestionActive: -1,
       preArgsLength: 0
   };
@@ -43,13 +44,17 @@ function MagicInputStore (eventName){
       state.suggestionActive = sug;
       render();
     },
-    setCurrentCommand: function(command){
-      state.currentCommand = command;
-      state.args = [];
+    setCurrentCommand: function(currentCommand){
+      state.suggestionActive = currentCommand;
+      state.currentCommand = state.suggestions[currentCommand];
       render();
     },
     setSuggestions: function(suggestions){
       state.suggestions = suggestions;
+      render();
+    },
+    setArgsSuggestions: function(suggestions){
+      state.argsSuggestions = suggestions;
       render();
     }
   };
@@ -88,33 +93,31 @@ var MagicInput = React.createClass({
     var el = document.getElementById('terminal');
     var state = magicInputStore.getState();
     if (isKey(e, 'ENTER')) {
-      if(state.suggestionActive < 0){
-        state.suggestionActive = 0;
-      }
-      if(!state.args && state.suggestions[state.suggestionActive]){
-        el.value = el.value += ' ';
-        state.preArgsLength = el.value.length;
-        magicInputStore.setCurrentCommand(state.suggestions[state.suggestionActive]);
-      }else{
-        var value = el.value;
-        args = value.slice(state.preArgsLength).split(' ');
+        args = state.args.trim().split(' ');
         magic.callCommand(state.currentCommand, args);
         el.value = '';
         magicInputStore.resetState();
-      }
     }
   },
   onChange: function(e){
     var state = magicInputStore.getState();
-    if(!state.args){
-      /*
-        results = {
-          suggestions: []commands
-          arguments: []string
-        }
-      */
-      var results = magic.search(e.target.value);
-      magicInputStore.setSuggestions(results.suggestions);
+    /*
+      results = {
+        suggestions: []commands
+        arguments: []string
+      }
+    */
+    var results = magic.search(e.target.value);
+    magicInputStore.setSuggestions(results.suggestions);
+    if(state.suggestionActive < 0){
+      state.suggestionActive = 0;
+    }
+    magicInputStore.setCurrentCommand(state.suggestionActive);
+    if(results.arguments){
+      var argsSugs = magic.searchArgs(state.currentCommand, results.arguments);
+      magicInputStore.setArgsSuggestions(argsSugs);
+    }else{
+      magicInputStore.setArgsSuggestions(null);
     }
   },
   render: function() {
