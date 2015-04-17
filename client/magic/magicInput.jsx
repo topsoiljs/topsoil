@@ -113,7 +113,8 @@ var MagicInput = React.createClass({
       state.suggestionActive = 0;
     }
     magicInputStore.setCurrentCommand(state.suggestionActive);
-    if(results.arguments){
+    // If arguments there, then set args suggestions
+    if(_.isString(results.arguments)){
       var argsSugs = magic.searchArgs(state.currentCommand, results.arguments);
       magicInputStore.setArgsSuggestions(argsSugs);
     }else{
@@ -133,7 +134,7 @@ var MagicInput = React.createClass({
           {nodes}
         </div>
         <div className="row">
-          <MagicSuggestions suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions}/>
+          <MagicSuggestions suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions} argsSuggestions={this.state.argsSuggestions}/>
         </div>
       </div>
     );

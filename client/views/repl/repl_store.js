@@ -1,4 +1,3 @@
-console.log(module);
 var eventBus = require("../../eventBus.js");
 
 function ReplViewStore() {

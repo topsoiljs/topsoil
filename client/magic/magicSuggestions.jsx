@@ -1,7 +1,8 @@
 var MagicSuggestions = React.createClass({
   render: function() {
     var nodes = [];
-    this.props.suggestions.forEach(function(suggestion, ind){
+    var iterable = this.props.argsSuggestions ? this.props.argsSuggestions : this.props.suggestions;
+    iterable.forEach(function(suggestion, ind){
       var sugNode;
       if(ind === this.props.suggestionActive){
         sugNode = (<li>
