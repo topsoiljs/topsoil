@@ -254,5 +254,6 @@ magic.registerView({
     }
     ],
   category: 'git',
+  icon: "git-square",
   component: GitComponent
 });

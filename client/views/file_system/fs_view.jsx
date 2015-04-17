@@ -103,6 +103,7 @@ magic.registerView({
     }
     ],
   category: 'filesystem',
+  icon: 'folder-open',
   component: FilesystemComponent
 });
 

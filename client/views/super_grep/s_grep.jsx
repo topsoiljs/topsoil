@@ -64,5 +64,6 @@ magic.registerView({
     }
   ],
   category: 'filesystem',
+  icon: 'file-text-o',
   component: SGrepComponent
 });

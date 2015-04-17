@@ -9,11 +9,15 @@ var MagicSuggestions = React.createClass({
       var sugNode;
       if(ind === active){
         sugNode = (<li>
-          <div className="collapsible-header active-item"> {suggestion.name} | {suggestion.description} | arguments: {args}</div>
+          <div className="collapsible-header active-item"> 
+            <i className={"fa fa-" + suggestion.view.icon + " fa-lg"}></i> {suggestion.name} | {suggestion.description} | arguments: {JSON.stringify(suggestion.args).slice(1, -1)}
+          </div>
         </li>)
       }else{
         sugNode = (<li>
-          <div className="collapsible-header"> {suggestion.name} | {suggestion.description}</div>
+          <div className="collapsible-header"> 
+            <i className={"fa fa-" + suggestion.view.icon + " fa-lg"}></i> {suggestion.name} | {suggestion.description}
+          </div>
         </li>)
       }
       nodes.push(sugNode);

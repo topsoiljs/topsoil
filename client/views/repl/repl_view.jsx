@@ -56,5 +56,6 @@ magic.registerView({
     }
     ],
   category: 'repl',
+  icon: 'terminal',
   component: ReplComponent
 });

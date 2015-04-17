@@ -64,6 +64,7 @@ var MagicInput = React.createClass({
         <input autoFocus type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
       </div>
     ];
+
     return (
       <div>
         <div className="row">
