@@ -56,6 +56,7 @@ gulp.task('ts', function () {
                      }));
 
     var processAPI = gulp.src('server-typescript/server/processAPIs/**/*.ts')
+        .pipe(plumber())
         .pipe(ts({
             declarationFiles: true,
             noExternalResolve: false,
@@ -63,6 +64,7 @@ gulp.task('ts', function () {
         }));
 
     var utility = gulp.src('server-typescript/server/utility/**/*.ts')
+        .pipe(plumber())
         .pipe(ts({
             declarationFiles: true,
             noExternalResolve: false,
@@ -112,7 +114,6 @@ gulp.task('browserify', function() {
           .pipe(sourcemaps.init({loadMaps: true}))
               // Add transformation tasks to the pipeline here.
               .pipe(uglify())
-              .on('error', gutil.log)
           .pipe(sourcemaps.write('./'))
           .pipe(gulp.dest('deploy/client'));
 });

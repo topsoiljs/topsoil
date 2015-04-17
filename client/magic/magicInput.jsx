@@ -32,31 +32,48 @@ function MagicInputStore (eventName){
   var render = function(){
     eventBus.emit(eventName);
   };
+  // Methods returns itself, and allows last parameter to be an optional boolean that specifies rerender.
   var methods = {
     getState: function(){
       return state;
     },
-    resetState: function(){
+    resetState: function(rend){
       state = _.cloneDeep(initialState);
-      render();
+      if(arguments[arguments.length-1]){
+        render();
+      }
+      return methods;
     },
-    setActiveSuggestion: function(sug){
+    setActiveSuggestion: function(sug, rend){
       state.suggestionActive = sug;
-      render();
+      if(arguments[arguments.length-1]){
+        render();
+      }
+      return methods;
     },
-    setCurrentCommand: function(currentCommand){
+    setCurrentCommand: function(currentCommand, rend){
       state.suggestionActive = currentCommand;
       state.currentCommand = state.suggestions[currentCommand];
-      render();
+      if(arguments[arguments.length-1]){
+        render();
+      }
+      return methods;
     },
-    setSuggestions: function(suggestions){
+    setSuggestions: function(suggestions, rend){
       state.suggestions = suggestions;
-      render();
+      if(arguments[arguments.length-1]){
+        render();
+      }
+      return methods;
     },
-    setArgsSuggestions: function(suggestions){
+    setArgsSuggestions: function(suggestions, rend){
       state.argsSuggestions = suggestions;
-      render();
-    }
+      if(arguments[arguments.length-1]){
+          render();
+      }
+      return methods;
+    },
+    render: render
   };
 
   return methods;
@@ -78,7 +95,7 @@ var MagicInput = React.createClass({
     var state = magicInputStore.getState();
     if(isKey(e, 'TAB', 'DOWN_ARROW')){
       e.preventDefault();
-      magicInputStore.setActiveSuggestion((state.suggestionActive + 1) % state.suggestions.length)
+      magicInputStore.setActiveSuggestion((state.suggestionActive + 1) % state.suggestions.length, true)
     // Up
     }else if(isKey(e, 'UP_ARROW')){
       e.preventDefault();
@@ -86,7 +103,7 @@ var MagicInput = React.createClass({
       if(active < 0){
         active = state.suggestions.length-1;
       }
-      magicInputStore.setActiveSuggestion(active);
+      magicInputStore.setActiveSuggestion(active, true);
     }
   },
   handleInput: function(e){
@@ -96,7 +113,7 @@ var MagicInput = React.createClass({
         args = state.args.trim().split(' ');
         magic.callCommand(state.currentCommand, args);
         el.value = '';
-        magicInputStore.resetState();
+        magicInputStore.resetState(true);
     }
   },
   onChange: function(e){
@@ -108,17 +125,18 @@ var MagicInput = React.createClass({
       }
     */
     var results = magic.search(e.target.value);
-    magicInputStore.setSuggestions(results.suggestions);
     if(state.suggestionActive < 0){
       state.suggestionActive = 0;
     }
-    magicInputStore.setCurrentCommand(state.suggestionActive);
+    var chain = magicInputStore
+                  .setSuggestions(results.suggestions)
+                  .setCurrentCommand(state.suggestionActive);
     // If arguments there, then set args suggestions
     if(_.isString(results.arguments)){
       var argsSugs = magic.searchArgs(state.currentCommand, results.arguments);
-      magicInputStore.setArgsSuggestions(argsSugs);
+      chain.setArgsSuggestions(argsSugs, true);
     }else{
-      magicInputStore.setArgsSuggestions(null);
+      chain.setArgsSuggestions(null, true);
     }
   },
   render: function() {
