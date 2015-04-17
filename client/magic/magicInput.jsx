@@ -107,8 +107,14 @@ var MagicInput = React.createClass({
   onChange: function(e){
     var state = magicInputStore.getState();
     if(!state.args){
+      /*
+        results = {
+          suggestions: []commands
+          arguments: []string
+        }
+      */
       var results = magic.search(e.target.value);
-      magicInputStore.setSuggestions(results);
+      magicInputStore.setSuggestions(results.suggestions);
     }
   },
   render: function() {

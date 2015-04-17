@@ -55,12 +55,24 @@ Magic.prototype.callCommand = function(command, args){
 };
 
 Magic.prototype.search = function(terms){
+  var results = {
+    arguments: null,
+    suggestions: []
+  };
   if(terms === ''){
-    return [];
+    return results;
+  };
+  var search = terms;
+  for(var i=0;i<terms.length;i++){
+    if(terms[i] === ':'){
+      results.arguments = [];
+      search = terms.slice(0, i);
+      break;
+    }
   };
   var results;
-  this._auto.get(terms, function(sugs){
-    results = sugs;
+  this._auto.get(search, function(sugs){
+    results.suggestions = sugs;
   });
 
   return results;
