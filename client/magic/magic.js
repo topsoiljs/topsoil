@@ -88,7 +88,19 @@ Magic.prototype.callCommand = function(command, args){
   return command.method(argsObj);
 };
 
+//This is not good perf. Need to refactor.
+Magic.prototype.getAllCommands = function() {
+  var commands = this.commands
+  var result = [];
+  for(var key in commands) {
+    result.push(commands[key]);
+  }
+
+  return result;
+}
+
 Magic.prototype.search = function(terms){
+<<<<<<< HEAD
   var results = {
     arguments: null,
     suggestions: []

@@ -9,6 +9,8 @@ var MagicInput = React.createClass({
     eventBus.register('magicInput', function() {
       this.setState(magicInputStore.getState());
     }.bind(this));
+
+    magicInputStore.setSuggestions(magic.getAllCommands());
   },
   getInitialState: function(){
     return magicInputStore.getState();
@@ -36,6 +38,7 @@ var MagicInput = React.createClass({
   },
   onChange: function(e){
     var state = magicInputStore.getState();
+
     /*
       results = {
         suggestions: []commands
