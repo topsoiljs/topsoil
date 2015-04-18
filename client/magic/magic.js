@@ -122,7 +122,6 @@ Magic.prototype.searchArgs = function(currentCommand, terms){
     results = sugs;
   });
 
-  console.log('searchargs', terms, results);
   return results;
 };
 
