@@ -23,8 +23,8 @@ function MagicInputStore (eventName){
       args: null,
       suggestions: [],
       argsSuggestions: [],
+      suggestionArgsActive: -1,
       suggestionActive: 0,
-      argsSuggestionActive: 0,
       preArgsLength: 0
   };
 
@@ -51,8 +51,23 @@ function MagicInputStore (eventName){
       }
       return methods;
     },
+    setActiveArgsSuggestion: function(sug, rend){
+      state.suggestionArgsActive = sug;
+      if(arguments[arguments.length-1]){
+        render();
+      }
+      return methods;
+    },
     getCurrentCommand: function(){
       return state.suggestions[state.suggestionActive];
+    },
+    getCurrentArgs: function(){
+      if(state.suggestionArgsActive < 0){
+        return state.args;
+      }else{
+        var currentArgs = state.argsSuggestions[state.suggestionArgsActive].name;
+        return currentArgs === undefined ? state.args : currentArgs;
+      }
     },
     setSuggestions: function(suggestions, rend){
       state.suggestions = suggestions;
@@ -73,19 +88,32 @@ function MagicInputStore (eventName){
       return methods;
     },
     activeSuggestionUp: function(rend){
-      var active = (state.suggestionActive - 1);
-      if(active < 0){
-        active = state.suggestions.length-1;
+      if(state.argsSuggestions){
+        var active = (state.suggestionArgsActive - 1);
+        if(active < -1){
+          active = state.argsSuggestions.length-1;
+        }
+        methods.setActiveArgsSuggestion(active);
+      }else{
+        var active = (state.suggestionActive - 1);
+        if(active < 0){
+          active = state.suggestions.length-1;
+        }
+        methods.setActiveSuggestion(active);
       }
-      methods.setActiveSuggestion(active);
       if(arguments[arguments.length-1]){
           render();
       }
       return methods;
     },
     activeSuggestionDown: function(rend){
-      var active = (state.suggestionActive + 1) % state.suggestions.length;
-      methods.setActiveSuggestion(active);
+      if(state.argsSuggestions){
+        var active = (state.suggestionActive + 1) % state.suggestions.length;
+        methods.setActiveArgsSuggestion(active);
+      }else{
+        var active = (state.suggestionActive + 1) % state.suggestions.length;
+        methods.setActiveSuggestion(active);
+      }
       if(arguments[arguments.length-1]){
           render();
       }
@@ -123,7 +151,7 @@ var MagicInput = React.createClass({
     var el = document.getElementById('terminal');
     var state = magicInputStore.getState();
     if (isKey(e, 'ENTER')) {
-        magic.callCommand(magicInputStore.getCurrentCommand(), state.args);
+        magic.callCommand(magicInputStore.getCurrentCommand(), magicInputStore.getCurrentArgs());
         el.value = '';
         magicInputStore.resetState(true);
     }
@@ -161,7 +189,7 @@ var MagicInput = React.createClass({
           {nodes}
         </div>
         <div className="row">
-          <MagicSuggestions suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions} argsSuggestions={this.state.argsSuggestions}/>
+          <MagicSuggestions suggestionArgsActive = {this.state.suggestionArgsActive} suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions} argsSuggestions={this.state.argsSuggestions}/>
         </div>
       </div>
     );
