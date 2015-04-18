@@ -54,7 +54,7 @@ magic.registerView({
   name: 'filesystem',
   commands: [
      {
-      name: "listFiles",
+      name: "List Files",
       description: 'lists files in directory',
       args: ['path'],
       tags: ['show files', 'list files', 'display files', 'ls'],
@@ -62,7 +62,7 @@ magic.registerView({
       method: fsViewStore["listFiles"]
     },
     {
-      name: "hideFiles",
+      name: "Hide Files",
       description: 'hides files in directory view',
       args: ['path'],
       tags: ['hide files', 'remove fileview', "don't display files"],
@@ -70,7 +70,7 @@ magic.registerView({
       method: fsViewStore["hideFiles"]
     },
     {
-      name: "renderFilesystem",
+      name: "Render Filesystem",
       description: 'renders fileSystemView',
       args: ['path'],
       tags: ['show filesystem view'],
@@ -78,7 +78,7 @@ magic.registerView({
       method: fsViewStore["renderView"]
     },
     {
-      name: "readFile",
+      name: "Read File",
       description: 'reads specified file',
       args: ['path'],
       tags: ['read file'],
@@ -86,7 +86,7 @@ magic.registerView({
       method: fsViewStore["readFile"]
     },
     {
-      name: "makeDirectory",
+      name: "Make Directory",
       description: 'makes directory at path',
       args: ['path'],
       tags: ['make directory mkdir filesystem'],
@@ -94,7 +94,7 @@ magic.registerView({
       method: fsViewStore["makeDirectory"]
     },
     {
-      name: "removeDirectory",
+      name: "Remove Directory",
       description: 'removes directory at path',
       args: ['path'],
       tags: ['remove directory rm filesystem'],
