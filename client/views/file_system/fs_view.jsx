@@ -1,11 +1,15 @@
+var eventBus = require("../../eventBus.js");
+var magic = require("../../magic/magic.js");
+
+var fsViewStore = require("./fs_store.js");
+
 var FilesystemComponent = React.createClass({
   getInitialState: function() {
-    return viewStore.getState();
+    return fsViewStore.getState();
   },
   componentDidMount: function() {
     eventBus.register("filesystem", function() {
-      console.log(this);
-      this.setState(viewStore.getState());
+      this.setState(fsViewStore.getState());
     }.bind(this));
   },
   render: function() {
@@ -52,26 +56,26 @@ magic.registerView({
      {
       name: "listFiles",
       description: 'lists files in directory',
-      args: ['directory'],
+      args: ['path'],
       tags: ['show files', 'list files', 'display files', 'ls'],
       categories: ['read'],
-      method: viewStore["listFiles"]
+      method: fsViewStore["listFiles"]
     },
     {
       name: "hideFiles",
       description: 'hides files in directory view',
-      args: ['directory'],
+      args: ['path'],
       tags: ['hide files', 'remove fileview', "don't display files"],
       categories: ['ui'],
-      method: viewStore["hideFiles"]
+      method: fsViewStore["hideFiles"]
     },
     {
       name: "renderFilesystem",
       description: 'renders fileSystemView',
-      args: ['directory'],
+      args: ['path'],
       tags: ['show filesystem view'],
       categories: ['ui'],
-      method: viewStore["renderView"]
+      method: fsViewStore["renderView"]
     },
     {
       name: "readFile",
@@ -79,7 +83,7 @@ magic.registerView({
       args: ['path'],
       tags: ['read file'],
       categories: ['read'],
-      method: viewStore["readFile"]
+      method: fsViewStore["readFile"]
     },
     {
       name: "makeDirectory",
@@ -87,7 +91,7 @@ magic.registerView({
       args: ['path'],
       tags: ['make directory mkdir filesystem'],
       categories: ['read'],
-      method: viewStore["makeDirectory"]
+      method: fsViewStore["makeDirectory"]
     },
     {
       name: "removeDirectory",
@@ -95,9 +99,10 @@ magic.registerView({
       args: ['path'],
       tags: ['remove directory rm filesystem'],
       categories: ['write'],
-      method: viewStore["removeDirectory"]
+      method: fsViewStore["removeDirectory"]
     }
     ],
   category: 'filesystem',
   component: FilesystemComponent
 });
+

@@ -18,4 +18,4 @@ var EventBus = function() {
   return api;
 }
 
-var eventBus = EventBus();
+module.exports = EventBus();
