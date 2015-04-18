@@ -1,9 +1,11 @@
 var masterStore = require("../masterStore.js");
 function generateSuffixes(word){
-  return _.range(word.length).reduce(function(sum, el){
+  var subResults = _.range(word.length).reduce(function(sum, el){
     sum.push(word.slice(el));
     return sum;
-  }, [])
+  }, []);
+  subResults.push(' ');
+  return subResults;
 };
 
 var Magic = function(){
@@ -34,7 +36,8 @@ var Magic = function(){
     },
     queryTokenizer: function(q){
       return q.split(' ');
-    }
+    },
+    limit: 12
   })
   this._auto.initialize();
 };
@@ -52,7 +55,11 @@ Magic.prototype.registerView = function(viewObject){
       },
       queryTokenizer: function(q){
         return q;
-      }
+      },
+      sorter: function(a, b){
+        return b.priority - a.priority;
+      },
+      limit: 12
     });
     this._auto.add([el]);
     el.view = viewObject;
@@ -86,9 +93,6 @@ Magic.prototype.search = function(terms){
     arguments: null,
     suggestions: []
   };
-  if(terms === ''){
-    return results;
-  };
   var search = terms;
   for(var i=0;i<terms.length;i++){
     if(terms[i] === ':'){
@@ -97,6 +101,9 @@ Magic.prototype.search = function(terms){
       results.arguments = terms.slice(i+1, terms.length);
       break;
     }
+  };
+  if(terms.length === 0){
+    search = ' ';
   };
   var results;
   this._auto.get(search, function(sugs){
@@ -107,8 +114,16 @@ Magic.prototype.search = function(terms){
 };
 
 Magic.prototype.searchArgs = function(currentCommand, terms){
-  console.log('searching args', currentCommand, terms);
-  return [];
+  if(terms.length === 0){
+    terms = ' ';
+  };
+  var results;
+  this._argsEngines[currentCommand._id].get(terms, function(sugs){
+    results = sugs;
+  });
+
+  console.log('searchargs', terms, results);
+  return results;
 };
 
 Magic.prototype.getViews = function() {
