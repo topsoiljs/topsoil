@@ -9,6 +9,10 @@ function generateSuffixes(word){
 var Magic = function(){
   this.views = {};
   this.commands = {};
+
+  // Start args search engine
+  this._argsEngines = {};
+
   // Start core commands search engine
   this._auto = new Bloodhound({
     name: 'magic',
@@ -39,6 +43,17 @@ Magic.prototype.registerView = function(viewObject){
   this.views[viewObject.name] = viewObject;
   // Index commands
   _.each(viewObject.commands, function(el){
+    el._id = uuid.v4();
+    this._argsEngines[el._id] = new Bloodhound({
+      name: el._id,
+      local: [],
+      datumTokenizer: function(d){
+        return generateSuffixes(d.name);
+      },
+      queryTokenizer: function(q){
+        return q;
+      }
+    });
     this._auto.add([el]);
     el.view = viewObject;
     this.commands[el.name] = el;
@@ -47,9 +62,21 @@ Magic.prototype.registerView = function(viewObject){
 
 Magic.prototype.callCommand = function(command, args){
   masterStore.openView(command.view.component);
+  var argsArray = args.trim().split(' ');
+  _.defaults(command, {argsHistory: {}});
+  if(!command.argsHistory[args]){
+    var argsObj = {
+      name: args,
+      priority: 0
+    };
+    command.argsHistory[args] = argsObj;
+    this._argsEngines[command._id].add([argsObj]);
+  };
+  command.argsHistory[args].priority ++;
+
   var argsObj = {};
-  _.each(args, function(el, ind){
-    argsObj[el] = args[ind];
+  _.each(command.args, function(el, ind){
+    argsObj[el] = argsArray[ind];
   })
   return command.method(argsObj);
 };

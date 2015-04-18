@@ -20,7 +20,7 @@ function isKey(event){
 };
 function MagicInputStore (eventName){
   var initialState = {
-      args: [],
+      args: null,
       currentCommand: null,
       suggestions: [],
       argsSuggestions: [],
@@ -73,6 +73,10 @@ function MagicInputStore (eventName){
       }
       return methods;
     },
+    setArguments: function(args){
+      state.args = args;
+      return methods;
+    },
     render: render
   };
 
@@ -80,7 +84,6 @@ function MagicInputStore (eventName){
 };
 
 var magicInputStore = MagicInputStore('magicInput');
-
 var MagicInput = React.createClass({
   componentDidMount: function(){
     eventBus.register('magicInput', function() {
@@ -110,8 +113,7 @@ var MagicInput = React.createClass({
     var el = document.getElementById('terminal');
     var state = magicInputStore.getState();
     if (isKey(e, 'ENTER')) {
-        args = state.args.trim().split(' ');
-        magic.callCommand(state.currentCommand, args);
+        magic.callCommand(state.currentCommand, state.args);
         el.value = '';
         magicInputStore.resetState(true);
     }
@@ -130,7 +132,8 @@ var MagicInput = React.createClass({
     }
     var chain = magicInputStore
                   .setSuggestions(results.suggestions)
-                  .setCurrentCommand(state.suggestionActive);
+                  .setCurrentCommand(state.suggestionActive)
+                  .setArguments(results.arguments);
     // If arguments there, then set args suggestions
     if(_.isString(results.arguments)){
       var argsSugs = magic.searchArgs(state.currentCommand, results.arguments);
