@@ -1,33 +1,34 @@
 var masterStore = require("../masterStore.js");
 var MagicInput = require("../magic/magicInput.jsx");
+var MagicSuggestions = require("../magic/MagicSuggestions.jsx");
 var eventBus = require("../eventBus.js")
 
 var MasterView = React.createClass({
   getInitialState: function() {
-    return {activeView: null};
+    return masterStore.getState();
   },
   componentDidMount: function() {
     eventBus.register("master", function() {
-      this.setState({activeView: masterStore.getState()});
+      this.setState(masterStore.getState());
     }.bind(this));
   },
   render: function() {
-    if(this.state.activeView) {
-      return (<div className="row">
+    console.log("state:", this.state);
+    return (<div>
+              <div className="row">
                 <div className="magicInput col s4">
-                  <MagicInput/>
+                  <MagicInput {...this.state.magicData}/>
                 </div>
-                <div className="main col s8">
-                  <this.state.activeView/>
+              </div>
+              <div className="row">
+                <div className="main col s2">
+                  <MagicSuggestions {...this.state.magicData}/>
                 </div>
-              </div>)
-    } else {
-      return (<div>
-                <div className="row">
-                  <MagicInput/>
+                <div className="main col s10">
+                  {this.state.activeView ? <this.state.activeView/> : <div/>}
                 </div>
-              </div>)
-    }
+              </div>
+            </div>);
   }
 });
 

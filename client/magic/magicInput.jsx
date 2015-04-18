@@ -29,7 +29,7 @@ var MagicInput = React.createClass({
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
-    var state = magicInputStore.getState();
+    
     if (isKey(e, 'ENTER')) {
         magic.callCommand(magicInputStore.getCurrentCommand(), magicInputStore.getCurrentArgs());
         el.value = '';
@@ -58,13 +58,6 @@ var MagicInput = React.createClass({
     }
   },
   render: function() {
-    var nodes = [
-      <div className="input-field col s12">
-        <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
-        <input autoFocus type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
-      </div>
-    ];
-
     return (
       <div>
         <div className="row">
