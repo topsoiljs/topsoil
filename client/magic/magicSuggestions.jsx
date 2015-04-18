@@ -1,11 +1,15 @@
 var MagicSuggestions = React.createClass({
   render: function() {
     var nodes = [];
-    this.props.suggestions.forEach(function(suggestion, ind){
+    var iterable = this.props.argsSuggestions ? this.props.argsSuggestions : this.props.suggestions;
+    var active = this.props.argsSuggestions ? this.props.suggestionArgsActive : this.props.suggestionActive
+    iterable.forEach(function(suggestion, ind){
+      // Replace later
+      var args = this.props.argsSuggestions ? ['random args'] : JSON.stringify(suggestion.args).slice(1, -1)
       var sugNode;
-      if(ind === this.props.suggestionActive){
+      if(ind === active){
         sugNode = (<li>
-          <div className="collapsible-header active-item"> {suggestion.name} | {suggestion.description} | arguments: {JSON.stringify(suggestion.args).slice(1, -1)}</div>
+          <div className="collapsible-header active-item"> {suggestion.name} | {suggestion.description} | arguments: {args}</div>
         </li>)
       }else{
         sugNode = (<li>

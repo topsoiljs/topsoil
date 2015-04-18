@@ -1,63 +1,8 @@
 var MagicSuggestions = require("./magicSuggestions.jsx");
 var eventBus = require("../eventBus.js");
 var magic = require("./magic.js");
-
-
-window._keys = {
-  9: 'TAB',
-  40: 'DOWN_ARROW',
-  38: 'UP_ARROW',
-  13: 'ENTER'
-};
-
-function isKey(event){
-  var keycode = event.which;
-  var result = false;
-  for(var i=1;i<arguments.length;i++){
-    result = result || window._keys[keycode] === arguments[i]
-  }
-  return result;
-};
-function MagicInputStore (eventName){
-  var initialState = {
-      args: null,
-      currentCommand: null,
-      suggestions: [],
-      suggestionActive: -1,
-      preArgsLength: 0
-  };
-
-  var state = _.cloneDeep(initialState);
-  var render = function(){
-    eventBus.emit(eventName);
-  };
-  var methods = {
-    getState: function(){
-      return state;
-    },
-    resetState: function(){
-      state = _.cloneDeep(initialState);
-      render();
-    },
-    setActiveSuggestion: function(sug){
-      state.suggestionActive = sug;
-      render();
-    },
-    setCurrentCommand: function(command){
-      state.currentCommand = command;
-      state.args = [];
-      render();
-    },
-    setSuggestions: function(suggestions){
-      state.suggestions = suggestions;
-      render();
-    }
-  };
-
-  return methods;
-};
-
-var magicInputStore = MagicInputStore('magicInput');
+var magicInputStore = require('./magicInputStore.js');
+var isKey = require('../utilities.js').isKey;
 
 var MagicInput = React.createClass({
   componentDidMount: function(){
@@ -73,42 +18,40 @@ var MagicInput = React.createClass({
     var state = magicInputStore.getState();
     if(isKey(e, 'TAB', 'DOWN_ARROW')){
       e.preventDefault();
-      magicInputStore.setActiveSuggestion((state.suggestionActive + 1) % state.suggestions.length)
+      magicInputStore.activeSuggestionDown(true)
     // Up
     }else if(isKey(e, 'UP_ARROW')){
       e.preventDefault();
-      var active = (state.suggestionActive - 1) % state.suggestions.length;
-      if(active < 0){
-        active = state.suggestions.length-1;
-      }
-      magicInputStore.setActiveSuggestion(active);
+      magicInputStore.activeSuggestionUp(true);
     }
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
     var state = magicInputStore.getState();
     if (isKey(e, 'ENTER')) {
-      if(state.suggestionActive < 0){
-        state.suggestionActive = 0;
-      }
-      if(!state.args && state.suggestions[state.suggestionActive]){
-        el.value = el.value += ' ';
-        state.preArgsLength = el.value.length;
-        magicInputStore.setCurrentCommand(state.suggestions[state.suggestionActive]);
-      }else{
-        var value = el.value;
-        args = value.slice(state.preArgsLength).split(' ');
-        magic.callCommand(state.currentCommand, args);
+        magic.callCommand(magicInputStore.getCurrentCommand(), magicInputStore.getCurrentArgs());
         el.value = '';
-        magicInputStore.resetState();
-      }
+        magicInputStore.resetState(true);
     }
   },
   onChange: function(e){
     var state = magicInputStore.getState();
-    if(!state.args){
-      var results = magic.search(e.target.value);
-      magicInputStore.setSuggestions(results);
+    /*
+      results = {
+        suggestions: []commands
+        arguments: []string
+      }
+    */
+    var results = magic.search(e.target.value);
+    var chain = magicInputStore
+                  .setSuggestions(results.suggestions)
+                  .setArguments(results.arguments);
+    // If arguments there, then set args suggestions
+    if(_.isString(results.arguments)){
+      var argsSugs = magic.searchArgs(magicInputStore.getCurrentCommand(), results.arguments);
+      chain.setArgsSuggestions(argsSugs, true);
+    }else{
+      chain.setArgsSuggestions(null, true);
     }
   },
   render: function() {
@@ -124,7 +67,7 @@ var MagicInput = React.createClass({
           {nodes}
         </div>
         <div className="row">
-          <MagicSuggestions suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions}/>
+          <MagicSuggestions suggestionArgsActive = {this.state.suggestionArgsActive} suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions} argsSuggestions={this.state.argsSuggestions}/>
         </div>
       </div>
     );
