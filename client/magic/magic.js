@@ -1,7 +1,7 @@
 var masterStore = require("../masterStore.js");
 function generateSuffixes(word){
   return _.range(word.length).reduce(function(sum, el){
-    sum.push(word.slice(el))
+    sum.push(word.slice(el));
     return sum;
   }, [])
 };

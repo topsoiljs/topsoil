@@ -14,7 +14,7 @@ function isKey(event){
   var keycode = event.which;
   var result = false;
   for(var i=1;i<arguments.length;i++){
-    result = result || window._keys[keycode] === arguments[i]
+    result = result || window._keys[keycode] === arguments[i];
   }
   return result;
 };
