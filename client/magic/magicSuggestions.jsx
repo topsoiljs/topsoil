@@ -19,7 +19,6 @@ var MagicSuggestions = React.createClass({
     }
   },
   render: function() {
-    // console.log("magicSuggestions Props: ", this.props);
     var nodes = [];
     var iterable = this.props.argsSuggestions ? this.props.argsSuggestions : this.props.suggestions;
     var active = this.props.argsSuggestions ? this.props.suggestionArgsActive : this.props.suggestionActive
@@ -34,7 +33,7 @@ var MagicSuggestions = React.createClass({
             <i className={"fa fa-" + suggestion.view.icon + " fa-lg icon"}></i>
             <span className="suggestionName">{suggestion.name.toUpperCase()}</span>
             <span className="suggestionDescription">{suggestion.description}</span>
-            <span className="suggestionArguments">arguments: {JSON.stringify(suggestion.args).slice(1, -1)}</span>
+            <span className="suggestionArguments">arguments: {args}</span>
           </div>
         </li>)
       }else{
