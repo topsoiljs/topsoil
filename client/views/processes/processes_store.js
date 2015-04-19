@@ -1,13 +1,31 @@
 var eventBus = require("../../eventBus.js");
 
-function ProcessesViewStore() {
+function ProcessesViewStore(eventName) {
   var state = {
-    output: []
+    output: [],
+    pwd: '/'
   };
   var streams = {};
-
+  var render = function(){
+    eventBus.emit(eventName);
+  };
+  $.get('/state/processes/pwd')
+    .done(function(data){
+      state.pwd = data;
+      render();
+  });
   var methods = {
     start: function(args){
+    },
+    setPWD: function(args){
+      $.post('/state/processes/pwd', {data: args.pwd})
+        .done(function(){
+          state.pwd = args.pwd;
+          render();
+        })
+        .fail(function(){
+          console.log('failed posting pwd')
+        })
     },
     renderView: function(){
     },
@@ -19,4 +37,4 @@ function ProcessesViewStore() {
   return methods;
 }
 
-module.exports = ProcessesViewStore();
+module.exports = ProcessesViewStore('processes');

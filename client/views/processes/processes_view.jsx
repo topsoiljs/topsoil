@@ -8,7 +8,7 @@ var ProcessesComponent = React.createClass({
   },
   componentDidMount: function() {
     eventBus.register("processes", function() {
-      this.setState(replViewStore.getState());
+      this.setState(processesStore.getState());
     }.bind(this));
   },
   render: function() {
@@ -17,16 +17,13 @@ var ProcessesComponent = React.createClass({
     var fileData = this.state.fileData;
     return (<div>
        <h4>PROCESSES</h4>
+       <h5>{this.state.pwd}</h5>
        <row>
         {nodes}
        </row>
-       </input>
     </div>);
   }
 });
-
-
-
 magic.registerView({
   name: 'processes',
   commands: [
@@ -37,6 +34,14 @@ magic.registerView({
       tags: ['start process', 'start script', 'processes'],
       categories: ['write'],
       method: processesStore['start']
+    },
+    {
+      name: 'Set Current Working Directory (Processes)',
+      description: 'sets current Working directory for processes view',
+      args: ['pwd'],
+      tags: ['set ', 'pwd', 'current working', 'directory', 'present working directory'],
+      categories: ['write'],
+      method: processesStore['setPWD']
     }
   ],
   category: 'processes',
