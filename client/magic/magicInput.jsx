@@ -22,7 +22,7 @@ var MagicInput = React.createClass({
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
-    
+
     if (isKey(e, 'ENTER')) {
       magic.callCommand(this.getCurrentCommand(), this.getCurrentArgs());
       el.value = '';

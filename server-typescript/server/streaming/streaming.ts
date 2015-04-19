@@ -18,6 +18,12 @@ var createDuplex = function(input, out){
   return es.duplex(input, out);
 };
 
+var createInfoSocket = function(socket, id : string){
+  return function(data){
+    socket.emit(id, data);
+  }
+};
+
 var createInStream = function(socket, id : string){
   var stream = through(function(chunk, enc, cb){
     cb(null, String(chunk));
@@ -49,16 +55,20 @@ var createBufferToStringStream = function(){
 var createSpawnStream = function(command, args, options){
   options = options || {};
   options.stdio = ['pipe', 'pipe'];
-
-  return through(function(chunk, enc, cb){
+  var outStream = createGenericStream(function(chunk, enc, cb){
+    cb(null, chunk);
+  });
+  var spawnThrough = through(function(chunk, enc, cb){
     var stream = spawn(command, args, options);
     stream.stdin.write(String(chunk));
     stream.stdin.end();
     stream.stdout.on('data', function(d){
-      cb(null, String(d));
-    })
+      outStream.write(String(d) + '\n');
+    });
+    cb();
   });
-}
+  return createDuplex(spawnThrough, outStream);
+};
 
 exports.createOutStream = createOutStream;
 exports.createInStream = createInStream;
@@ -66,3 +76,4 @@ exports.createGenericStream = createGenericStream;
 exports.createBufferToStringStream = createBufferToStringStream;
 exports.createSpawnStream = createSpawnStream;
 exports.createDuplexStream = createDuplex;
+exports.createInfoSocket = createInfoSocket;

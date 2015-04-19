@@ -13,10 +13,10 @@ function MasterStore() {
   };
 
   var state = {
-              activeView: undefined, 
+              activeView: undefined,
               magicData: _.cloneDeep(initialMagicData)
-            }
-  
+            };
+
   var updateMethods = {
     //VIEW METHODS
     openView: function(newViewComponent) {
@@ -42,36 +42,36 @@ function MasterStore() {
       state.magicData.args = args;
     },
     activeSuggestionUp: function(){
-      if(state.argsSuggestions){
+      if(state.magicData.argsSuggestions){
         var active = (state.magicData.suggestionArgsActive - 1);
         if(active < -1){
           active = state.magicData.argsSuggestions.length-1;
         }
-        methods.setActiveArgsSuggestion(active);
+        updateMethods.setActiveArgsSuggestion(active);
       }else{
         var active = (state.magicData.suggestionActive - 1);
         if(active < 0){
           active = state.magicData.suggestions.length-1;
         }
-        methods.setActiveSuggestion(active);
+        updateMethods.setActiveSuggestion(active);
       }
     },
     activeSuggestionDown: function(){
-      if(state.argsSuggestions){
+      if(state.magicData.argsSuggestions){
         var active = (state.magicData.suggestionArgsActive + 1) % state.magicData.argsSuggestions.length;
-        methods.setActiveArgsSuggestion(active);
+        updateMethods.setActiveArgsSuggestion(active);
       }else{
         var active = (state.magicData.suggestionActive + 1) % state.magicData.suggestions.length;
-        methods.setActiveSuggestion(active);
+        updateMethods.setActiveSuggestion(active);
       }
-    }, 
+    },
   };
 
   var nonUpdateMethods = {
     getState: function() {
       return state;
     }
-  }
+  };
 
   var methods = nonUpdateMethods;
 
@@ -86,6 +86,6 @@ function MasterStore() {
 
   return methods;
 }
-  
+
 
 module.exports = MasterStore();
