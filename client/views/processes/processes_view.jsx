@@ -13,17 +13,18 @@ var ProcessesComponent = React.createClass({
   },
   render: function() {
     var nodes = [];
-    console.log(nodes);
     this.state.outputs.forEach(function(el){
       var nodesOne = _.reduceRight(el.output, function(total, current){
         total.push((<div>{current}</div>));
         return total;
       }, []);
       nodes.push((
-        <div className="ui card">
-          <div className="header">{el.command} | {el.args}</div>
-          <div className="description">
-            {nodesOne}
+        <div className="process card">
+          <div className="content">
+            <div className="header">{el.command} | {el.args}</div>
+            <div className="description">
+              {nodesOne}
+            </div>
           </div>
         </div>))
     });

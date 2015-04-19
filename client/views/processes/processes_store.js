@@ -16,7 +16,6 @@ function ProcessesViewStore(eventName) {
   });
   var methods = {
     start: function(args){
-      console.log('start called', args);
       args.args = args.args || "";
       var out = {
         command: args.command,

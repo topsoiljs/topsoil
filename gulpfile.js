@@ -29,11 +29,12 @@ gulp.task('jade', function () {
 });
 
 gulp.task('stylus', function() {
-  gulp.src('./client/stylus_styles/*.styl')
+  gulp.src('./client/**/*.styl')
       .pipe(plumber())
       .pipe(stylus({
         compress: true
       }))
+      .pipe(concat('main.css'))
       .pipe(gulp.dest('./deploy/client'));
 });
 
