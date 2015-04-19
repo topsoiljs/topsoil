@@ -56,6 +56,14 @@ magic.registerView({
       tags: ['set ', 'pwd', 'current working', 'directory', 'present working directory'],
       categories: ['write'],
       method: processesStore['setPWD']
+    },
+    {
+      name: 'Open processes view',
+      description: 'open processes view',
+      args: ['pwd'],
+      tags: ['open processes view'],
+      categories: ['read'],
+      method: processesStore['renderView']
     }
   ],
   category: 'processes',
