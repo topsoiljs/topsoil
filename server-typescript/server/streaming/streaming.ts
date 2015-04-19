@@ -18,6 +18,12 @@ var createDuplex = function(input, out){
   return es.duplex(input, out);
 };
 
+var createInfoSocket = function(socket, id : string){
+  return function(data){
+    socket.emit(id, data);
+  }
+};
+
 var createInStream = function(socket, id : string){
   var stream = through(function(chunk, enc, cb){
     cb(null, String(chunk));
@@ -66,3 +72,4 @@ exports.createGenericStream = createGenericStream;
 exports.createBufferToStringStream = createBufferToStringStream;
 exports.createSpawnStream = createSpawnStream;
 exports.createDuplexStream = createDuplex;
+exports.createInfoSocket = createInfoSocket;
