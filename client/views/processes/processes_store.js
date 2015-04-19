@@ -34,7 +34,10 @@ function ProcessesViewStore(eventName) {
           cmd: args.command,
           args: args.args.split(' ')
         },
-        initialData: " "
+        initialData: " ",
+        infoCB: function(data){
+          console.log('infocb', data);
+        }
       });
     },
     setPWD: function(args){

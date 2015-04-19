@@ -52,7 +52,7 @@ var createBufferToStringStream = function(){
   })
 };
 
-var createSpawnStream = function(command, args, options){
+var createSpawnStream = function(command, args, options, infoHandler){
   options = options || {};
   options.stdio = ['pipe', 'pipe'];
   var outStream = createGenericStream(function(chunk, enc, cb){
@@ -60,6 +60,9 @@ var createSpawnStream = function(command, args, options){
   });
   var spawnThrough = through(function(chunk, enc, cb){
     var stream = spawn(command, args, options);
+    infoHandler({
+      pid: stream.pid
+    });
     stream.stdin.write(String(chunk));
     stream.stdin.end();
     stream.stdout.on('data', function(d){
