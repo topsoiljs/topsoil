@@ -12,7 +12,7 @@ var ProcessesComponent = React.createClass({
     }.bind(this));
   },
   render: function() {
-    var nodes = this.state.output.reduce(function(total, current){
+    var nodes = _.reduceRight(this.state.output, function(total, current){
       total.push((<div>{current}</div>));
       return total;
     }, []);
