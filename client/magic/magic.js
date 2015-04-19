@@ -1,4 +1,5 @@
 var masterStore = require("../masterStore.js");
+
 function generateSuffixes(word){
   var subResults = _.range(word.length).reduce(function(sum, el){
     sum.push(word.slice(el));
@@ -68,11 +69,14 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command, args){
+  console.log("masterStore", masterStore);
   masterStore.openView(command.view.component);
   if(args) {
     var argsArray = args.trim().split(' ');
+    console.log("args array:", argsArray);
   } else {
     var argsArray = [];
+    console.log("args array falsey:", argsArray);
   }
   
   _.defaults(command, {argsHistory: {}});

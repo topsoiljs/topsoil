@@ -10,7 +10,8 @@ var MagicInput = React.createClass({
     return {inputText: ""};
   },
   componentDidMount: function(){
-    masterStore.setSuggestions(magic.getAllCommands());
+    // console.log(magic.getAllCommands());
+    // masterStore.setSuggestions(magic.getAllCommands());
   },
   handleShortcut: function(e){
     // Tab or down
@@ -81,14 +82,14 @@ var MagicInput = React.createClass({
   },
   render: function() {
     return (
-      <div>
-        <div className="row">
-          <div className="input-field col s12">
-            <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
-            <input autoFocus type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
+      <div className="row">
+        <div className="sixteen wide column">
+          <div className="ui input topsoilInputBox">
+            <i className="fa fa-chevron-right f-icon fa-2x"></i>
+            <input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>      
           </div>
         </div>
-        <div className="row">
+        <div className="sixteen wide column">
           <MagicSuggestions {...this.props}/>
         </div>
       </div>
