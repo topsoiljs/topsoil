@@ -55,16 +55,20 @@ var createBufferToStringStream = function(){
 var createSpawnStream = function(command, args, options){
   options = options || {};
   options.stdio = ['pipe', 'pipe'];
-
-  return through(function(chunk, enc, cb){
+  var outStream = createGenericStream(function(chunk, enc, cb){
+    cb(null, chunk);
+  });
+  var spawnThrough = through(function(chunk, enc, cb){
     var stream = spawn(command, args, options);
     stream.stdin.write(String(chunk));
     stream.stdin.end();
     stream.stdout.on('data', function(d){
-      cb(null, String(d));
-    })
+      outStream.write(String(d) + '\n');
+    });
+    cb();
   });
-}
+  return createDuplex(spawnThrough, outStream);
+};
 
 exports.createOutStream = createOutStream;
 exports.createInStream = createInStream;
