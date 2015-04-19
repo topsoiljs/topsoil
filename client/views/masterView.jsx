@@ -1,7 +1,9 @@
 var masterStore = require("../masterStore.js");
 var MagicInput = require("../magic/magicInput.jsx");
 var MagicSuggestions = require("../magic/MagicSuggestions.jsx");
-var eventBus = require("../eventBus.js")
+var eventBus = require("../eventBus.js");
+var HubWorld = require("./hub_world/hub_world.jsx");
+
 
 var MasterView = React.createClass({
   getInitialState: function() {

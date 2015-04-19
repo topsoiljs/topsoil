@@ -9,7 +9,8 @@ function MasterStore() {
       argsSuggestions: [],
       suggestionArgsActive: -1,
       suggestionActive: 0,
-      preArgsLength: 0
+      preArgsLength: 0,
+      isArgumentsMode: false
   };
 
   var state = {
@@ -40,6 +41,9 @@ function MasterStore() {
     },
     setArguments: function(args){
       state.magicData.args = args;
+    },
+    setMagic: function(obj) {
+      _.extend(state.magicData, obj);
     },
     activeSuggestionUp: function(){
       if(state.magicData.argsSuggestions){

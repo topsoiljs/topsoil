@@ -3,9 +3,12 @@ var eventBus = require("../eventBus.js");
 var masterStore = require("../masterStore.js");
 var magic = require("./magic.js");
 var isKey = require('../utilities.js').isKey;
-
+var _ = require("lodash");
 
 var MagicInput = React.createClass({
+  getInitialState: function() {
+    return {inputText: ""};
+  },
   componentDidMount: function(){
     masterStore.setSuggestions(magic.getAllCommands());
   },
@@ -22,11 +25,18 @@ var MagicInput = React.createClass({
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
-
     if (isKey(e, 'ENTER')) {
-      magic.callCommand(this.getCurrentCommand(), this.getCurrentArgs());
-      el.value = '';
-      masterStore.resetState();
+      if(this.props.isArgumentsMode) {
+        magic.callCommand(this.getCurrentCommand(), this.getCurrentArgs());
+        this.setState({inputText: ""});
+
+        //Maybe factor arguments mode into store?
+        //Maybe not?
+        masterStore.resetState();  
+        masterStore.setMagic({isArgumentsMode: false});
+      } else {
+        this.setState({inputText: this.state.inputText + ":"});
+      }
     }
   },
   getCurrentCommand: function(){
@@ -47,8 +57,17 @@ var MagicInput = React.createClass({
         arguments: []string
       }
     */
-    var results = magic.search(e.target.value);
-    // console.log("results: ", results);
+
+    var text = e.target.value;
+    var results = magic.search(text);
+    this.setState({inputText: text});
+
+    if(_.contains(text, ":")) {
+      masterStore.setMagic({isArgumentsMode: true});
+    }
+
+
+    //console.log("results: ", results);
     //Maybe make a general set method?
     masterStore.setSuggestions(results.suggestions);
     masterStore.setArguments(results.arguments);
@@ -61,13 +80,12 @@ var MagicInput = React.createClass({
     }
   },
   render: function() {
-    // console.log("magicInput Props:", this.props);
     return (
       <div>
         <div className="row">
           <div className="input-field col s12">
             <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
-            <input autoFocus type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
+            <input autoFocus type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
           </div>
         </div>
         <div className="row">
