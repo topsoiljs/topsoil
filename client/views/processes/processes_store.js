@@ -17,11 +17,11 @@ function ProcessesViewStore(eventName) {
   var methods = {
     start: function(args){
       args.args = args.args || "";
-      console.log(args);
-      streams['terminal.callCommand'] = createNewStream({
+      streams[args.args] = createNewStream({
         command: 'terminal.callCommand',
         cb: function(data){
-          console.log(data);
+          state.output.push(data.data);
+          render();
         },
         opts: {
           opts: {cwd: state.pwd},

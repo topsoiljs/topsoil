@@ -12,8 +12,10 @@ var ProcessesComponent = React.createClass({
     }.bind(this));
   },
   render: function() {
-    var nodes = [];
-
+    var nodes = this.state.output.reduce(function(total, current){
+      total.push((<div>{current}</div>));
+      return total;
+    }, []);
     var fileData = this.state.fileData;
     return (<div>
        <h4>PROCESSES</h4>
@@ -45,5 +47,6 @@ magic.registerView({
     }
   ],
   category: 'processes',
-  component: ProcessesComponent
+  component: ProcessesComponent,
+  icon: 'search'
 });
