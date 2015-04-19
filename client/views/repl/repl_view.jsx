@@ -47,7 +47,7 @@ magic.registerView({
   name: 'repl',
   commands: [
      {
-      name: "startRepl",
+      name: "Start Repl",
       description: 'starts a node.js repl, connecting to server',
       args: [],
       tags: ['start repl', 'start node.js', 'connect to server', 'repl', 'Repl'],
@@ -56,5 +56,6 @@ magic.registerView({
     }
     ],
   category: 'repl',
+  icon: 'terminal',
   component: ReplComponent
 });

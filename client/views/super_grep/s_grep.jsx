@@ -55,7 +55,7 @@ magic.registerView({
   name: 'super grep',
   commands: [
     {
-      name: "setDirectory",
+      name: "Set Directory",
       description: "sets the directory for the super grep view",
       args: ['path'],
       tags: ["set dir", "folder", "current dir", "grep"],
@@ -64,5 +64,6 @@ magic.registerView({
     }
   ],
   category: 'filesystem',
+  icon: 'file-text-o',
   component: SGrepComponent
 });

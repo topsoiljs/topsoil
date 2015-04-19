@@ -1,41 +1,46 @@
 var MagicSuggestions = require("./magicSuggestions.jsx");
 var eventBus = require("../eventBus.js");
+var masterStore = require("../masterStore.js");
 var magic = require("./magic.js");
-var magicInputStore = require('./magicInputStore.js');
 var isKey = require('../utilities.js').isKey;
+
 
 var MagicInput = React.createClass({
   componentDidMount: function(){
-    eventBus.register('magicInput', function() {
-      this.setState(magicInputStore.getState());
-    }.bind(this));
-  },
-  getInitialState: function(){
-    return magicInputStore.getState();
+    masterStore.setSuggestions(magic.getAllCommands());
   },
   handleShortcut: function(e){
     // Tab or down
-    var state = magicInputStore.getState();
     if(isKey(e, 'TAB', 'DOWN_ARROW')){
       e.preventDefault();
-      magicInputStore.activeSuggestionDown(true)
+      masterStore.activeSuggestionDown();
     // Up
     }else if(isKey(e, 'UP_ARROW')){
       e.preventDefault();
-      magicInputStore.activeSuggestionUp(true);
+      masterStore.activeSuggestionUp();
     }
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
-    var state = magicInputStore.getState();
+    
     if (isKey(e, 'ENTER')) {
-        magic.callCommand(magicInputStore.getCurrentCommand(), magicInputStore.getCurrentArgs());
-        el.value = '';
-        magicInputStore.resetState(true);
+      magic.callCommand(this.getCurrentCommand(), this.getCurrentArgs());
+      el.value = '';
+      masterStore.resetState();
+    }
+  },
+  getCurrentCommand: function(){
+    return this.props.suggestions[this.props.suggestionActive];
+  },
+  getCurrentArgs: function(){
+    if(this.props.suggestionArgsActive < 0){
+      return this.props.args;
+    }else{
+      var currentArgs = this.props.argsSuggestions[this.props.suggestionArgsActive].name;
+      return currentArgs === undefined ? this.props.args : currentArgs;
     }
   },
   onChange: function(e){
-    var state = magicInputStore.getState();
     /*
       results = {
         suggestions: []commands
@@ -43,31 +48,30 @@ var MagicInput = React.createClass({
       }
     */
     var results = magic.search(e.target.value);
-    var chain = magicInputStore
-                  .setSuggestions(results.suggestions)
-                  .setArguments(results.arguments);
+    // console.log("results: ", results);
+    //Maybe make a general set method?
+    masterStore.setSuggestions(results.suggestions);
+    masterStore.setArguments(results.arguments);
     // If arguments there, then set args suggestions
     if(_.isString(results.arguments)){
-      var argsSugs = magic.searchArgs(magicInputStore.getCurrentCommand(), results.arguments);
-      chain.setArgsSuggestions(argsSugs, true);
+      var argsSugs = magic.searchArgs(this.getCurrentCommand(), results.arguments);
+      masterStore.setArgsSuggestions(argsSugs);
     }else{
-      chain.setArgsSuggestions(null, true);
+      masterStore.setArgsSuggestions(null);
     }
   },
   render: function() {
-    var nodes = [
-      <div className="input-field col s12">
-        <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
-        <input autoFocus type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
-      </div>
-    ];
+    // console.log("magicInput Props:", this.props);
     return (
       <div>
         <div className="row">
-          {nodes}
+          <div className="input-field col s12">
+            <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
+            <input autoFocus type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
+          </div>
         </div>
         <div className="row">
-          <MagicSuggestions suggestionArgsActive = {this.state.suggestionArgsActive} suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions} argsSuggestions={this.state.argsSuggestions}/>
+          <MagicSuggestions {...this.props}/>
         </div>
       </div>
     );

@@ -102,7 +102,7 @@ gulp.task('browserify', function() {
               './client/views/repl/repl_view.jsx',
               './client/views/git/git_view.jsx',
               './client/views/file_system/fs_view.jsx'],
-    debug: false,
+    debug: true,
     // defining transforms here will avoid crashing your stream
     transform: [reactify]
   });

@@ -71,8 +71,6 @@ function GrepStore() {
           eventBus.emit('s_grep');
         }
 
-        
-
         streams['terminal.callCommand'] = createNewStream({
           command: 'terminal.callCommand',
           cb: grepCallback,
@@ -113,7 +111,7 @@ function GrepStore() {
     _setFile: function(filePath) {
       createNewStream({
         command: 'fs.readFile',
-        cb: function(data){
+        cb: function(data) {
           state.activeFile = filePath;
           state.file = data.data;
           eventBus.emit('s_grep');
