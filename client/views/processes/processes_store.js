@@ -1,5 +1,5 @@
-var eventBus = require("../../eventBus.js");
-
+var eventBus = require('../../eventBus.js');
+var createNewStream = require('../../streaming/streaming_client.js').createNewStream;
 function ProcessesViewStore(eventName) {
   var state = {
     output: [],
@@ -16,6 +16,20 @@ function ProcessesViewStore(eventName) {
   });
   var methods = {
     start: function(args){
+      args.args = args.args || "";
+      console.log(args);
+      streams['terminal.callCommand'] = createNewStream({
+        command: 'terminal.callCommand',
+        cb: function(data){
+          console.log(data);
+        },
+        opts: {
+          opts: {cwd: state.pwd},
+          cmd: args.command,
+          args: args.args.split(' ')
+        },
+        initialData: " "
+      });
     },
     setPWD: function(args){
       $.post('/state/processes/pwd', {data: args.pwd})

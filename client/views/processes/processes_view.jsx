@@ -30,7 +30,7 @@ magic.registerView({
      {
       name: 'Start Process',
       description: 'starts a process or script',
-      args: [],
+      args: ['command', 'args'],
       tags: ['start process', 'start script', 'processes'],
       categories: ['write'],
       method: processesStore['start']
