@@ -19,6 +19,7 @@ var MagicSuggestions = React.createClass({
     }
   },
   render: function() {
+    // console.log("magicSuggestions Props: ", this.props);
     var nodes = [];
     var iterable = this.props.argsSuggestions ? this.props.argsSuggestions : this.props.suggestions;
     var active = this.props.argsSuggestions ? this.props.suggestionArgsActive : this.props.suggestionActive

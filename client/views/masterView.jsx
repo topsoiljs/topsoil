@@ -13,22 +13,24 @@ var MasterView = React.createClass({
     }.bind(this));
   },
   render: function() {
-    console.log("state:", this.state);
-    return (<div>
-              <div className="row">
-                <div className="magicInput col s4">
+    if(this.state.activeView) {
+      return (<div className="row">
+                <div className="row">
+                  <div className="magicInput col s4">
+                    <MagicInput {...this.state.magicData}/>
+                  </div>
+                </div>
+                <div className="main col s8">
+                  <this.state.activeView/>
+                </div>
+              </div>)
+    } else {
+      return (<div>
+                <div className="row">
                   <MagicInput {...this.state.magicData}/>
                 </div>
-              </div>
-              <div className="row">
-                <div className="main col s2">
-                  <MagicSuggestions {...this.state.magicData}/>
-                </div>
-                <div className="main col s10">
-                  {this.state.activeView ? <this.state.activeView/> : <div/>}
-                </div>
-              </div>
-            </div>);
+              </div>)
+    }
   }
 });
 

@@ -51,6 +51,7 @@ Magic.prototype.registerView = function(viewObject){
       name: el._id,
       local: [],
       datumTokenizer: function(d){
+        console.log("datumTokenizer", d);
         return generateSuffixes(d.name);
       },
       queryTokenizer: function(q){
@@ -68,8 +69,14 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command, args){
+  console.log("openView cmd: ", command, "args:", args);
   masterStore.openView(command.view.component);
-  var argsArray = args.trim().split(' ');
+  if(args) {
+    var argsArray = args.trim().split(' ');
+  } else {
+    var argsArray = [];
+  }
+  
   _.defaults(command, {argsHistory: {}});
   if(!command.argsHistory[args]){
     var argsObj = {
@@ -85,6 +92,7 @@ Magic.prototype.callCommand = function(command, args){
   _.each(command.args, function(el, ind){
     argsObj[el] = argsArray[ind];
   })
+  console.log("callCommand: ", command, argsObj);
   return command.method(argsObj);
 };
 
@@ -100,7 +108,6 @@ Magic.prototype.getAllCommands = function() {
 }
 
 Magic.prototype.search = function(terms){
-<<<<<<< HEAD
   var results = {
     arguments: null,
     suggestions: []
