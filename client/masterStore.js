@@ -15,7 +15,7 @@ function MasterStore() {
   var state = {
               activeView: undefined,
               magicData: _.cloneDeep(initialMagicData)
-            }
+            };
 
   var updateMethods = {
     //VIEW METHODS
@@ -71,7 +71,7 @@ function MasterStore() {
     getState: function() {
       return state;
     }
-  }
+  };
 
   var methods = nonUpdateMethods;
 

@@ -12,17 +12,28 @@ var ProcessesComponent = React.createClass({
     }.bind(this));
   },
   render: function() {
-    var nodes = _.reduceRight(this.state.output, function(total, current){
-      total.push((<div>{current}</div>));
-      return total;
-    }, []);
+    var nodes = [];
+    console.log(nodes);
+    this.state.outputs.forEach(function(el){
+      var nodesOne = _.reduceRight(el.output, function(total, current){
+        total.push((<div>{current}</div>));
+        return total;
+      }, []);
+      nodes.push((
+        <div className="ui card">
+          <div className="header">{el.command} | {el.args}</div>
+          <div className="description">
+            {nodesOne}
+          </div>
+        </div>))
+    });
     var fileData = this.state.fileData;
     return (<div>
-       <h4>PROCESSES</h4>
-       <h5>{this.state.pwd}</h5>
-       <row>
+      <h4>PROCESSES</h4>
+      <h5>{this.state.pwd}</h5>
+      <div className="ui cards">
         {nodes}
-       </row>
+      </div>
     </div>);
   }
 });

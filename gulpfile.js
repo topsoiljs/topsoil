@@ -109,7 +109,6 @@ gulp.task('browserify', function() {
   });
 
   return b.bundle()
-          .on('error', gutil.log)
           .pipe(source('app.js'))
           .pipe(buffer())
           .pipe(sourcemaps.init({loadMaps: true}))

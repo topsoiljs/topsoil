@@ -2,7 +2,7 @@ var eventBus = require('../../eventBus.js');
 var createNewStream = require('../../streaming/streaming_client.js').createNewStream;
 function ProcessesViewStore(eventName) {
   var state = {
-    output: [],
+    outputs:[],
     pwd: '/'
   };
   var streams = {};
@@ -16,11 +16,18 @@ function ProcessesViewStore(eventName) {
   });
   var methods = {
     start: function(args){
+      console.log('start called', args);
       args.args = args.args || "";
+      var out = {
+        command: args.command,
+        args: args.args,
+        output: []
+      };
+      state.outputs.push(out);
       streams[args.args] = createNewStream({
         command: 'terminal.callCommand',
         cb: function(data){
-          state.output.push(data.data);
+          out.output.push(data.data);
           render();
         },
         opts: {
