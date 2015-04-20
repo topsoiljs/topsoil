@@ -1,19 +1,27 @@
 var eventBus = require("./eventBus.js");
 var _ = require("lodash");
 
+/*
+  No component can be required here if that component requires another
+  thing that needs the master store. Due to the order browserify loads things.
+  John was right we should manually manage our deps through some kind
+  of hub page...
+*/
+
 function MasterStore() {
 
   var initialMagicData = {
       args: null,
       suggestions: [],
-      argsSuggestions: [],
+      argsSuggestions: null,
       suggestionArgsActive: -1,
       suggestionActive: 0,
-      preArgsLength: 0
+      preArgsLength: 0,
+      isArgumentsMode: false
   };
 
   var state = {
-              activeView: undefined,
+              activeView: null,
               magicData: _.cloneDeep(initialMagicData)
             };
 
@@ -40,6 +48,9 @@ function MasterStore() {
     },
     setArguments: function(args){
       state.magicData.args = args;
+    },
+    setMagic: function(obj) {
+      _.extend(state.magicData, obj);
     },
     activeSuggestionUp: function(){
       if(state.magicData.argsSuggestions){
@@ -86,6 +97,5 @@ function MasterStore() {
 
   return methods;
 }
-
 
 module.exports = MasterStore();

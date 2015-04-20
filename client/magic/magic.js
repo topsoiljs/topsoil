@@ -1,4 +1,5 @@
 var masterStore = require("../masterStore.js");
+
 function generateSuffixes(word){
   var subResults = _.range(word.length).reduce(function(sum, el){
     sum.push(word.slice(el));
@@ -51,7 +52,6 @@ Magic.prototype.registerView = function(viewObject){
       name: el._id,
       local: [],
       datumTokenizer: function(d){
-        console.log("datumTokenizer", d);
         return generateSuffixes(d.name);
       },
       queryTokenizer: function(q){
@@ -69,12 +69,14 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command, args){
-  console.log("openView cmd: ", command, "args:", args);
+  console.log("masterStore", masterStore);
   masterStore.openView(command.view.component);
   if(args) {
     var argsArray = args.trim().split(' ');
+    console.log("args array:", argsArray);
   } else {
     var argsArray = [];
+    console.log("args array falsey:", argsArray);
   }
   
   _.defaults(command, {argsHistory: {}});
@@ -92,7 +94,6 @@ Magic.prototype.callCommand = function(command, args){
   _.each(command.args, function(el, ind){
     argsObj[el] = argsArray[ind];
   })
-  console.log("callCommand: ", command, argsObj);
   return command.method(argsObj);
 };
 
@@ -108,10 +109,26 @@ Magic.prototype.getAllCommands = function() {
 }
 
 Magic.prototype.search = function(terms){
+  function isAllSpaces(str) {
+    for(var i = 0; i < str.length; i++) {
+      if(str[i] !== " ") {
+        return false;
+      }
+    }
+
+    if(str === "") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   var results = {
     arguments: null,
     suggestions: []
   };
+  
+
   var search = terms;
   for(var i=0;i<terms.length;i++){
     if(terms[i] === ':'){
@@ -125,9 +142,15 @@ Magic.prototype.search = function(terms){
     search = ' ';
   };
   var results;
-  this._auto.get(search, function(sugs){
-    results.suggestions = sugs;
-  });
+
+  if(!isAllSpaces(search)) {
+    this._auto.get(search, function(sugs){
+      results.suggestions = sugs;
+    });  
+  } else {
+    results.suggestions = this.getAllCommands();
+  }
+  
 
   return results;
 };

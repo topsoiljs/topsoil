@@ -3,11 +3,15 @@ var eventBus = require("../eventBus.js");
 var masterStore = require("../masterStore.js");
 var magic = require("./magic.js");
 var isKey = require('../utilities.js').isKey;
-
+var _ = require("lodash");
 
 var MagicInput = React.createClass({
+  getInitialState: function() {
+    return {inputText: ""};
+  },
   componentDidMount: function(){
-    masterStore.setSuggestions(magic.getAllCommands());
+    // console.log(magic.getAllCommands());
+    // masterStore.setSuggestions(magic.getAllCommands());
   },
   handleShortcut: function(e){
     // Tab or down
@@ -22,11 +26,20 @@ var MagicInput = React.createClass({
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
-
     if (isKey(e, 'ENTER')) {
-      magic.callCommand(this.getCurrentCommand(), this.getCurrentArgs());
-      el.value = '';
-      masterStore.resetState();
+      if(this.props.isArgumentsMode) {
+        console.log("current command:", this.getCurrentCommand(), "current args:", this.getCurrentArgs());
+        magic.callCommand(this.getCurrentCommand(), this.getCurrentArgs());
+        this.setState({inputText: ""});
+
+        //Maybe factor arguments mode into store?
+        //Maybe not?
+        masterStore.resetState();  
+        masterStore.setMagic({isArgumentsMode: false});
+      } else {
+        masterStore.setMagic({isArgumentsMode: true});
+        this.setState({inputText: this.state.inputText + ":"});
+      }
     }
   },
   getCurrentCommand: function(){
@@ -47,11 +60,23 @@ var MagicInput = React.createClass({
         arguments: []string
       }
     */
-    var results = magic.search(e.target.value);
-    // console.log("results: ", results);
-    //Maybe make a general set method?
-    masterStore.setSuggestions(results.suggestions);
-    masterStore.setArguments(results.arguments);
+
+    var text = e.target.value;
+    var results = magic.search(text);
+    
+    this.setState({inputText: text});
+    //If we are typing arguments we don't need to be reseting the suggestions.
+    if(!this.props.isArgumentsMode) {
+      masterStore.setSuggestions(results.suggestions);
+      
+      //If we have typed the colon we are in arguments mode.
+      if(_.contains(text, ":")) {
+        masterStore.setMagic({isArgumentsMode: true});
+      }
+    } else {
+      masterStore.setArguments(results.arguments);  
+    }
+    
     // If arguments there, then set args suggestions
     if(_.isString(results.arguments)){
       var argsSugs = magic.searchArgs(this.getCurrentCommand(), results.arguments);
@@ -61,17 +86,13 @@ var MagicInput = React.createClass({
     }
   },
   render: function() {
-    // console.log("magicInput Props:", this.props);
     return (
-      <div>
-        <div className="row">
-          <div className="input-field col s12">
-            <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
-            <input autoFocus type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
+      <div className="row">
+        <div className="sixteen wide column">
+          <div className="ui input topsoilInputBox">
+            <i className="fa fa-chevron-right f-icon fa-2x"></i>
+            <input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>      
           </div>
-        </div>
-        <div className="row">
-          <MagicSuggestions {...this.props}/>
         </div>
       </div>
     );
