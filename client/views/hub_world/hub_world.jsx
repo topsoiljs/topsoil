@@ -2,6 +2,7 @@ var magic = require("../../magic/magic.js");
 var masterStore = require("../../masterStore.js");
 var _ = require("lodash");
 
+//From http://flatuicolors.com/
 var colors = [
   "#1abc9c",
   "#2ecc71",

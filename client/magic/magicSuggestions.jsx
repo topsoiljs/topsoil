@@ -26,6 +26,7 @@ var MagicSuggestions = React.createClass({
     
     if(this.props.isArgumentsMode) {
       var activeSuggestion = this.props.suggestions[this.props.suggestionActive];
+      console.log("activeSuggestion: ", this.props.suggestions, this.props.suggestionActive);
       activeCommand = (<MagicSuggestion suggestion={activeSuggestion} active={false}/>);
     }
 
@@ -36,6 +37,8 @@ var MagicSuggestions = React.createClass({
       iterable = this.props.suggestions;
       active = this.props.suggestionActive;
     }
+
+    console.log("iterable:", iterable);
 
     iterable.forEach(function(suggestion, ind){
       suggestion.view = suggestion.view || {};

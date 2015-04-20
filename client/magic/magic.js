@@ -109,10 +109,26 @@ Magic.prototype.getAllCommands = function() {
 }
 
 Magic.prototype.search = function(terms){
+  function isAllSpaces(str) {
+    for(var i = 0; i < str.length; i++) {
+      if(str[i] !== " ") {
+        return false;
+      }
+    }
+
+    if(str === "") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   var results = {
     arguments: null,
     suggestions: []
   };
+  
+
   var search = terms;
   for(var i=0;i<terms.length;i++){
     if(terms[i] === ':'){
@@ -126,9 +142,15 @@ Magic.prototype.search = function(terms){
     search = ' ';
   };
   var results;
-  this._auto.get(search, function(sugs){
-    results.suggestions = sugs;
-  });
+
+  if(!isAllSpaces(search)) {
+    this._auto.get(search, function(sugs){
+      results.suggestions = sugs;
+    });  
+  } else {
+    results.suggestions = this.getAllCommands();
+  }
+  
 
   return results;
 };

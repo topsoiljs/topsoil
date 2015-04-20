@@ -28,6 +28,7 @@ var MagicInput = React.createClass({
     var el = document.getElementById('terminal');
     if (isKey(e, 'ENTER')) {
       if(this.props.isArgumentsMode) {
+        console.log("current command:", this.getCurrentCommand(), "current args:", this.getCurrentArgs());
         magic.callCommand(this.getCurrentCommand(), this.getCurrentArgs());
         this.setState({inputText: ""});
 
@@ -36,6 +37,7 @@ var MagicInput = React.createClass({
         masterStore.resetState();  
         masterStore.setMagic({isArgumentsMode: false});
       } else {
+        masterStore.setMagic({isArgumentsMode: true});
         this.setState({inputText: this.state.inputText + ":"});
       }
     }
@@ -61,17 +63,20 @@ var MagicInput = React.createClass({
 
     var text = e.target.value;
     var results = magic.search(text);
+    
     this.setState({inputText: text});
-
-    if(_.contains(text, ":")) {
-      masterStore.setMagic({isArgumentsMode: true});
+    //If we are typing arguments we don't need to be reseting the suggestions.
+    if(!this.props.isArgumentsMode) {
+      masterStore.setSuggestions(results.suggestions);
+      
+      //If we have typed the colon we are in arguments mode.
+      if(_.contains(text, ":")) {
+        masterStore.setMagic({isArgumentsMode: true});
+      }
+    } else {
+      masterStore.setArguments(results.arguments);  
     }
-
-
-    //console.log("results: ", results);
-    //Maybe make a general set method?
-    masterStore.setSuggestions(results.suggestions);
-    masterStore.setArguments(results.arguments);
+    
     // If arguments there, then set args suggestions
     if(_.isString(results.arguments)){
       var argsSugs = magic.searchArgs(this.getCurrentCommand(), results.arguments);
@@ -88,9 +93,6 @@ var MagicInput = React.createClass({
             <i className="fa fa-chevron-right f-icon fa-2x"></i>
             <input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>      
           </div>
-        </div>
-        <div className="sixteen wide column">
-          <MagicSuggestions {...this.props}/>
         </div>
       </div>
     );

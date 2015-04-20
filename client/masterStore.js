@@ -13,7 +13,7 @@ function MasterStore() {
   var initialMagicData = {
       args: null,
       suggestions: [],
-      argsSuggestions: [],
+      argsSuggestions: null,
       suggestionArgsActive: -1,
       suggestionActive: 0,
       preArgsLength: 0,

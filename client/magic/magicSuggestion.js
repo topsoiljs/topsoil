@@ -2,7 +2,6 @@ var MagicSuggestion = React.createClass({
   //These two possibilities can be combined with a boolean
   render: function() {
     var suggestion =  this.props.suggestion;
-
     if(this.props.active){
         return (
           <li>
