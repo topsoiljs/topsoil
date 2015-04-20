@@ -1,7 +1,7 @@
 var processesStore = require("./processes_store.js");
 var magic = require("../../magic/magic.js");
 var eventBus = require("../../eventBus.js");
-
+var ProcessComponent = require('./components/process');
 var ProcessesComponent = React.createClass({
   getInitialState: function() {
     return processesStore.getState();
@@ -14,24 +14,7 @@ var ProcessesComponent = React.createClass({
   render: function() {
     var nodes = [];
     this.state.outputs.forEach(function(el){
-      var nodesOne = _.reduceRight(el.output, function(total, current){
-        total.push((<div>{current}</div>));
-        return total;
-      }, []);
-      nodes.push((
-        <div className="process card">
-          <div className="content">
-            <div className="header">{el.command} | {el.args}</div>
-            <div className="ui tiny icon buttons">
-              <div className="ui basic button">
-                <i className="remove icon"></i>
-              </div>
-            </div>
-            <div className="description">
-              {nodesOne}
-            </div>
-          </div>
-        </div>))
+      nodes.push(<ProcessComponent proc={el}/>)
     });
     var fileData = this.state.fileData;
     return (<div>
