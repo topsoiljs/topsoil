@@ -14,7 +14,7 @@ var ProcessesComponent = React.createClass({
   },
   render: function() {
     var nodes = [];
-    this.state.outputs.forEach(function(el){
+    _.each(this.state.outputs, function(el){
       nodes.push(<ProcessComponent proc={el}/>)
     });
     var fileData = this.state.fileData;

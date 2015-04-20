@@ -1,6 +1,8 @@
+var processesStore = require("../processes_store.js");
+
 var ProcessComponent = React.createClass({
   handleClick: function(){
-
+    processesStore.killProcess(this.props.proc.pid);
   },
   render: function(){
     var nodesOne = _.reduceRight(this.props.proc.output, function(total, current){

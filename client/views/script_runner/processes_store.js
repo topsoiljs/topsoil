@@ -2,7 +2,7 @@ var eventBus = require('../../eventBus.js');
 var createNewStream = require('../../streaming/streaming_client.js').createNewStream;
 function ProcessesViewStore(eventName) {
   var state = {
-    outputs:[],
+    outputs:{},
     pwd: '/'
   };
   var streams = {};
@@ -23,7 +23,6 @@ function ProcessesViewStore(eventName) {
         output: [],
         pid: null
       };
-      state.outputs.push(out);
       streams[args.args] = createNewStream({
         command: 'terminal.callCommand',
         cb: function(data){
@@ -38,6 +37,7 @@ function ProcessesViewStore(eventName) {
         initialData: " ",
         infoCB: function(data){
           out.pid = data.pid;
+          state.outputs[out.pid] = out;
         }
       });
     },
@@ -52,7 +52,16 @@ function ProcessesViewStore(eventName) {
         })
     },
     killProcess: function(args){
-
+      streams['killProcess'] = createNewStream({
+        command: 'processes.killProcess',
+        cb: function(){
+        },
+        opts: {
+        },
+        initialData: String(args)
+      });
+      delete state.outputs[args];
+      render();
     },
     renderView: function(){
     },
