@@ -33,7 +33,7 @@ var MasterView = React.createClass({
                   <this.state.activeView/>
                 </div>
               </div>)
-    } else if(this.state.activeView) {      
+    } else if(this.state.activeView) {
       return (<div className="ui grid">
                 <div className="row">
                   <div className="four wide column">
