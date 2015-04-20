@@ -1,7 +1,8 @@
 var processesStore = require("./processes_store.js");
 var magic = require("../../magic/magic.js");
 var eventBus = require("../../eventBus.js");
-var ProcessComponent = require('./components/process');
+var ProcessComponent = require('./components/process.jsx');
+
 var ProcessesComponent = React.createClass({
   getInitialState: function() {
     return processesStore.getState();
