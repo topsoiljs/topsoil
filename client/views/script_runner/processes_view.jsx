@@ -1,6 +1,7 @@
 var processesStore = require("./processes_store.js");
 var magic = require("../../magic/magic.js");
 var eventBus = require("../../eventBus.js");
+var ProcessComponent = require('./components/process.jsx');
 
 var ProcessesComponent = React.createClass({
   getInitialState: function() {
@@ -13,19 +14,8 @@ var ProcessesComponent = React.createClass({
   },
   render: function() {
     var nodes = [];
-    console.log(nodes);
-    this.state.outputs.forEach(function(el){
-      var nodesOne = _.reduceRight(el.output, function(total, current){
-        total.push((<div>{current}</div>));
-        return total;
-      }, []);
-      nodes.push((
-        <div className="ui card">
-          <div className="header">{el.command} | {el.args}</div>
-          <div className="description">
-            {nodesOne}
-          </div>
-        </div>))
+    _.each(this.state.outputs, function(el){
+      nodes.push(<ProcessComponent proc={el}/>)
     });
     var fileData = this.state.fileData;
     return (<div>
@@ -55,6 +45,14 @@ magic.registerView({
       tags: ['set ', 'pwd', 'current working', 'directory', 'present working directory'],
       categories: ['write'],
       method: processesStore['setPWD']
+    },
+    {
+      name: 'Open processes view',
+      description: 'open processes view',
+      args: ['pwd'],
+      tags: ['open processes view'],
+      categories: ['read'],
+      method: processesStore['renderView']
     }
   ],
   category: 'processes',

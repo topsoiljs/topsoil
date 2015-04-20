@@ -2,7 +2,7 @@ var eventBus = require('../../eventBus.js');
 var createNewStream = require('../../streaming/streaming_client.js').createNewStream;
 function ProcessesViewStore(eventName) {
   var state = {
-    outputs:[],
+    outputs:{},
     pwd: '/'
   };
   var streams = {};
@@ -16,14 +16,13 @@ function ProcessesViewStore(eventName) {
   });
   var methods = {
     start: function(args){
-      console.log('start called', args);
       args.args = args.args || "";
       var out = {
         command: args.command,
         args: args.args,
-        output: []
+        output: [],
+        pid: null
       };
-      state.outputs.push(out);
       streams[args.args] = createNewStream({
         command: 'terminal.callCommand',
         cb: function(data){
@@ -35,7 +34,11 @@ function ProcessesViewStore(eventName) {
           cmd: args.command,
           args: args.args.split(' ')
         },
-        initialData: " "
+        initialData: " ",
+        infoCB: function(data){
+          out.pid = data.pid;
+          state.outputs[out.pid] = out;
+        }
       });
     },
     setPWD: function(args){
@@ -47,6 +50,18 @@ function ProcessesViewStore(eventName) {
         .fail(function(){
           console.log('failed posting pwd')
         })
+    },
+    killProcess: function(args){
+      streams['killProcess'] = createNewStream({
+        command: 'processes.killProcess',
+        cb: function(){
+        },
+        opts: {
+        },
+        initialData: String(args)
+      });
+      delete state.outputs[args];
+      render();
     },
     renderView: function(){
     },

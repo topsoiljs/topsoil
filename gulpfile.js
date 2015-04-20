@@ -29,11 +29,12 @@ gulp.task('jade', function () {
 });
 
 gulp.task('stylus', function() {
-  gulp.src('./client/stylus_styles/*.styl')
+  gulp.src('./client/**/*.styl')
       .pipe(plumber())
       .pipe(stylus({
         compress: true
       }))
+      .pipe(concat('main.css'))
       .pipe(gulp.dest('./deploy/client'));
 });
 
@@ -102,7 +103,7 @@ gulp.task('browserify', function() {
               './client/views/repl/repl_view.jsx',
               './client/views/git/git_view.jsx',
               './client/views/file_system/fs_view.jsx',
-              './client/views/processes/processes_view.jsx'],
+              './client/views/script_runner/processes_view.jsx'],
     debug: false,
     // defining transforms here will avoid crashing your stream
     transform: [reactify]
