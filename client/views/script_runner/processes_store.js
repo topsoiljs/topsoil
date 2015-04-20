@@ -20,7 +20,8 @@ function ProcessesViewStore(eventName) {
       var out = {
         command: args.command,
         args: args.args,
-        output: []
+        output: [],
+        pid: null
       };
       state.outputs.push(out);
       streams[args.args] = createNewStream({
@@ -36,7 +37,7 @@ function ProcessesViewStore(eventName) {
         },
         initialData: " ",
         infoCB: function(data){
-          console.log('infocb', data);
+          out.pid = data.pid;
         }
       });
     },
@@ -49,6 +50,9 @@ function ProcessesViewStore(eventName) {
         .fail(function(){
           console.log('failed posting pwd')
         })
+    },
+    killProcess: function(args){
+
     },
     renderView: function(){
     },

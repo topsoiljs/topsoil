@@ -22,6 +22,11 @@ var ProcessesComponent = React.createClass({
         <div className="process card">
           <div className="content">
             <div className="header">{el.command} | {el.args}</div>
+            <div className="ui tiny icon buttons">
+              <div className="ui basic button">
+                <i className="remove icon"></i>
+              </div>
+            </div>
             <div className="description">
               {nodesOne}
             </div>
