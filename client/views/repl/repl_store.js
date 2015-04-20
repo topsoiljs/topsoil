@@ -1,5 +1,5 @@
-console.log(module);
 var eventBus = require("../../eventBus.js");
+var createNewStream = require("../../streaming/streaming_client.js").createNewStream;
 
 function ReplViewStore() {
   var state = {
@@ -12,7 +12,6 @@ function ReplViewStore() {
       streams['repl'] = createNewStream({
         command: 'repl.start',
         cb: function(data){
-          console.log('got data', data);
           state.output.push(data);
           eventBus.emit('repl');
         },

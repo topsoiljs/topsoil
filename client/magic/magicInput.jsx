@@ -1,130 +1,98 @@
 var MagicSuggestions = require("./magicSuggestions.jsx");
 var eventBus = require("../eventBus.js");
+var masterStore = require("../masterStore.js");
 var magic = require("./magic.js");
-
-
-window._keys = {
-  9: 'TAB',
-  40: 'DOWN_ARROW',
-  38: 'UP_ARROW',
-  13: 'ENTER'
-};
-
-function isKey(event){
-  var keycode = event.which;
-  var result = false;
-  for(var i=1;i<arguments.length;i++){
-    result = result || window._keys[keycode] === arguments[i]
-  }
-  return result;
-};
-function MagicInputStore (eventName){
-  var initialState = {
-      args: null,
-      currentCommand: null,
-      suggestions: [],
-      suggestionActive: -1,
-      preArgsLength: 0
-  };
-
-  var state = _.cloneDeep(initialState);
-  var render = function(){
-    eventBus.emit(eventName);
-  };
-  var methods = {
-    getState: function(){
-      return state;
-    },
-    resetState: function(){
-      state = _.cloneDeep(initialState);
-      render();
-    },
-    setActiveSuggestion: function(sug){
-      state.suggestionActive = sug;
-      render();
-    },
-    setCurrentCommand: function(command){
-      state.currentCommand = command;
-      state.args = [];
-      render();
-    },
-    setSuggestions: function(suggestions){
-      state.suggestions = suggestions;
-      render();
-    }
-  };
-
-  return methods;
-};
-
-var magicInputStore = MagicInputStore('magicInput');
+var isKey = require('../utilities.js').isKey;
+var _ = require("lodash");
 
 var MagicInput = React.createClass({
-  componentDidMount: function(){
-    eventBus.register('magicInput', function() {
-      this.setState(magicInputStore.getState());
-    }.bind(this));
+  getInitialState: function() {
+    return {inputText: ""};
   },
-  getInitialState: function(){
-    return magicInputStore.getState();
+  componentDidMount: function(){
+    // console.log(magic.getAllCommands());
+    // masterStore.setSuggestions(magic.getAllCommands());
   },
   handleShortcut: function(e){
     // Tab or down
-    var state = magicInputStore.getState();
     if(isKey(e, 'TAB', 'DOWN_ARROW')){
       e.preventDefault();
-      magicInputStore.setActiveSuggestion((state.suggestionActive + 1) % state.suggestions.length)
+      masterStore.activeSuggestionDown();
     // Up
     }else if(isKey(e, 'UP_ARROW')){
       e.preventDefault();
-      var active = (state.suggestionActive - 1) % state.suggestions.length;
-      if(active < 0){
-        active = state.suggestions.length-1;
-      }
-      magicInputStore.setActiveSuggestion(active);
+      masterStore.activeSuggestionUp();
     }
   },
   handleInput: function(e){
     var el = document.getElementById('terminal');
-    var state = magicInputStore.getState();
     if (isKey(e, 'ENTER')) {
-      if(state.suggestionActive < 0){
-        state.suggestionActive = 0;
+      if(this.props.isArgumentsMode) {
+        console.log("current command:", this.getCurrentCommand(), "current args:", this.getCurrentArgs());
+        magic.callCommand(this.getCurrentCommand(), this.getCurrentArgs());
+        this.setState({inputText: ""});
+
+        //Maybe factor arguments mode into store?
+        //Maybe not?
+        masterStore.resetState();  
+        masterStore.setMagic({isArgumentsMode: false});
+      } else {
+        masterStore.setMagic({isArgumentsMode: true});
+        this.setState({inputText: this.state.inputText + ":"});
       }
-      if(!state.args && state.suggestions[state.suggestionActive]){
-        el.value = el.value += ' ';
-        state.preArgsLength = el.value.length;
-        magicInputStore.setCurrentCommand(state.suggestions[state.suggestionActive]);
-      }else{
-        var value = el.value;
-        args = value.slice(state.preArgsLength).split(' ');
-        magic.callCommand(state.currentCommand, args);
-        el.value = '';
-        magicInputStore.resetState();
-      }
+    }
+  },
+  getCurrentCommand: function(){
+    return this.props.suggestions[this.props.suggestionActive];
+  },
+  getCurrentArgs: function(){
+    if(this.props.suggestionArgsActive < 0){
+      return this.props.args;
+    }else{
+      var currentArgs = this.props.argsSuggestions[this.props.suggestionArgsActive].name;
+      return currentArgs === undefined ? this.props.args : currentArgs;
     }
   },
   onChange: function(e){
-    var state = magicInputStore.getState();
-    if(!state.args){
-      var results = magic.search(e.target.value);
-      magicInputStore.setSuggestions(results);
+    /*
+      results = {
+        suggestions: []commands
+        arguments: []string
+      }
+    */
+
+    var text = e.target.value;
+    var results = magic.search(text);
+    
+    this.setState({inputText: text});
+    //If we are typing arguments we don't need to be reseting the suggestions.
+    if(!this.props.isArgumentsMode) {
+      masterStore.setSuggestions(results.suggestions);
+      
+      //If we have typed the colon we are in arguments mode.
+      if(_.contains(text, ":")) {
+        masterStore.setMagic({isArgumentsMode: true});
+      }
+    } else {
+      masterStore.setArguments(results.arguments);  
+    }
+    
+    // If arguments there, then set args suggestions
+    if(_.isString(results.arguments)){
+      var argsSugs = magic.searchArgs(this.getCurrentCommand(), results.arguments);
+      masterStore.setArgsSuggestions(argsSugs);
+    }else{
+      masterStore.setArgsSuggestions(null);
     }
   },
   render: function() {
-    var nodes = [
-      <div className="input-field col s12">
-        <i className="mdi-hardware-keyboard-arrow-right prefix"></i>
-        <input autoFocus type="text" onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
-      </div>
-    ];
     return (
-      <div>
-        <div className="row">
-          {nodes}
-        </div>
-        <div className="row">
-          <MagicSuggestions suggestionActive={this.state.suggestionActive} suggestions={this.state.suggestions}/>
+      <div className="row">
+        <div className="sixteen wide column">
+          <div className="ui input topsoilInputBox">
+            <i className="fa fa-chevron-right f-icon fa-2x"></i>
+            <input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>      
+          </div>
         </div>
       </div>
     );

@@ -39,13 +39,15 @@ var createNewStream = function(options){
   var command = options.command;
   var opts = options.opts || {};
   var cb = options.cb;
+  var infoCB = options.infoCB;
   opts.initialData = options.initialData;
 
   opts._uid = uuid.v4();
+  opts._info_uid = uuid.v4();
 
   socket.emit(command, opts);
   socket.on(opts._uid, cb);
-
+  socket.on(opts._info_uid, infoCB);
   return {
     emit: function(data){
       socket.emit(opts._uid, {

@@ -245,7 +245,7 @@ magic.registerView({
   name: 'git',
   commands: [
      {
-      name: "status",
+      name: "Status",
       description: 'current git status',
       args: ['directory'],
       tags: ['show git', 'git', 'status', 'ls'],
@@ -254,5 +254,6 @@ magic.registerView({
     }
     ],
   category: 'git',
+  icon: "git-square",
   component: GitComponent
 });

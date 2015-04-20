@@ -45,7 +45,8 @@ var routes : StateAPI = <StateAPI>{
     path: '/state/{session}/{key}',
     handler: function(request, reply){
       if(request.params.session && request.params.key){
-        var data : string = typeof request.payload === 'object' ? JSON.stringify(request.payload) : request.payload;
+        var payload = request.payload.data;
+        var data : string = typeof payload === 'object' ? JSON.stringify(payload) : payload;
         state.put(request.params.session, request.params.key, data);
         reply(201);
       }else{
