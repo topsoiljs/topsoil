@@ -10,8 +10,6 @@ var MagicInput = React.createClass({
     return {inputText: ""};
   },
   componentDidMount: function(){
-    // console.log(magic.getAllCommands());
-    // masterStore.setSuggestions(magic.getAllCommands());
   },
   handleShortcut: function(e){
     // Tab or down
