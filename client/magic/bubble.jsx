@@ -36,14 +36,12 @@ var Bubble = React.createClass({
     } 
     */
   },
-  componentWillReceiveProps: function(nextProps) {
+  componentDidUpdate: function(nextProps) {
     var refKey = this.props.placeholder;
     var domNode = React.findDOMNode(this.refs[refKey]);
-    if(nextProps.isActive) {
+    if(this.props.isActive) {
       //This should set the next input to be focused, but it does not. I don't know why.
       domNode.focus(); 
-    } else {
-      domNode.blur();
     }
   },
   keyPressFunc: function(e) {
