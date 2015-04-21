@@ -5,7 +5,6 @@ var SubViews = React.createClass({
     //   <div>branch: dev | changes: 3 lines</div>
     // )
     for(var i=0;i<8;i++){
-      console.log(nodes);
       nodes.push(
         <div className="subview">branch: dev | changes: 3 lines</div>
       )

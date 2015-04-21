@@ -25,11 +25,11 @@ function setupAPI(api, socket){
         for(var methodName in api[namespace]){
           ((socket, methodName, namespace) => {
             socket.on(namespace + '.' + methodName, function(opts){
-              // var d = domain.create();
-              // d.on('error', function(err){
-              //   console.log('error while making chain', err);
-              // })
-              // d.run(function(){
+              var d = domain.create();
+              d.on('error', function(err){
+                console.log('error while making chain', err);
+              })
+              d.run(function(){
                 var inStream = createInSocketStream(socket, opts._uid);
                 var outStream = createOutSocketStream(socket, opts._uid);
                 var infoHandler = createInfoSocketHandler(socket, opts._info_uid);
@@ -38,7 +38,7 @@ function setupAPI(api, socket){
                 if(opts.initialData !== undefined){
                   inStream.write(opts.initialData);
                 }
-              // })
+              })
             })
           })(socket, methodName, namespace)
         }

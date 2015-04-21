@@ -7,7 +7,7 @@ var MagicSuggestions = React.createClass({
     var iterable;
     var active;
     var activeCommand = "";
-    
+
     if(this.props.isArgumentsMode) {
       var activeSuggestion = this.props.suggestions[this.props.suggestionActive];
       activeCommand = (<MagicSuggestion suggestion={activeSuggestion} active={false}/>);
