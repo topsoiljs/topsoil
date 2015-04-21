@@ -10,8 +10,6 @@ var MagicInput = React.createClass({
     return {inputText: ""};
   },
   componentDidMount: function(){
-    // console.log(magic.getAllCommands());
-    // masterStore.setSuggestions(magic.getAllCommands());
   },
   handleShortcut: function(e){
     // Tab or down
@@ -34,7 +32,7 @@ var MagicInput = React.createClass({
 
         //Maybe factor arguments mode into store?
         //Maybe not?
-        masterStore.resetState();  
+        masterStore.resetState();
         masterStore.setMagic({isArgumentsMode: false});
       } else {
         masterStore.setMagic({isArgumentsMode: true});
@@ -63,20 +61,20 @@ var MagicInput = React.createClass({
 
     var text = e.target.value;
     var results = magic.search(text);
-    
+
     this.setState({inputText: text});
     //If we are typing arguments we don't need to be reseting the suggestions.
     if(!this.props.isArgumentsMode) {
       masterStore.setSuggestions(results.suggestions);
-      
+
       //If we have typed the colon we are in arguments mode.
       if(_.contains(text, ":")) {
         masterStore.setMagic({isArgumentsMode: true});
       }
     } else {
-      masterStore.setArguments(results.arguments);  
+      masterStore.setArguments(results.arguments);
     }
-    
+
     // If arguments there, then set args suggestions
     if(_.isString(results.arguments)){
       var argsSugs = magic.searchArgs(this.getCurrentCommand(), results.arguments);
@@ -91,12 +89,29 @@ var MagicInput = React.createClass({
         <div className="sixteen wide column">
           <div className="ui input topsoilInputBox">
             <i className="fa fa-chevron-right f-icon fa-2x"></i>
-            <input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>      
+            <input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
           </div>
         </div>
       </div>
     );
   }
 });
+
+/*
+For reference
+<span className="parentofmagicinputs">
+  <input id="command" className="magicinputs" placeholder="start"></input>
+  <input className="magicinputs args" placeholder="gulp"></input>
+  <input className="magicinputs args" placeholder="build-all"></input>
+</span>
+
+$('.magicinputs').on('focus', function(e){
+  $('.parentofmagicinputs').css('border-bottom', '3px solid #757575')
+})
+
+$('.magicinputs').on('focusout', function(e){
+  $('.parentofmagicinputs').css('border-bottom', '1px solid #757575')
+})
+*/
 
 module.exports = MagicInput;
