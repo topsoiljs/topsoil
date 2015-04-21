@@ -10,7 +10,7 @@ var MagicSuggestions = React.createClass({
 
     if(this.props.isArgumentsMode) {
       var activeSuggestion = this.props.suggestions[this.props.suggestionActive];
-      activeCommand = (<MagicSuggestion suggestion={activeSuggestion} active={false}/>);
+      activeCommand = (<MagicSuggestion className="activeCommand" suggestion={activeSuggestion} active={false}/>);
     }
 
     if(this.props.argsSuggestions && this.props.isArgumentsMode) {
@@ -24,6 +24,9 @@ var MagicSuggestions = React.createClass({
     iterable.forEach(function(suggestion, ind){
       suggestion.view = suggestion.view || {};
       // Replace later
+      if(this.props.isArgumentsMode && suggestion === activeSuggestion){
+        return;
+      }
       var args = this.props.argsSuggestions ? ['random args'] : JSON.stringify(suggestion.args).slice(1, -1)
       var sugNode = (<MagicSuggestion suggestion={suggestion} active={active === ind} args={args}/>);
       nodes.push(sugNode);

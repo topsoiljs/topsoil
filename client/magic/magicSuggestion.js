@@ -5,7 +5,7 @@ var MagicSuggestion = React.createClass({
     if(this.props.active){
         return (
           <div>
-            <div className="activeSuggestion magicSuggestion">
+            <div className={"activeSuggestion magicSuggestion " + this.props.className}>
               <i className={"fa fa-" + suggestion.view.icon + " fa-lg icon"}></i>
               <span className="suggestionName">{suggestion.name.toUpperCase()}</span>
               <span className="suggestionDescription">{suggestion.description}</span>
@@ -16,7 +16,7 @@ var MagicSuggestion = React.createClass({
       }else{
         return (
           <div>
-            <div className="magicSuggestion">
+            <div className={"magicSuggestion " + this.props.className}>
               <i className={"fa fa-" + suggestion.view.icon + " fa-lg icon"}></i>
               <span className="suggestionName">{suggestion.name.toUpperCase()}</span>
               <span className="suggestionDescription">{suggestion.description}</span>
