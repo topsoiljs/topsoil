@@ -1,0 +1,3 @@
+var Bubble = React.createClass({
+
+})

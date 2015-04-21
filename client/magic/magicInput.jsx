@@ -5,6 +5,39 @@ var magic = require("./magic.js");
 var isKey = require('../utilities.js').isKey;
 var _ = require("lodash");
 
+
+/*
+  Data:
+  {
+    inputArr: [cmd, args1, args2, args3],
+    activeIndex: 0,
+    isEditing: false
+  }
+
+  Logic:
+  Actions:
+    Arrow Keys
+
+    Enter
+
+    Click
+
+    //For later.
+    Drag
+
+
+  How do things start?
+  
+  Just typing in the command.
+
+  Then on is args mode display the args.
+  
+  - undefined to show the placeholder text.
+
+
+*/
+
+
 var MagicInput = React.createClass({
   getInitialState: function() {
     return {inputText: ""};
@@ -77,18 +110,30 @@ var MagicInput = React.createClass({
 
     // If arguments there, then set args suggestions
     if(_.isString(results.arguments)){
-      var argsSugs = magic.searchArgs(this.getCurrentCommand(), results.arguments);
+      var argsSug = magic.searchArgs(this.getCurrentCommand(), results.arguments);
       masterStore.setArgsSuggestions(argsSugs);
     }else{
       masterStore.setArgsSuggestions(null);
     }
   },
   render: function() {
+    var bubbles = [];
+    
+    if(this.props.isArgumentsMode) {
+      this.inputArr.forEach(function(input, ind) {
+        bubbles.push(<Bubble text=input isActive=(this.props.activeArgument === ind)/>);
+      });
+    } else {
+      bubbles.push(<Bubble text=this.state.inputArr[0] isActive=true/>);
+    }
+    
+
     return (
       <div className="row">
         <div className="sixteen wide column">
           <div className="ui input topsoilInputBox">
             <i className="fa fa-chevron-right f-icon fa-2x"></i>
+            {bubbles}
             <input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}/>
           </div>
         </div>
