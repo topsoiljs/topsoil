@@ -21,6 +21,10 @@ var MasterView = React.createClass({
     console.log("get all commands:", magic.getAllCommands());
     masterStore.setSuggestions(magic.getAllCommands());
   },
+  // Need to add
+  /*
+    <i className="fa fa-chevron-right"></i>
+  */
   render: function() {
     //Combine these two worlds...
     if(this.state.activeView === HubWorld) {
