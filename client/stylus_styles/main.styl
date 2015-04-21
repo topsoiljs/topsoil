@@ -75,33 +75,51 @@
 .icon
   padding-left 5px
   width 25px
-
+// Begin magic inputs styling
+backColor = #5F8779
+backColorFocus = #8579F2
 .magicinputs
   margin-right 1px
   font-size 10px
-  width 50px
+  color white
 .magicinputs:focus
   outline none
+#command:focus
+  background backColorFocus
+  border-left 6px solid backColorFocus
+  border-right 6px solid backColorFocus
+  border-top 3px solid backColorFocus
+  border-bottom 3px solid backColorFocus
 #command
   border-radius 5px 5px 5px 5px
-  background #F0DFE7
-  border-left 5px solid #F0DFE7
-  border-right 5px solid #F0DFE7
-  border-top 2px solid #F0DFE7
-  border-bottom 2px solid #F0DFE7
+  background backColor
+  border-left 5px solid backColor
+  border-right 5px solid backColor
+  border-top 2px solid backColor
+  border-bottom 2px solid backColor
+.magicinputs.args:focus
+  background backColorFocus
+  border-left 6px solid backColorFocus
+  border-right 6px solid backColorFocus
+  border-top 3px solid backColorFocus
+  border-bottom 3px solid backColorFocus
 .magicinputs.args
   border-radius 20px 20px 20px 20px
-  border-left 9px solid #F2E1EA
-  border-right 9px solid #F2E1EA
-  border-top 2px solid #F0DFE7
-  border-bottom 2px solid #F0DFE7
-  background #F0DFE7
+  border-left 9px solid backColor
+  border-right 9px solid backColor
+  border-top 2px solid backColor
+  border-bottom 2px solid backColor
+  background backColor
 .parentRow
   padding 15px
-
 .parentofmagicinputs
   padding-bottom 5px
   padding-right 10px
-  padding-left 10px
-  border-bottom 1px solid #F0DFE7
-  transition: border-bottom 0.1s ease;
+  padding-left 2px
+  margin-left 3px
+  border-bottom 1px solid backColor
+  transition: border-bottom 0.2s ease;
+  width 100%
+::-webkit-input-placeholder  /* WebKit browsers */
+    color #EBF069
+    font-weight bold
