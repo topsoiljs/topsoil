@@ -63,8 +63,6 @@ function MasterStore() {
     //These can all be nicely refactored.
     activeIndexRight: function() {
       state.magicData.activeArgumentIndex = wrapAround(state.magicData.activeArgumentIndex + 1, state.magicData.inputArr.length);
-
-      console.log(state.magicData.activeArgumentIndex);
     }, 
     activeIndexLeft: function() {
       state.magicData.activeArgumentIndex = wrapAround(state.magicData.activeArgumentIndex - 1, state.magicData.inputArr.length);
