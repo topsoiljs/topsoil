@@ -5,6 +5,7 @@ var eventBus = require("../eventBus.js");
 var HubWorld = require("./hub_world/hub_world.jsx");
 var magic = require("../magic/magic.js");
 var MagicInput = require("../magic/MagicInput.jsx");
+var SubViews = require("./subViews.jsx");
 
 var MasterView = React.createClass({
   getInitialState: function() {
@@ -40,17 +41,15 @@ var MasterView = React.createClass({
       return (<div className="ui grid">
                 <div className="row">
                   <div className="four wide column">
-                    <MagicInput {...this.state.magicData}/>
+                    <div className="row">
+                      <div className="four wide column">
+                        <MagicInput {...this.state.magicData}/>
+                        <MagicSuggestions {...this.state.magicData}/>
+                      </div>
+                    </div>
                   </div>
-                  <div className="subviews twelve wide column">
-                    <h1>SUBVIEWS</h1>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="four wide column">
-                    <MagicSuggestions {...this.state.magicData}/>
-                  </div>
-                  <div className="main twelve wide column">
+                  <div className="twelve wide column">
+                    <SubViews/>
                     <this.state.activeView/>
                   </div>
                 </div>

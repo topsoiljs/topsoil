@@ -44,7 +44,6 @@ var createNewStream = function(options){
 
   opts._uid = uuid.v4();
   opts._info_uid = uuid.v4();
-
   socket.emit(command, opts);
   socket.on(opts._uid, cb);
   socket.on(opts._info_uid, infoCB);
