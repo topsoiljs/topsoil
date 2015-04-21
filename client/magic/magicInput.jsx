@@ -27,11 +27,11 @@ var Bubble = require("./bubble.jsx");
 
 
   How do things start?
-  
+
   Just typing in the command.
 
   Then on is args mode display the args.
-  
+
   - undefined to show the placeholder text.
 
 
@@ -43,6 +43,13 @@ var MagicInput = React.createClass({
     return {};
   },
   componentDidMount: function(){
+    $('.magicinputs').on('focus', function(e){
+      $('.parentofmagicinputs').css('border-bottom', '3px solid #757575')
+    })
+
+    $('.magicinputs').on('focusout', function(e){
+      $('.parentofmagicinputs').css('border-bottom', '1px solid #757575')
+    })
   },
   handleShortcut: function(e){
     // Tab or down
@@ -105,12 +112,14 @@ var MagicInput = React.createClass({
     }
 
     return (
-      <div className="row">
+      <div className="row magicInput">
         <div className="sixteen wide column">
-          <div className="ui input topsoilInputBox" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}>
-            <i className="fa fa-chevron-right f-icon fa-2x"></i>
-            {bubbles}
-          </div>
+          <span className="caret">&gt;</span>
+          <span className="topsoilInputBox" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}>
+            <span className="parentofmagicinputs">
+              {bubbles}
+            </span>
+          </span>
         </div>
       </div>
     );

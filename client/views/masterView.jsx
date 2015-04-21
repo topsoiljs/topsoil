@@ -41,17 +41,15 @@ var MasterView = React.createClass({
       return (<div className="ui grid">
                 <div className="row">
                   <div className="four wide column">
-                    <MagicInput {...this.state.magicData}/>
+                    <div className="row">
+                      <div className="four wide column">
+                        <MagicInput {...this.state.magicData}/>
+                        <MagicSuggestions {...this.state.magicData}/>
+                      </div>
+                    </div>
                   </div>
                   <div className="twelve wide column">
                     <SubViews/>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="four wide column">
-                    <MagicSuggestions {...this.state.magicData}/>
-                  </div>
-                  <div className="main twelve wide column">
                     <this.state.activeView/>
                   </div>
                 </div>
