@@ -18,8 +18,7 @@ var MasterView = React.createClass({
     masterStore.openView(HubWorld);
     //This ensures all of the commands are registered.
     //This is generally bad... There is a more sane place to put this, but I don't know yet...
-    console.log("get all commands:", magic.getAllCommands());
-    masterStore.setSuggestions(magic.getAllCommands());
+    masterStore.setDefaultSuggestions(magic.getAllCommands());
   },
   // Need to add
   /*

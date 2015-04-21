@@ -41,8 +41,6 @@ var ReplComponent = React.createClass({
   }
 });
 
-
-
 magic.registerView({
   name: 'repl',
   commands: [
@@ -54,7 +52,7 @@ magic.registerView({
       categories: ['read'],
       method: replViewStore['start']
     }
-    ],
+  ],
   category: 'repl',
   icon: 'terminal',
   component: ReplComponent

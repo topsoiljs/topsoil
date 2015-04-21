@@ -2,22 +2,6 @@
 var MagicSuggestion = require("./magicSuggestion.js");
 
 var MagicSuggestions = React.createClass({
-  handleShortcut: function(e){
-    // Tab or down
-    var state = masterStore.getState();
-    if(isKey(e, 'TAB', 'DOWN_ARROW')){
-      e.preventDefault();
-      masterStore.setActiveSuggestion((state.suggestionActive + 1) % state.suggestions.length)
-    // Up
-    }else if(isKey(e, 'UP_ARROW')){
-      e.preventDefault();
-      var active = (state.suggestionActive - 1) % state.suggestions.length;
-      if(active < 0){
-        active = state.suggestions.length-1;
-      }
-      masterStore.setActiveSuggestion(active);
-    }
-  },
   render: function() {
     var nodes = [];
     var iterable;
@@ -26,7 +10,6 @@ var MagicSuggestions = React.createClass({
     
     if(this.props.isArgumentsMode) {
       var activeSuggestion = this.props.suggestions[this.props.suggestionActive];
-      console.log("activeSuggestion: ", this.props.suggestions, this.props.suggestionActive);
       activeCommand = (<MagicSuggestion suggestion={activeSuggestion} active={false}/>);
     }
 
@@ -37,8 +20,6 @@ var MagicSuggestions = React.createClass({
       iterable = this.props.suggestions;
       active = this.props.suggestionActive;
     }
-
-    console.log("iterable:", iterable);
 
     iterable.forEach(function(suggestion, ind){
       suggestion.view = suggestion.view || {};
