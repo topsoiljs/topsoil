@@ -85,7 +85,6 @@ var MagicInput = React.createClass({
   },
   render: function() {
     return (
-<<<<<<< HEAD
       <div className="row">
         <div className="sixteen wide column">
           <div className="ui input topsoilInputBox">
@@ -95,15 +94,24 @@ var MagicInput = React.createClass({
         </div>
       </div>
     );
-=======
-      <span className="parentofmagicinputs">
-        <input id="command" className="magicinputs" placeholder="start"></input>
-        <input className="magicinputs args" placeholder="gulp"></input>
-        <input className="magicinputs args" placeholder="build-all"></input>
-      </span>
-    )
->>>>>>> tweaked stylings for args boxes
   }
 });
+
+/*
+For reference
+<span className="parentofmagicinputs">
+  <input id="command" className="magicinputs" placeholder="start"></input>
+  <input className="magicinputs args" placeholder="gulp"></input>
+  <input className="magicinputs args" placeholder="build-all"></input>
+</span>
+
+$('.magicinputs').on('focus', function(e){
+  $('.parentofmagicinputs').css('border-bottom', '3px solid #757575')
+})
+
+$('.magicinputs').on('focusout', function(e){
+  $('.parentofmagicinputs').css('border-bottom', '1px solid #757575')
+})
+*/
 
 module.exports = MagicInput;
