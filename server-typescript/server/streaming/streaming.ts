@@ -51,6 +51,7 @@ var createBufferToStringStream = function(){
 };
 
 
+
 var createSpawnStream = function(command, args, options, infoHandler){
   options = options || {};
   options.stdio = ['pipe', 'pipe'];
@@ -59,7 +60,6 @@ var createSpawnStream = function(command, args, options, infoHandler){
   });
 
   return through(function(chunk, enc, cb){
-    console.log('the through function is being called');
     var stream = spawn(command, args, options);
     infoHandler({
       pid: stream.pid
@@ -73,6 +73,29 @@ var createSpawnStream = function(command, args, options, infoHandler){
   });
 };
 
+var createSpawnEndStream = function(command, args, options, parser){
+  options = options || {};
+  options.stdio = ['pipe', 'pipe'];
+
+  return through(function(chunk, enc, cb){
+    console.log('the through function is being called with options', options);
+    var stream = spawn(command, args, options);
+    var data = '';
+    stream.stdin.write(String(chunk));
+    stream.stdin.end();
+    stream.stdout.on('data', function(d){
+      data+=d;
+    });
+    stream.stdout.on('end', function(){
+      if(data === ''){
+        data = 'message received';
+      }
+      console.log('stream ended', data);
+      cb(null, parser(String(data)));
+    });
+  });
+};
+
 exports.createOutStream = createOutStream;
 exports.createInStream = createInStream;
 exports.createGenericStream = createGenericStream;
@@ -81,4 +104,4 @@ exports.createSpawnStream = createSpawnStream;
 exports.createDuplexStream = createDuplex;
 exports.createInfoSocket = createInfoSocket;
 exports.createGenericStream = createGenericStream;
-
+exports.createSpawnEndStream = createSpawnEndStream;

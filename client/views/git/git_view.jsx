@@ -18,85 +18,81 @@ function GitViewStore() {
       streams['git.status'] = createNewStream({
         command: 'git.status',
         opts: {
-          cwd: state.currentDir,
-          cmd: 'git',
+          opts: {cwd: state.currentDir},
           args: ['status', '-s'],
         },
         cb: function(data){
-          console.log('we received data', data);
           state.status = JSON.parse(data.data);
-          console.log('current status is ', state.status);
+          eventBus.emit('git');
+          if(updateDiff){
+            methods.differenceAll(state.status);
+          }
+        }
+      });
+
+      streams['git.status'].emit('get');
+    },
+
+    add: function(fileName){
+      streams['git.add'] = createNewStream({
+        command: 'git.add',
+        opts: {
+          args: ['add', fileName],
+          opts: {cwd: state.currentDir}
+        },
+        cb: function(data){
+          streams['git.status'].emit('get');
+        }
+      });
+      streams['git.add'].emit('add');
+    },
+
+    reset: function(file){
+
+      streams['git.reset'] = createNewStream({
+        command: 'git.reset',
+        opts: {
+          args: ['reset', 'HEAD', fileName],
+          opts: {cwd: state.currentDir}
+        },
+        cb: function(data){
+          streams['git.status'].emit('get');
+        }
+      });
+      streams['git.reset'].emit('reset');
+    },
+
+    difference: function(fileName, staging, key){
+
+      key = key || 0;
+
+      streams['git.diff'+key] = createNewStream({
+        command: 'git.diff',
+        opts: {
+          opts: {cwd: state.currentDir},
+          args: ['diff', '--no-prefix', fileName],
+        },
+        cb: function(data){
+          var res = JSON.parse(data.data);
+          state.diff[staging][fileName] = res.text;
           eventBus.emit('git');
         }
-        // initialData: currentDir
       });
 
-      streams['git.status'].emit('something');
-      // var dir = args.directory;
-      // var UID = Math.random();
-      // socket.emit('git.status', {
-      //   cmd: 'git',
-      //   args: ['-s'],
-      //   dir: state.currentDir,
-      //   uid: UID
-      // });
-      // socket.on(UID, function(data){
-      //   state.status = data.data;
-      //   if(updateDiff){
-      //     methods.differenceAll(state.status);
-      //   }
-      //   eventBus.emit('git');
-      //   console.log(state.status);
-      // })
-    },
-    add: function(data){
-      var self = this;
-      var UID = Math.random();
-      socket.emit('git.add', {
-        args: [data],
-        dir: state.currentDir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        methods.status(true);
-      })
-    },
+      streams['git.diff'+key].emit('cat');
 
-    reset: function(data){
-      var self = this;
-      var UID = Math.random();
-      socket.emit('git.reset', {
-        args: ['HEAD', data],
-        dir: state.currentDir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        methods.status(true);
-      })
-    },
-
-    difference: function(fileName, staging){
-      var self = this;
-      var UID = Math.random();
-      socket.emit('git.diff', {
-        args: ['--no-prefix', fileName],
-        dir: state.currentDir,
-        uid: UID
-      });
-      socket.on(UID, function(diff){
-        state.diff[staging][fileName] = diff.data.text;
-        eventBus.emit('git');
-      })
     },
 
     differenceAll : function(status){
+
+      var key = 0
       // methods.newDiff();
       status.unstaged.forEach(function(file){
-        methods.difference(file, 'unstaged');
+        methods.difference(file, 'unstaged', key++);
       })
-      status.staged.forEach(function(file){
-        methods.difference(file, 'staged');
-      })
+      // status.staged.forEach(function(file){
+      //   methods.difference(file, 'staged');
+      // })
     },
 
     newDiff : function(){
@@ -137,8 +133,6 @@ var GitComponent = React.createClass({
             });
 
       var unstaged = this.state.status.unstaged.map(function(file){
-              console.log('state file name is ', JSON.stringify(file));
-              console.log('state diff is ', self.state.diff);
               if(self.state.diff.unstaged[file]){
                 return (
                 <div>
@@ -226,14 +220,25 @@ var GitUntracked = React.createClass({
 
 var GitDiff = React.createClass({
   render: function(){
-    //should pass in a file and staging property
-    console.log("the property diff becomes this", this.props.diff);
-    console.log("the result array should be ",JSON.stringify(this.props.diff));
 
+    console.log('the properties that we get is ',this.props.diff);
+    //should pass in a file and staging property
+    var result = this.props.diff.map(function(code){
+      console.log(code);
+      return (
+        <div>
+          <span>
+            {code[0]+'  '}
+          </span>
+          <span>
+            {code[1].replace(/ /g, "\u00a0")}
+          </span>
+        </div>
+        );
+    })
     return (
       <div>
-        See Difference here
-        {this.props.diff}
+        {result}
       </div>
     )
   }

@@ -1,25 +1,25 @@
 /// <reference path="../utility/utility.ts"/>
 var fs = require('fs');
 var utility = require('../utility/utility');
-var createSpawnStreamF = require('../streaming/streaming').createSpawnStream;
+var createSpawnEndStreamF = require('../streaming/streaming').createSpawnEndStream;
 
 var gitAPI = <any> {};
 
 //wrapper function will take in a callback that process the outputs into workable JSON format
-gitAPI.status = gitWrapper('git', parseStatus);
+gitAPI.status = gitWrapper(parseStatus);
 
-//gitAPI.add = gitWrapper('add', utility.identity);
+gitAPI.add = gitWrapper(utility.identity);
+
+gitAPI.reset = gitWrapper(utility.identity);
 //
-//gitAPI.reset = gitWrapper('reset', utility.identity);
-//
-//gitAPI.diff = gitWrapper('diff', parseDiff);
+gitAPI.diff = gitWrapper(parseDiff);
 
 module.exports = gitAPI;
 
-function gitWrapper(command, parser) {
-    console.log('created this function');
+function gitWrapper(parser) {
     return function(opts) {
-        var spawnStream = createSpawnStreamF(opts.cmd, opts.args, opts.opts, parser);
+        console.log('the opts that we get is ', opts);
+        var spawnStream = createSpawnEndStreamF('git', opts.args, opts.opts, parser);
         return spawnStream;
     };
 }
@@ -45,7 +45,7 @@ function parseStatus(str:String){
         untracked: []
     };
     var result = utility.splitLines(str).reduce(function(result,element){
-        console.log('element is ', element);
+
         var marker = element.substr(0,3);
         if(marker == '?? '){
             result.untracked.push(element.slice(3));
@@ -61,7 +61,6 @@ function parseStatus(str:String){
         }
         return result;
     }, emptyResult);
-
     return JSON.stringify(result);
 }
 
@@ -75,7 +74,8 @@ function parseDiff(str:String){
     }).filter(function(line){
         return line[0] !== undefined;
     });
-    return result;
+    console.log('the diff result is', result);
+    return JSON.stringify(result);
 }
 
 function _parseDiffAt(str:String){
