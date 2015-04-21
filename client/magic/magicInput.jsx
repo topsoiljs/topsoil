@@ -114,8 +114,8 @@ var MagicInput = React.createClass({
     return (
       <div className="row magicInput">
         <div className="sixteen wide column">
-          <span className="caret">&gt;</span>
           <span className="topsoilInputBox" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}>
+            <span className="caret">&gt;</span>
             <span className="parentofmagicinputs">
               {bubbles}
             </span>
