@@ -38,8 +38,7 @@ var Bubble = React.createClass({
   },
   componentWillReceiveProps: function(nextProps) {
     if(nextProps.isActive) {
-      //This should set the next input to be focused, but it does not.
-      console.log("set focus", this.props.placeholder);
+      //This should set the next input to be focused, but it does not. I don't know why.
       var refKey = this.props.placeholder;
       this.refs[refKey].getDOMNode().focus(); 
     }
