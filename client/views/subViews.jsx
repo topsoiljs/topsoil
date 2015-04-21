@@ -14,6 +14,6 @@ var SubViews = React.createClass({
       <div className="subviews">{nodes}</div>
     )
   }
-})
+});
 
 module.exports = SubViews;
