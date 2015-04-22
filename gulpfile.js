@@ -80,6 +80,8 @@ gulp.task('ts', function () {
         }));
 
   return merge([
+      gulp.src('server-typescript/default_config.json').pipe(gulp.dest('deploy')),
+      gulp.src('server-typescript/package.json').pipe(gulp.dest('deploy')),
       tsApp.js.pipe(gulp.dest('deploy')),
       tsServer.js.pipe(gulp.dest('deploy/server')),
       processAPI.js.pipe(gulp.dest('deploy/server/processAPIs')),
