@@ -1,7 +1,6 @@
 var masterStore = require("../masterStore.js");
 var magic = require("./magic.js");
 var isKey = require('../utilities.js').isKey;
-var $ = require("jquery");
 
 var Bubble = React.createClass({
   getInitialState: function() {
@@ -82,7 +81,6 @@ var Bubble = React.createClass({
     var onChangeFunc = this.props.isArg ? this.onArgChange : this.onCommandChange;
 
     var style = {width: this.state.width + "px"};
-    var spanStyle = {display: "none"};
     return (
      <input id={id}  
             style={style}
