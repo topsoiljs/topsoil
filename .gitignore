@@ -42,3 +42,5 @@ bower_components
 
 *.css
 *.html
+
+test/randomTestFolder

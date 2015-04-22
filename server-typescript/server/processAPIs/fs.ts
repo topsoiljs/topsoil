@@ -95,21 +95,13 @@ function listAllFilesAndDirs (data, cb){
   }, result));
 }
 
-fsAPI.unlink = fsWrapper(fs.unlink, ['dir']);
-
-fsAPI.append = fsWrapper(fs.append, ['dir', 'data']);
-
-fsAPI.mkdir = fsWrapper(fs.mkdir, ['dir']);
-
-fsAPI.rmdir = fsWrapper(fs.rmdir, ['dir']);
-
 module.exports = fsAPI;
 
-function fsStreamWrapper(createStream, args, mode: number, options?) {
+function fsStreamWrapper(createStream, args, mode: number, options?){
   // Mode 0=read, 1=write, 2=duplex
   // Options will be default options passed in as last argument
   return function(opts) {
-    if (!opts.dir) opts.dir = '/';
+    if(!opts.dir) opts.dir = '/';
 
     var arguments = args.map(function(arg) {
       return opts[arg];
@@ -131,14 +123,6 @@ function fsStreamWrapper(createStream, args, mode: number, options?) {
       returnStream = stream;
     }
   }
-}
-
-function fsSingleWrapper(fsCallback){
-  return createGenericStreamFunc(function(chunk : string, enc : string, cb){
-    fsCallback(chunk, function(err, data){
-      cb(err, data);
-    })
-  })
 }
 
 function fsSingleWrapper(fsCallback){

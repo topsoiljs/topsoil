@@ -5,6 +5,15 @@ var gulp = require('gulp');
 var es = require('event-stream');
 var spawn = require('child_process').spawn;
 
+var createOutStream = function(socket, id: string) {
+  return through(function(chunk, enc, cb) {
+    socket.emit(id, {
+      data: chunk.toString('utf8'),
+    });
+    cb();
+  })
+};
+
 var createDuplex = function(input, out){
   return es.duplex(input, out);
 };
@@ -33,13 +42,6 @@ interface chunkHandler {
   (chunk : string, enc : string, cb : any) : void
 }
 
-var createOutStream = function(socket, id : string){
-  return through(function(chunk, enc, cb){
-    socket.emit(id, String(chunk));
-    cb(null, chunk);
-  })
-};
-
 var createGenericStream = function(chunkHandler : chunkHandler){
   return through(chunkHandler);
 };
@@ -59,19 +61,18 @@ var createSpawnStream = function(command, args, options, infoHandler){
     cb(null, chunk);
   });
 
-  return through(function(chunk, enc, cb){
-    var stream = spawn(command, args, options);
-    infoHandler({
-      pid: stream.pid
-    });
-    stream.stdin.write(String(chunk));
-    stream.stdin.end();
-    stream.stdout.on('data', function(d){
-      outStream.write(String(d) + '\n');
-    });
-    cb();
+  var stream = spawn(command, args, options);
+  infoHandler({
+    pid: stream.pid
   });
-};
+  stream.stdin.write(String(chunk));
+  stream.stdin.end();
+  stream.stdout.on('data', function(d){
+    outStream.write(String(d) + '\n');
+  });
+  cb();
+  return createDuplex(spawnThrough, outStream);
+});
 
 var createSpawnEndStream = function(command, args, options, parser){
   options = options || {};
