@@ -1,29 +1,24 @@
 /// <reference path="../../typings/node/node.d.ts"/>
 /// <reference path="../utility/utility.ts"/>
+var level = require('level');
 interface StateStore {
-  get: (session: string, key: string) => string;
-  put: (session: string, key: string, value: string) => void;
+  get: (session: string, key: string, cb: any) => void;
+  put: (session: string, key: string, value: string, cb: any) => void;
 }
 
 class State implements StateStore {
   private store;
 
   constructor() {
-    this.store = {};
+    this.store = level('./db');
   }
 
-  get(session: string, key: string) : string {
-    if(this.store[session]){
-      if(this.store[session][key]){
-        return this.store[session][key];
-      }
-    };
-    throw new Error('not found');
+  get(session: string, key: string, cb) {
+    this.store.get(session + key, cb);
   }
 
-  put(session: string, key: string, value: string) {
-    this.store[session] = this.store[session] || {};
-    this.store[session][key] = value;
+  put(session: string, key: string, value: string, cb) {
+    this.store.put(session + key, value, cb);
   }
 }
 
@@ -47,8 +42,9 @@ var routes : StateAPI = <StateAPI>{
       if(request.params.session && request.params.key){
         var payload = request.payload.data;
         var data : string = typeof payload === 'object' ? JSON.stringify(payload) : payload;
-        state.put(request.params.session, request.params.key, data);
-        reply(201);
+        state.put(request.params.session, request.params.key, data, function(){
+          reply(201);
+        });
       }else{
         reply(new Error('need session and key'));
       }
@@ -59,15 +55,16 @@ var routes : StateAPI = <StateAPI>{
     path: '/state/{session}/{key}',
     handler: function(request, reply){
       var data : string;
-      try {
-        if(request.params.key && request.params.session){
-          data = state.get(request.params.session, request.params.key);
-          reply(data);
-        }else{
-          throw new Error('need session and key');
-        }
-      }catch(e){
-        reply(404);
+      if(request.params.key && request.params.session){
+        state.get(request.params.session, request.params.key, function(err, data){
+          if(err){
+            reply(404);
+          }else{
+            reply(data);
+          }
+        });
+      }else{
+        throw new Error('need session and key');
       }
     }
   }
