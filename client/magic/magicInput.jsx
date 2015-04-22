@@ -5,7 +5,7 @@ var magic = require("./magic.js");
 var isKey = require('../utilities.js').isKey;
 var _ = require("lodash");
 var Bubble = require("./bubble.jsx");
-var HiddenCanvas = require("./hiddenCanvas.jsx");
+
 /*
   Data:
   {
@@ -114,7 +114,6 @@ var MagicInput = React.createClass({
     return (
       <div className="row magicInput">
         <div className="sixteen wide column">
-          <HiddenCanvas/>
           <span className="topsoilInputBox" onKeyUp={this.handleInput}  onKeyDown={this.handleShortcut}>
             <span className="caret">&gt;</span>
             <span className="parentofmagicinputs">

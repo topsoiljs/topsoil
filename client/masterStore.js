@@ -25,8 +25,7 @@ function MasterStore() {
 
   var state = {
               activeView: null,
-              magicData: _.cloneDeep(initialMagicData),
-              ctx: false
+              magicData: _.cloneDeep(initialMagicData)
             };
 
   var updateMethods = {
@@ -109,20 +108,12 @@ function MasterStore() {
     },
     setActiveArgumentText: function(text) {
       state.magicData.inputArr[state.magicData.activeArgumentIndex].text = text;
-    },
-    setCTX: function(ctx) {
-      state.ctx = ctx;
     }
   };
 
   var nonUpdateMethods = {
     getState: function() {
       return state;
-    },
-    getTextSize: function(text) {
-      if(state.ctx) {
-        return state.ctx.measureText(text).width;  
-      }
     }
   };
 
