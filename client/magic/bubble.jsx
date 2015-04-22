@@ -1,10 +1,33 @@
 var masterStore = require("../masterStore.js");
 var magic = require("./magic.js");
 var isKey = require('../utilities.js').isKey;
+var $ = require("jquery");
 
 var Bubble = React.createClass({
+  getInitialState: function() {
+    return {width: 10, baseSize: 0, padding: 0};
+  },
+  componentDidMount: function() {
+    //This working relies on the canvas being mounted first.
+    //Consider refactoring so these are not coupled.
+    //That might be impossible... :,(
+    if(this.props.isArg) {
+      var padding = 25;
+    } else {
+      var padding = 20;
+    }
+    var baseWidth = masterStore.getTextSize(this.props.placeholder);
+    this.setState({baseSize: baseWidth, width: baseWidth + padding, padding: padding});
+  },
   clickFunc: function(e) {
     masterStore.setMagic({activeArgumentIndex: this.props.index});
+  },
+  changeSize: function(text) {
+    var width = Math.max(masterStore.getTextSize(text), this.state.baseSize);
+
+    if(width) {
+      this.setState({width: width + this.state.padding});
+    }
   },
   onCommandChange: function(e){
     /*
@@ -15,8 +38,8 @@ var Bubble = React.createClass({
       Need to further seperate args from suggestions.
       only put this on 
     */
-
     var text = e.target.value;
+    this.changeSize(text);
     masterStore.setMagic({isArgumentsMode: false, inputArr: [{text: text, placeholder: "start", isArg: false, index: 0}]});
 
     var suggestions = magic.search(text);
@@ -25,6 +48,7 @@ var Bubble = React.createClass({
   },
   onArgChange: function(e) {
     var text = e.target.value;
+    this.changeSize(text);
     masterStore.setActiveArgumentText(text);    
     //Do stuff to get the argument suggestions
     /*
@@ -57,25 +81,21 @@ var Bubble = React.createClass({
     var id = this.props.isArg ? "" : "command";
     var onChangeFunc = this.props.isArg ? this.onArgChange : this.onCommandChange;
 
+    var style = {width: this.state.width + "px"};
+    var spanStyle = {display: "none"};
     return (
-      <input id={id}  
-             className={"magicinputs " + className}
-             placeholder={this.props.placeholder}
-             onChange={onChangeFunc}
-             onClick={this.clickFunc}
-             onKeyUp={this.keyPressFunc}
-             value={this.props.text}
-             ref={this.props.placeholder}>
-      </input>    
+     <input id={id}  
+            style={style}
+            className={"magicinputs " + className}
+            placeholder={this.props.placeholder}
+            onChange={onChangeFunc}
+            onClick={this.clickFunc}
+            onKeyUp={this.keyPressFunc}
+            value={this.props.text}
+            ref={this.props.placeholder}>
+     </input>
     )
   }
-})
+});
 
-/*
-<span className="parentofmagicinputs">
-  <input id="command" className="magicinputs" placeholder="start"></input>
-  <input className="magicinputs args" placeholder="gulp"></input>
-  <input className="magicinputs args" placeholder="build-all"></input>
-</span>
-*/
 module.exports = Bubble;
