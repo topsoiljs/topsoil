@@ -4,7 +4,7 @@ var processes = require('./processes');
 var repl = require('./repl');
 var terminal = require('./terminal');
 
-var api = {};
+var api = <any>{};
 
 api.fs = fs;
 api.git = git;
