@@ -67,7 +67,6 @@ var MagicInput = React.createClass({
     }
   },
   handleInput: function(e){
-    console.log(this.props.activeArgumentIndex);
     if (isKey(e, 'ENTER')) {
       var currentCommand = this.getCurrentCommand();
       if(currentCommand.args.length === 0) {
