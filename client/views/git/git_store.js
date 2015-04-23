@@ -19,7 +19,7 @@ function GitViewStore() {
         command: 'git.status',
         opts: {
           opts: {cwd: state.currentDir},
-          args: ['status', '-s'],
+          args: ['status', '-s']
         },
         cb: function(data){
           state.status = JSON.parse(data.data);
@@ -47,7 +47,9 @@ function GitViewStore() {
             {
               name: 'git.status',
               opts: {
-                dir: args.dir
+                cwd: args.dir,
+                args: ['status', '-s'],
+                initialData: " "
               }
             }
           ]
