@@ -8,7 +8,7 @@ var createOutSocketStream = streaming.createOutStream;
 var createInfoSocketHandler = streaming.createInfoSocket;
 var domain = require('domain');
 var api = require('./processAPIs');
-
+var _ = require('lodash');
 var setupAPI = function setupAPI(socket){
     for(var namespace in api){
         for(var methodName in api[namespace]){
@@ -36,7 +36,8 @@ var setupAPI = function setupAPI(socket){
       var d = domain.create();
       d.on('error', function(err){
         console.log('error while making chain', err);
-      })
+      });
+      console.log(opts, 'chain incoming');
       d.run(function(){
         var inStream = createInSocketStream(socket, opts._uid);
         var outStream = createOutSocketStream(socket, opts._uid);

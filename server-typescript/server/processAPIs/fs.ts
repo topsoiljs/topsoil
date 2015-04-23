@@ -11,6 +11,7 @@ var createDuplexStream = streaming.createDuplexStream;
 var exec = require('child_process').exec;
 var createSocketOutStream = require('../streaming/streaming').createSocketOutStream;
 var createGenericStreamFunc = require('../streaming/streaming').createGenericStream;
+var watch = require('watch');
 
 var fsAPI = <any> {};
 
