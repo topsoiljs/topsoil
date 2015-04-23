@@ -55,7 +55,8 @@ function GitViewStore() {
           ]
         },
         cb: function(data){
-          console.log(data, 'GOT END OF CHAIN');
+          state.status = JSON.parse(data.data);
+          eventBus.emit('git');
         }
       });
     },
