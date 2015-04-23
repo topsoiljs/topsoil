@@ -21,6 +21,7 @@ server.connection({
 var io = require('socket.io')(server.listener);
 
 setupSocketAPI(io);
+
 stateRoutes(server);
 
 server.route({
