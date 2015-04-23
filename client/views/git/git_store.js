@@ -33,6 +33,28 @@ function GitViewStore() {
 
       streams['git.status'].emit('get');
     },
+    streamStatus: function(args){
+      streams['chain'] = createNewStream({
+        command: 'chain',
+        commands: [
+          {
+            name: 'fs.watchFile',
+            opts: {
+              dir: args.dir + '/.git'
+            }
+          },
+          {
+            name: 'git.status',
+            opts: {
+              dir: args.dir
+            }
+          }
+        ],
+        cb: function(data){
+          console.log(data, 'GOT END OF CHAIN');
+        }
+      });
+    },
     setPWD: function(args){
       $.post('/state/git/pwd', {data: args.pwd})
         .done(function(){

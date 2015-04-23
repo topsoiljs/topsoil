@@ -165,6 +165,14 @@ magic.registerView({
       tags: ['set pwd git'],
       categories: ['write'],
       method: gitViewStore["setPWD"]
+    },
+    {
+      name: "Stream Status",
+      description: 'watch directory and continuously update git status',
+      args: ['dir'],
+      tags: ['git status stream'],
+      categories: ['read'],
+      method: gitViewStore['streamStatus']
     }
   ],
   category: 'git',
