@@ -8,7 +8,7 @@ function GitViewStore() {
                 staged: {},
                 unstaged: {}
                },
-               currentDir: '/Users/Derek/Desktop/topsoil'};
+               currentDir: ''};
 
   var streams = {};
 
