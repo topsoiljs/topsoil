@@ -41,7 +41,7 @@ function GitViewStore() {
             {
               name: 'fs.watchFile',
               opts: {
-                dir: args.dir + '/.git'
+                dir: args.dir
               }
             },
             {
