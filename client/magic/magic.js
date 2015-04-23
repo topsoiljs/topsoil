@@ -12,7 +12,7 @@ function generateSuffixes(word){
 var Magic = function(){
   this.views = {};
   this.commands = {};
-
+  this.subViews = [];
   // Start args search engine
   this._argsEngines = {};
 
@@ -41,6 +41,14 @@ var Magic = function(){
     limit: 12
   })
   this._auto.initialize();
+};
+
+Magic.prototype.getSubViews = function(){
+  return this.subViews;
+};
+
+Magic.prototype.registerSubView = function(viewObject){
+  this.subViews.push(viewObject);
 };
 
 Magic.prototype.registerView = function(viewObject){
@@ -128,11 +136,11 @@ Magic.prototype.search = function(search){
   if(!isAllSpaces(search)) {
     this._auto.get(search, function(sugs){
       suggestions = sugs;
-    });  
+    });
   } else {
     suggestions = this.getAllCommands();
   }
-  
+
 
   return suggestions;
 };

@@ -112,6 +112,7 @@ gulp.task('browserify', function() {
               './client/views/super_grep/s_grep.jsx',
               './client/views/repl/repl_view.jsx',
               './client/views/git/git_view.jsx',
+              './client/views/git/git_subview.jsx',
               './client/views/file_system/fs_view.jsx',
               './client/views/script_runner/processes_view.jsx'],
     debug: false,
