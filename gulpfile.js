@@ -16,6 +16,7 @@ var concat = require('gulp-concat');
 var plumber = require('gulp-plumber');
 var mocha = require('gulp-mocha');
 var glob = require('glob');
+var install = require('gulp-install');
 
 gulp.task('jade', function () {
   var YOUR_LOCALS = {};
@@ -80,13 +81,20 @@ gulp.task('ts', function () {
         }));
 
   return merge([
-      gulp.src('server-typescript/default_config.json').pipe(gulp.dest('deploy')),
-      gulp.src('server-typescript/package.json').pipe(gulp.dest('deploy')),
       tsApp.js.pipe(gulp.dest('deploy')),
       tsServer.js.pipe(gulp.dest('deploy/server')),
       processAPI.js.pipe(gulp.dest('deploy/server/processAPIs')),
       utility.js.pipe(gulp.dest('deploy/server/utility'))
       ]);
+});
+
+gulp.task('install', function(){
+  return merge([
+      gulp.src('server-typescript/default_config.json').pipe(gulp.dest('deploy')),
+      gulp.src(['./package.json', './bower.json', './.bowerrc'])
+        .pipe(gulp.dest('deploy'))
+        .pipe(install({production: true}))
+    ])
 });
 
 gulp.task('jsx', function(){
@@ -121,8 +129,6 @@ gulp.task('browserify', function() {
           .pipe(gulp.dest('deploy/client'));
 });
 
-
-
 gulp.task('tsw', function () {
   gulp.watch("**/*.ts", ["ts"]);
 });
@@ -135,7 +141,7 @@ gulp.task('test', function () {
         .pipe(mocha({reporter: 'nyan'}));
 });
 
-gulp.task('build-all', ['jade', 'stylus', 'ts', 'browserify']);
+gulp.task('build-all', ['jade', 'stylus', 'ts', 'browserify', 'install']);
 
 gulp.task('build-all-w', function(){
   gulp.watch(['server-typescript/**/*', 'client/**/*'], ['build-all']);
