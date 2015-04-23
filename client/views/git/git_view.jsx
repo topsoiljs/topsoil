@@ -1,5 +1,6 @@
 var eventBus = require("../../eventBus.js");
 var magic = require("../../magic/magic.js");
+var createNewStream = require("../../streaming/streaming_client.js").createNewStream;
 
 function GitViewStore() {
   console.log('git view is loaded');
@@ -22,11 +23,12 @@ function GitViewStore() {
           args: ['status', '-s'],
         },
         cb: function(data){
-          state.status = JSON.parse(data.data);
+          console.log('the type of data', data);
+          state.status = JSON.parse(data);
           eventBus.emit('git');
-          if(updateDiff){
+          // if(updateDiff){
             methods.differenceAll(state.status);
-          }
+          // }
         }
       });
 
@@ -47,7 +49,7 @@ function GitViewStore() {
       streams['git.add'].emit('add');
     },
 
-    reset: function(file){
+    reset: function(fileName){
 
       streams['git.reset'] = createNewStream({
         command: 'git.reset',
@@ -73,7 +75,7 @@ function GitViewStore() {
           args: ['diff', '--no-prefix', fileName],
         },
         cb: function(data){
-          var res = JSON.parse(data.data);
+          var res = JSON.parse(data);
           state.diff[staging][fileName] = res.text;
           eventBus.emit('git');
         }
@@ -160,7 +162,7 @@ var GitComponent = React.createClass({
        <GitButton fileName = '.' action='reset' label='Reset All'/>
        <row>
         <h5>Staged</h5>
-          <ul >
+          <ul>
             {staged}
           </ul>
        </row>

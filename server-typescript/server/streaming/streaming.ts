@@ -52,8 +52,6 @@ var createBufferToStringStream = function(){
   })
 };
 
-
-
 var createSpawnStream = function(command, args, options, infoHandler){
   options = options || {};
   options.stdio = ['pipe', 'pipe'];
