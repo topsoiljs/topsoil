@@ -20,6 +20,7 @@
     "glob": "^5.0.5",
     "gulp": "^3.8.11",
     "gulp-concat": "*",
+    "gulp-install": "^0.4.0",
     "gulp-jade": "^1.0.0",
     "gulp-mocha": "^2.0.1",
     "gulp-plumber": "^1.0.0",
