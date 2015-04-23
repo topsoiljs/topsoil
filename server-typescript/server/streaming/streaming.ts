@@ -52,25 +52,26 @@ var createBufferToStringStream = function(){
   })
 };
 
-var createSpawnStream = function(command, args, options, infoHandler){
+var createSpawnStream = function(command, args, options, infoHandler) {
   options = options || {};
   options.stdio = ['pipe', 'pipe'];
-  var outStream = createGenericStream(function(chunk, enc, cb){
+  var outStream = createGenericStream(function(chunk, enc, cb) {
     cb(null, chunk);
   });
-
-  var stream = spawn(command, args, options);
-  infoHandler({
-    pid: stream.pid
+  var spawnThrough = through(function(chunk, enc, cb) {
+    var stream = spawn(command, args, options);
+    infoHandler({
+      pid: stream.pid
+    });
+    stream.stdin.write(String(chunk));
+    stream.stdin.end();
+    stream.stdout.on('data', function(d) {
+      outStream.write(String(d) + '\n');
+    });
+    cb();
   });
-  stream.stdin.write(String(chunk));
-  stream.stdin.end();
-  stream.stdout.on('data', function(d){
-    outStream.write(String(d) + '\n');
-  });
-  cb();
   return createDuplex(spawnThrough, outStream);
-});
+};
 
 var createSpawnEndStream = function(command, args, options, parser){
   options = options || {};
