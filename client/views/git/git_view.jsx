@@ -23,8 +23,7 @@ function GitViewStore() {
           args: ['status', '-s'],
         },
         cb: function(data){
-          console.log('the type of data', data);
-          state.status = JSON.parse(data);
+          state.status = JSON.parse(data.data);
           eventBus.emit('git');
           // if(updateDiff){
             methods.differenceAll(state.status);
@@ -75,7 +74,7 @@ function GitViewStore() {
           args: ['diff', '--no-prefix', fileName],
         },
         cb: function(data){
-          var res = JSON.parse(data);
+          var res = JSON.parse(data.data);
           state.diff[staging][fileName] = res.text;
           eventBus.emit('git');
         }
@@ -222,11 +221,8 @@ var GitUntracked = React.createClass({
 
 var GitDiff = React.createClass({
   render: function(){
-
-    console.log('the properties that we get is ',this.props.diff);
     //should pass in a file and staging property
     var result = this.props.diff.map(function(code){
-      console.log(code);
       return (
         <div>
           <span>
