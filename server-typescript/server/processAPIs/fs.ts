@@ -47,6 +47,16 @@ fsAPI.listAllFilesAndDirs = function(opts){
   return createDuplexStream(listStream, streamOut);
 };
 
+fsAPI.watchFile = function(opts){
+  var watchStream = createGenericStreamFunc(function(data: string, enc : string, cb){
+    cb(null, data);
+  });
+  watch.watchTree(opts.dir, function(f, curr, prev){
+    watchStream.write('file_changed');
+  });
+  return watchStream;
+};
+
 function listAllFilesAndDirs (data, cb){
 
   function cleanFolder(folder: Array<string>) {
@@ -73,7 +83,7 @@ function listAllFilesAndDirs (data, cb){
        file
        folder
        file
-       
+
      ./dir_path2
        file
        ..
