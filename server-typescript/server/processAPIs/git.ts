@@ -18,7 +18,6 @@ module.exports = gitAPI;
 
 function gitWrapper(parser) {
     return function(opts) {
-        console.log('the opts that we get is ', opts);
         var spawnStream = createSpawnEndStreamF('git', opts.args, opts.opts, parser);
         return spawnStream;
     };
@@ -74,7 +73,6 @@ function parseDiff(str:String){
     }).filter(function(line){
         return line[0] !== undefined;
     });
-    console.log('the diff result is', result);
     return JSON.stringify(result);
 }
 
