@@ -15,7 +15,6 @@ function GitViewStore() {
   var streams = {};
   var methods = {
     status: function(updateDiff){
-
       streams['git.status'] = createNewStream({
         command: 'git.status',
         opts: {
@@ -28,12 +27,22 @@ function GitViewStore() {
           // if(updateDiff){
             methods.differenceAll(state.status);
           // }
-        }
+        },
+        initialData: ' '
       });
 
       streams['git.status'].emit('get');
     },
-
+    setPWD: function(args){
+      $.post('/state/git/pwd', {data: args.pwd})
+        .done(function(){
+          state.currentDir = args.pwd;
+          eventBus.emit('git');
+        })
+        .fail(function(){
+          console.log('failed posting pwd')
+        })
+    },
     add: function(fileName){
       streams['git.add'] = createNewStream({
         command: 'git.add',

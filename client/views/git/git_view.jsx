@@ -1,6 +1,6 @@
 var eventBus = require("../../eventBus.js");
 var magic = require("../../magic/magic.js");
-var gitViewStore = require('./git_store.js'); 
+var gitViewStore = require('./git_store.js');
 
 var GitComponent = React.createClass({
   getInitialState: function() {
@@ -157,8 +157,16 @@ magic.registerView({
       tags: ['show git', 'git', 'status', 'ls'],
       categories: ['read'],
       method: gitViewStore["status"]
+    },
+    {
+      name: "Set PWD (git)",
+      description: 'set current PWD for git',
+      args: ['pwd'],
+      tags: ['set pwd git'],
+      categories: ['write'],
+      method: gitViewStore["setPWD"]
     }
-    ],
+  ],
   category: 'git',
   icon: "git-square",
   component: GitComponent
