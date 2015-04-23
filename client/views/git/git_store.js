@@ -15,11 +15,13 @@ function GitViewStore() {
   var streams = {};
   var methods = {
     status: function(updateDiff){
+      if(updateDiff.directory){
+        state.currentDir = updateDiff.directory;
+      }
       streams['git.status'] = createNewStream({
         command: 'git.status',
         opts: {
-          opts: {cwd: state.currentDir},
-          args: ['status', '-s']
+          opts: {cwd: state.currentDir}
         },
         cb: function(data){
           state.status = JSON.parse(data.data);
@@ -48,7 +50,6 @@ function GitViewStore() {
               name: 'git.status',
               opts: {
                 cwd: args.dir,
-                args: ['status', '-s'],
                 initialData: " "
               }
             }

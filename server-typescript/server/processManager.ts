@@ -16,7 +16,7 @@ var setupAPI = function setupAPI(socket){
             socket.on(namespace + '.' + methodName, function(opts){
               var d = domain.create();
               d.on('error', function(err){
-                console.log('error while making chain', err);
+                console.log('error while making command');
               })
               d.run(function(){
                 var inStream = createInSocketStream(socket, opts._uid);
@@ -35,7 +35,7 @@ var setupAPI = function setupAPI(socket){
     socket.on('chain', function(opts){
       var d = domain.create();
       d.on('error', function(err){
-        console.log('error while making chain', err);
+        console.log('error while making chain');
       });
       d.run(function(){
         var inStream = createInSocketStream(socket, opts._uid);
