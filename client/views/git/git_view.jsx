@@ -41,7 +41,7 @@ var GitComponent = React.createClass({
     }
 
     return (<row>
-       <h4>Git View</h4>
+       <h4>Git View (branch: {this.state.status.branch})</h4>
        <GitButton fileName = '.' action='add' label='Add All'/>
        <GitButton fileName = '.' action='reset' label='Reset All'/>
        <row>
