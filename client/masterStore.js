@@ -106,6 +106,8 @@ function MasterStore() {
         //Add one to the index because the command is already at index 0
         magicData.inputArr.push({isArg: true, index: index + 1, text: "", placeholder: arg});
       });
+
+      //Set the next arg as the focus.
     },
     setActiveArgumentText: function(text) {
       state.magicData.inputArr[state.magicData.activeArgumentIndex].text = text;
