@@ -10,6 +10,7 @@ var GitSubViewComponent = React.createClass({
     eventBus.register("git", function() {
       this.setState(gitViewStore.getState());
     }.bind(this));
+    gitViewStore.init();
   },
   render: function(){
     return (

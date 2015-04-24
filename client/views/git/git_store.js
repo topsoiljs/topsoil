@@ -18,7 +18,7 @@ function GitViewStore() {
       $.get('/state/git/pwd')
         .done(function(data){
           state.currentDir = data;
-          methods.status();
+          methods.status({});
         })
         .fail(function(){
           console.log('failed getting pwd')
