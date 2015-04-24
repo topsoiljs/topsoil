@@ -14,6 +14,7 @@ var GitComponent = React.createClass({
   render: function() {
     var self = this;
     if(this.state.status){
+      console.log(this.state.status);
       var staged = this.state.status.staged.map(function(file){
               return <GitStaged fileName = {file}/>
             });

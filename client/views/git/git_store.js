@@ -3,15 +3,13 @@ var magic = require("../../magic/magic.js");
 var createNewStream = require("../../streaming/streaming_client.js").createNewStream;
 
 function GitViewStore() {
-  console.log('git view is loaded');
-  var state = {status: false,
+  var state = {status: {staged:[], unstaged:[], untracked:[]},
                diff: {
                 staged: {},
                 unstaged: {}
                },
                currentDir: '/Users/Derek/Desktop/topsoil'};
 
-  var socket = io();
   var streams = {};
   var methods = {
     status: function(updateDiff){

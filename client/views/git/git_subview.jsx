@@ -8,13 +8,13 @@ var GitSubViewComponent = React.createClass({
   },
   componentDidMount: function() {
     eventBus.register("git", function() {
+      console.log('got update in subview');
       this.setState(gitViewStore.getState());
     }.bind(this));
   },
   render: function(){
-    console.log('rendering subview');
     return (
-      <div className="subview">directory: {this.state.currentDir} branch: {this.state.branch}</div>
+      <div className="subview">directory: {this.state.currentDir} branch: {this.state.status.branch}</div>
     )
   }
 });
