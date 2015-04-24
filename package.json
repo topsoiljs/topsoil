@@ -1,7 +1,6 @@
 {
   "name": "topsoil",
   "version": "0.0.0",
-  "private": true,
   "description": "The topsoil for your terminal.",
   "dependencies": {
     "event-stream": "^3.3.0",
