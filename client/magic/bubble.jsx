@@ -46,18 +46,13 @@ var Bubble = React.createClass({
 
   },
   onArgChange: function(e) {
+    var inputArr = this.props.inputArr;
     var text = e.target.value;
     this.changeSize(text);
     masterStore.setActiveArgumentText(text);
     //Do stuff to get the argument suggestions
-    /*
-    if(_.isString(results.arguments)){
-      var argsSug = magic.searchArgs(this.getCurrentCommand(), results.arguments);
-      masterStore.setArgsSuggestions(argsSugs);
-    }else{
-      masterStore.setArgsSuggestions(null);
-    }
-    */
+    var argsSug = magic.searchArgs(this.props.currentCommand, _.pluck(_.rest(inputArr), "text"));
+    masterStore.setArgsSuggestions(argsSug);
   },
   componentDidUpdate: function(nextProps) {
     var refKey = this.props.placeholder;

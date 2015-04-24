@@ -60,15 +60,12 @@ var MagicInput = React.createClass({
     }else if(isKey(e, 'UP_ARROW')){
       e.preventDefault();
       masterStore.activeSuggestionUp();
-    } else if(isKey(e, 'RIGHT_ARROW')) {
-
-    } else if(isKey(e, 'LEFT_ARROW')) {
-
     }
   },
   handleInput: function(e){
     if (isKey(e, 'ENTER')) {
       var currentCommand = this.getCurrentCommand();
+      console.log(currentCommand);
       if(currentCommand.args.length === 0) {
         magic.callCommand(currentCommand);
         masterStore.resetState();
@@ -76,8 +73,8 @@ var MagicInput = React.createClass({
       } else if(this.props.isArgumentsMode) {
         //This could be moved below?
         if(this.props.activeArgumentIndex === currentCommand.args.length) {
-          magic.callCommand(this.getCurrentCommand(), _.rest(this.props.inputArr));
-          masterStore.resetState();
+          magic.callCommand(this.getCurrentCommand(), _.pluck(_.rest(this.props.inputArr), "text"));
+          masterStore.resetState();  
         } else {
           masterStore.activeIndexRight();
         }
@@ -99,15 +96,15 @@ var MagicInput = React.createClass({
   },
   render: function() {
     var bubbles = [];
-    //Data is {text:, placeholder:, isArg:}
-    // console.log("this is what I know in render:", this.props);
-
+    var currentCommand = this.getCurrentCommand();
+    //I am putting in the whole input arr for the sake of autcomplete
+    //I am passing a lot of state to bubble. REFACTOR!
     if(this.props.isArgumentsMode) {
       this.props.inputArr.forEach(function(input, ind) {
-        bubbles.push(<Bubble {...input} isArg={ind > 0} isActive={this.props.activeArgumentIndex === ind}/>);
+        bubbles.push(<Bubble {...input} inputArr={this.props.inputArr} currentCommand={currentCommand} isArg={ind > 0} isActive={this.props.activeArgumentIndex === ind}/>);
       }, this);
     } else {
-      bubbles.push(<Bubble {...this.props.inputArr[0]} isArg={false} isActive={true}/>);
+      bubbles.push(<Bubble {...this.props.inputArr[0]} inputArr={this.props.inputArr} currentCommand={currentCommand} isArg={false} isActive={true}/>);
     }
 
     return (
