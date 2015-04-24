@@ -77,7 +77,10 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command, userArgs){
-  masterStore.openView(command.view.component);
+  // Check if view has specified no autorender, or render command explicitly called.
+  if(!command.view.noAutoRender || command.render){
+    masterStore.openView(command.view.component);
+  }
   //This will probably have to change.
   //I need to re read it to understand it.
 

@@ -174,9 +174,19 @@ magic.registerView({
       tags: ['git status stream'],
       categories: ['read'],
       method: gitViewStore['streamStatus']
+    },
+    {
+      name: "Render Git View",
+      description: 'current git status',
+      args: [],
+      tags: ['show git', 'git', 'status', 'ls'],
+      categories: ['read'],
+      method: gitViewStore["renderView"],
+      render: true
     }
   ],
   category: 'git',
   icon: "git-square",
-  component: GitComponent
+  component: GitComponent,
+  noAutoRender: true
 });

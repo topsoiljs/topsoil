@@ -11,7 +11,19 @@ function GitViewStore() {
                currentDir: '/Users/Derek/Desktop/topsoil'};
 
   var streams = {};
+
+
   var methods = {
+    init: function(){
+      $.get('/state/git/pwd')
+        .done(function(data){
+          state.currentDir = data;
+          methods.status();
+        })
+        .fail(function(){
+          console.log('failed getting pwd')
+        });
+    },
     status: function(updateDiff){
       if(updateDiff.directory){
         state.currentDir = updateDiff.directory;
