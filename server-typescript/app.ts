@@ -5,7 +5,9 @@ var Hapi = require("hapi");
 var processManager = require('./server/processManager');
 var stateRoutes = require('./server/stateAPI/stateRoutes');
 var nconf = require('nconf');
-nconf.argv().env().file({file: './default_config.json'});
+var opn = require('opn');
+
+nconf.file({file: './default_config.json'}).argv().env();
 // Global configuration
 global.nconf = nconf;
 
@@ -35,3 +37,6 @@ server.route({
 });
 
 server.start();
+
+console.log('started server on port: ' + nconf.get('port'));
+opn('http://localhost:' + nconf.get('port'));

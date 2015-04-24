@@ -93,7 +93,8 @@ gulp.task('install', function(){
       gulp.src('server-typescript/default_config.json').pipe(gulp.dest('deploy')),
       gulp.src(['./package.json', './bower.json', './.bowerrc'])
         .pipe(gulp.dest('deploy'))
-        .pipe(install({production: true}))
+        .pipe(install({production: true})),
+      gulp.src('./topsoil').pipe(gulp.dest('deploy'))
     ])
 });
 
