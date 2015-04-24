@@ -1,106 +1,6 @@
 var eventBus = require("../../eventBus.js");
 var magic = require("../../magic/magic.js");
-
-function GitViewStore() {
-  console.log('git view is loaded');
-  var state = {status: false,
-               diff: {
-                staged: {},
-                unstaged: {}
-               },
-               currentDir: '/Users/Derek/Desktop/topsoil'};
-
-  var socket = io();
-
-  var methods = {
-    status: function(updateDiff){
-      // var dir = args.directory;
-      var UID = Math.random();
-      socket.emit('git.status', {
-        cmd: 'git',
-        args: ['-s'],
-        dir: state.currentDir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        state.status = data.data;
-        if(updateDiff){
-          methods.differenceAll(state.status);
-        }
-        eventBus.emit('git');
-        console.log(state.status);
-      })
-    },
-    add: function(data){
-      var self = this;
-      var UID = Math.random();
-      socket.emit('git.add', {
-        args: [data],
-        dir: state.currentDir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        methods.status(true);
-      })
-    },
-
-    reset: function(data){
-      var self = this;
-      var UID = Math.random();
-      socket.emit('git.reset', {
-        args: ['HEAD', data],
-        dir: state.currentDir,
-        uid: UID
-      });
-      socket.on(UID, function(data){
-        methods.status(true);
-      })
-    },
-
-    difference: function(fileName, staging){
-      var self = this;
-      var UID = Math.random();
-      socket.emit('git.diff', {
-        args: ['--no-prefix', fileName],
-        dir: state.currentDir,
-        uid: UID
-      });
-      socket.on(UID, function(diff){
-        state.diff[staging][fileName] = diff.data.text;
-        eventBus.emit('git');
-      })
-    },
-
-    differenceAll : function(status){
-      // methods.newDiff();
-      status.unstaged.forEach(function(file){
-        methods.difference(file, 'unstaged');
-      })
-      status.staged.forEach(function(file){
-        methods.difference(file, 'staged');
-      })
-    },
-
-    newDiff : function(){
-      state.diff = {
-                    staged: {},
-                    unstaged: {}
-                   }
-    },
-
-    renderView: function(){
-
-    },
-
-    getState: function() {
-      return state;
-    }
-  }
-
-  return methods;
-}
-
-var gitViewStore = GitViewStore(); 
+var gitViewStore = require('./git_store.js');
 
 var GitComponent = React.createClass({
   getInitialState: function() {
@@ -114,13 +14,12 @@ var GitComponent = React.createClass({
   render: function() {
     var self = this;
     if(this.state.status){
+      console.log(this.state.status);
       var staged = this.state.status.staged.map(function(file){
               return <GitStaged fileName = {file}/>
             });
 
       var unstaged = this.state.status.unstaged.map(function(file){
-              console.log('state file name is ', JSON.stringify(file));
-              console.log('state diff is ', self.state.diff);
               if(self.state.diff.unstaged[file]){
                 return (
                 <div>
@@ -143,12 +42,12 @@ var GitComponent = React.createClass({
     }
 
     return (<row>
-       <h4>Git View</h4>
+       <h4>Git View (branch: {this.state.status.branch})</h4>
        <GitButton fileName = '.' action='add' label='Add All'/>
        <GitButton fileName = '.' action='reset' label='Reset All'/>
        <row>
         <h5>Staged</h5>
-          <ul >
+          <ul>
             {staged}
           </ul>
        </row>
@@ -209,13 +108,21 @@ var GitUntracked = React.createClass({
 var GitDiff = React.createClass({
   render: function(){
     //should pass in a file and staging property
-    console.log("the property diff becomes this", this.props.diff);
-    console.log("the result array should be ",JSON.stringify(this.props.diff));
-
+    var result = this.props.diff.map(function(code){
+      return (
+        <div>
+          <span>
+            {code[0]+'  '}
+          </span>
+          <span>
+            {code[1].replace(/ /g, "\u00a0")}
+          </span>
+        </div>
+        );
+    })
     return (
       <div>
-        See Difference here
-        {this.props.diff}
+        {result}
       </div>
     )
   }
@@ -251,9 +158,35 @@ magic.registerView({
       tags: ['show git', 'git', 'status', 'ls'],
       categories: ['read'],
       method: gitViewStore["status"]
+    },
+    {
+      name: "Set PWD (git)",
+      description: 'set current PWD for git',
+      args: ['pwd'],
+      tags: ['set pwd git'],
+      categories: ['write'],
+      method: gitViewStore["setPWD"]
+    },
+    {
+      name: "Stream Status",
+      description: 'watch directory and continuously update git status',
+      args: ['dir'],
+      tags: ['git status stream'],
+      categories: ['read'],
+      method: gitViewStore['streamStatus']
+    },
+    {
+      name: "Render Git View",
+      description: 'current git status',
+      args: [],
+      tags: ['show git', 'git', 'status', 'ls'],
+      categories: ['read'],
+      method: gitViewStore["renderView"],
+      render: true
     }
-    ],
+  ],
   category: 'git',
   icon: "git-square",
-  component: GitComponent
+  component: GitComponent,
+  noAutoRender: true
 });

@@ -12,7 +12,7 @@ function generateSuffixes(word){
 var Magic = function(){
   this.views = {};
   this.commands = {};
-
+  this.subViews = [];
   // Start args search engine
   this._argsEngines = {};
 
@@ -43,6 +43,14 @@ var Magic = function(){
   this._auto.initialize();
 };
 
+Magic.prototype.getSubViews = function(){
+  return this.subViews;
+};
+
+Magic.prototype.registerSubView = function(viewObject){
+  this.subViews.push(viewObject);
+};
+
 Magic.prototype.registerView = function(viewObject){
   this.views[viewObject.name] = viewObject;
   // Index commands
@@ -68,32 +76,35 @@ Magic.prototype.registerView = function(viewObject){
   }.bind(this))
 };
 
-Magic.prototype.callCommand = function(command, args){
-  console.log("masterStore", masterStore);
-  masterStore.openView(command.view.component);
-  if(args) {
-    var argsArray = args.trim().split(' ');
-    console.log("args array:", argsArray);
-  } else {
-    var argsArray = [];
-    console.log("args array falsey:", argsArray);
+Magic.prototype.callCommand = function(command, userArgs){
+  // Check if view has specified no autorender, or render command explicitly called.
+  if(!command.view.noAutoRender || command.render){
+    masterStore.openView(command.view.component);
   }
-  
-  _.defaults(command, {argsHistory: {}});
-  if(!command.argsHistory[args]){
-    var argsObj = {
-      name: args,
-      priority: 0
-    };
-    command.argsHistory[args] = argsObj;
-    this._argsEngines[command._id].add([argsObj]);
-  };
-  command.argsHistory[args].priority ++;
+  //This will probably have to change.
+  //I need to re read it to understand it.
 
+  /*
+  if(args) {
+    _.defaults(command, {argsHistory: {}});
+    if(!command.argsHistory[args]){
+      var argsObj = {
+        name: args,
+        priority: 0
+      };
+      command.argsHistory[args] = argsObj;
+      this._argsEngines[command._id].add([argsObj]);
+    };
+    command.argsHistory[args].priority ++;
+  }
+  Need to loop over each of the args to give each one auto complete
+  */
   var argsObj = {};
   _.each(command.args, function(el, ind){
-    argsObj[el] = argsArray[ind];
-  })
+    argsObj[el] = userArgs[ind].text;
+  });
+
+  console.log(argsObj);
   return command.method(argsObj);
 };
 
@@ -108,7 +119,9 @@ Magic.prototype.getAllCommands = function() {
   return result;
 }
 
-Magic.prototype.search = function(terms){
+Magic.prototype.search = function(search){
+  var suggestions;
+
   function isAllSpaces(str) {
     for(var i = 0; i < str.length; i++) {
       if(str[i] !== " ") {
@@ -123,36 +136,16 @@ Magic.prototype.search = function(terms){
     }
   }
 
-  var results = {
-    arguments: null,
-    suggestions: []
-  };
-  
-
-  var search = terms;
-  for(var i=0;i<terms.length;i++){
-    if(terms[i] === ':'){
-      results.arguments = [];
-      search = terms.slice(0, i);
-      results.arguments = terms.slice(i+1, terms.length);
-      break;
-    }
-  };
-  if(terms.length === 0){
-    search = ' ';
-  };
-  var results;
-
   if(!isAllSpaces(search)) {
     this._auto.get(search, function(sugs){
-      results.suggestions = sugs;
-    });  
+      suggestions = sugs;
+    });
   } else {
-    results.suggestions = this.getAllCommands();
+    suggestions = this.getAllCommands();
   }
-  
 
-  return results;
+
+  return suggestions;
 };
 
 Magic.prototype.searchArgs = function(currentCommand, terms){

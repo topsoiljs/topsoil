@@ -16,6 +16,7 @@ var concat = require('gulp-concat');
 var plumber = require('gulp-plumber');
 var mocha = require('gulp-mocha');
 var glob = require('glob');
+var install = require('gulp-install');
 
 gulp.task('jade', function () {
   var YOUR_LOCALS = {};
@@ -87,6 +88,16 @@ gulp.task('ts', function () {
       ]);
 });
 
+gulp.task('install', function(){
+  return merge([
+      gulp.src('server-typescript/default_config.json').pipe(gulp.dest('deploy')),
+      gulp.src(['./package.json', './bower.json', './.bowerrc'])
+        .pipe(gulp.dest('deploy'))
+        .pipe(install({production: true})),
+      gulp.src('./topsoil').pipe(gulp.dest('deploy'))
+    ])
+});
+
 gulp.task('jsx', function(){
    return gulp.src(['client/**/*.js', 'client/**/*.jsx'])
               .pipe(plumber())
@@ -102,6 +113,7 @@ gulp.task('browserify', function() {
               './client/views/super_grep/s_grep.jsx',
               './client/views/repl/repl_view.jsx',
               './client/views/git/git_view.jsx',
+              './client/views/git/git_subview.jsx',
               './client/views/file_system/fs_view.jsx',
               './client/views/script_runner/processes_view.jsx'],
     debug: false,
@@ -119,8 +131,6 @@ gulp.task('browserify', function() {
           .pipe(gulp.dest('deploy/client'));
 });
 
-
-
 gulp.task('tsw', function () {
   gulp.watch("**/*.ts", ["ts"]);
 });
@@ -133,7 +143,7 @@ gulp.task('test', function () {
         .pipe(mocha({reporter: 'nyan'}));
 });
 
-gulp.task('build-all', ['jade', 'stylus', 'ts', 'browserify']);
+gulp.task('build-all', ['jade', 'stylus', 'ts', 'browserify', 'install']);
 
 gulp.task('build-all-w', function(){
   gulp.watch(['server-typescript/**/*', 'client/**/*'], ['build-all']);

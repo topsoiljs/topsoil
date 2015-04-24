@@ -1,6 +1,8 @@
 # topsoil
 The topsoil for your terminal.
 
+![topsoil_home](/images/topsoil_home.png?raw=true)
+
 ## Set Up in the root directory
 
 Install all npm dependencies

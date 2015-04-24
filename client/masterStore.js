@@ -1,6 +1,6 @@
 var eventBus = require("./eventBus.js");
+var wrapAround = require("./utilities.js").wrapAround;
 var _ = require("lodash");
-
 /*
   No component can be required here if that component requires another
   thing that needs the master store. Due to the order browserify loads things.
@@ -9,7 +9,6 @@ var _ = require("lodash");
 */
 
 function MasterStore() {
-
   var initialMagicData = {
       args: null,
       suggestions: [],
@@ -17,12 +16,16 @@ function MasterStore() {
       suggestionArgsActive: -1,
       suggestionActive: 0,
       preArgsLength: 0,
-      isArgumentsMode: false
+      isArgumentsMode: false,
+      activeArgumentIndex: 0,
+      isEditing: false,
+      inputArr: [{text: "", placeholder: "start", isArg: false, index: 0}]
   };
 
   var state = {
               activeView: null,
-              magicData: _.cloneDeep(initialMagicData)
+              magicData: _.cloneDeep(initialMagicData),
+              ctx: false
             };
 
   var updateMethods = {
@@ -31,8 +34,12 @@ function MasterStore() {
       state.activeView = newViewComponent;
     },
     //MAGIC METHODS
-    resetState: function(rend){
-      state.magicData = _.cloneDeep(initialMagicData);
+    resetState: function( ){
+      // Hack right here to avoid overriding subviews state.
+      _.extend(state.magicData, _.cloneDeep(initialMagicData));
+    },
+    initializeSubViews: function(subviews){
+      state.magicData.subviews = subviews;
     },
     setActiveSuggestion: function(sug){
       state.magicData.suggestionActive = sug;
@@ -43,6 +50,11 @@ function MasterStore() {
     setSuggestions: function(suggestions){
       state.magicData.suggestions = suggestions;
     },
+    setDefaultSuggestions: function(suggestions){
+      //This is a horrible hack.
+      state.magicData.suggestions = suggestions;
+      initialMagicData.suggestions = suggestions;
+    },
     setArgsSuggestions: function(suggestions){
       state.magicData.argsSuggestions = suggestions;
     },
@@ -51,6 +63,13 @@ function MasterStore() {
     },
     setMagic: function(obj) {
       _.extend(state.magicData, obj);
+    },
+    //These can all be nicely refactored.
+    activeIndexRight: function() {
+      state.magicData.activeArgumentIndex = wrapAround(state.magicData.activeArgumentIndex + 1, state.magicData.inputArr.length);
+    },
+    activeIndexLeft: function() {
+      state.magicData.activeArgumentIndex = wrapAround(state.magicData.activeArgumentIndex - 1, state.magicData.inputArr.length);
     },
     activeSuggestionUp: function(){
       if(state.magicData.argsSuggestions){
@@ -76,11 +95,39 @@ function MasterStore() {
         updateMethods.setActiveSuggestion(active);
       }
     },
+    setCommandText: function(text) {
+      state.magicData.inputArr[0].text = text;
+    },
+    enterArgsMode: function() {
+      var magicData = state.magicData;
+
+      magicData.isArgumentsMode = true;
+      magicData.activeArgumentIndex = 1;
+      var args = magicData.suggestions[magicData.suggestionActive].args;
+
+      args.forEach(function(arg, index) {
+        //Add one to the index because the command is already at index 0
+        magicData.inputArr.push({isArg: true, index: index + 1, text: "", placeholder: arg});
+      });
+
+      //Set the next arg as the focus.
+    },
+    setActiveArgumentText: function(text) {
+      state.magicData.inputArr[state.magicData.activeArgumentIndex].text = text;
+    },
+    setCTX: function(ctx) {
+      state.ctx = ctx;
+    }
   };
 
   var nonUpdateMethods = {
     getState: function() {
       return state;
+    },
+    getTextSize: function(text) {
+      if(state.ctx) {
+        return state.ctx.measureText(text).width;
+      }
     }
   };
 

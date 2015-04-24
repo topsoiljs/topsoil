@@ -1,41 +1,51 @@
 /// <reference path="../utility/utility.ts"/>
 var fs = require('fs');
 var utility = require('../utility/utility');
-
+var createSpawnEndStreamF = require('../streaming/streaming').createSpawnEndStream;
+var execSync = require('child_process').execSync;
 var gitAPI = <any> {};
 
 //wrapper function will take in a callback that process the outputs into workable JSON format
-gitAPI.status = gitWrapper('status', parseStatus);
+gitAPI.status = gitWrapper(['status', '-s'], parseStatus);
 
-gitAPI.add = gitWrapper('add', utility.identity);
+// gitAPI.add = gitWrapper(utility.identity);
 
-gitAPI.reset = gitWrapper('reset', utility.identity);
-
-gitAPI.diff = gitWrapper('diff', parseDiff);
+// gitAPI.reset = gitWrapper(utility.identity);
+// //
+// gitAPI.diff = gitWrapper(parseDiff);
 
 module.exports = gitAPI;
 
-function gitWrapper(cmd:String,cb:Function){
-    return function(socket){
-        return function(opts){
-            if(!opts.dir){
-                socket.emit(opts.uid, utility.wrapperResponse({ errno: 99, code: 'CUSTOM', desc: 'No directory given' }, null));
-                return;
-            }
-            Array.prototype.unshift.call(opts.args,cmd);
-            utility.makeProcess(socket, 'git', opts, cb);
-        }
-    }
+function gitWrapper(args, parser) {
+    return function(opts) {
+        var spawnStream = createSpawnEndStreamF('git', args, opts.opts, parser);
+        return spawnStream;
+    };
 }
+
+//function gitWrapper(cmd:String,cb:Function){
+//    return function(socket){
+//        return function(opts){
+//            if(!opts.dir){
+//                socket.emit(opts.uid, utility.wrapperResponse({ errno: 99, code: 'CUSTOM', desc: 'No directory given' }, null));
+//                return;
+//            }
+//            Array.prototype.unshift.call(opts.args,cmd);
+//            utility.makeProcess(socket, 'git', opts, cb);
+//        }
+//    }
+//}
 
 function parseStatus(str:String){
     var emptyResult = {
         newfile: [],
         staged: [],
         unstaged: [],
-        untracked: []
+        untracked: [],
+        branch: ""
     };
-    return utility.splitLines(str).reduce(function(result,element){
+    var result = utility.splitLines(str).reduce(function(result,element){
+
         var marker = element.substr(0,3);
         if(marker == '?? '){
             result.untracked.push(element.slice(3));
@@ -51,6 +61,13 @@ function parseStatus(str:String){
         }
         return result;
     }, emptyResult);
+    var branches = String(execSync('git branch')).split('\n');
+    branches.forEach(function(el){
+        if(el.indexOf('*') > -1){
+            emptyResult.branch = el.slice(2);
+        }
+    });
+    return JSON.stringify(result);
 }
 
 function parseDiff(str:String){
@@ -63,7 +80,7 @@ function parseDiff(str:String){
     }).filter(function(line){
         return line[0] !== undefined;
     });
-    return result;
+    return JSON.stringify(result);
 }
 
 function _parseDiffAt(str:String){

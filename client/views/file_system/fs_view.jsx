@@ -1,4 +1,4 @@
-var eventBus = require("../../eventBus.js");
+  var eventBus = require("../../eventBus.js");
 var magic = require("../../magic/magic.js");
 
 var fsViewStore = require("./fs_store.js");
@@ -11,42 +11,44 @@ var FilesystemComponent = React.createClass({
     eventBus.register("filesystem", function() {
       this.setState(fsViewStore.getState());
     }.bind(this));
+
+    var inputTextDOM = React.findDOMNode(this.refs.inputText);
+
+    var myCodeMirror = CodeMirror(inputTextDOM, {
+      value: "",
+      mode:  "javascript",
+      lineNumbers: true
+    });
+    this.setState({myCodeMirror: myCodeMirror})
+  },
+  componentWillUpdate: function(nextProps, nextState){
+    nextState.myCodeMirror.setValue(nextState.fileData);
   },
   render: function() {
     var nodes = [];
     var currentCol = [];
     for(var i=0;i<this.state.files.length;i++){
-      if(i % 15 === 0){
-        nodes.push(
-          <div className="col">
-            <ul className="collection">
-              {currentCol}
-            </ul>
-          </div>
-          )
-        currentCol = [];
-      }else{
-        currentCol.push(<li className="collection-item"> {this.state.files[i]} </li>)
-      }
+      currentCol.push(<li className="fs"> {this.state.files[i]} </li>)
     }
-    if(currentCol.length > 0){
-      nodes.push(
-        <div className="col">
-          <ul className="collection">
-            {currentCol}
-          </ul>
-        </div>
-        )
-    }
-
+    nodes.push(
+      <ul className="collection firstLevelFS">
+        {currentCol}
+      </ul>
+    )
     var fileData = this.state.fileData;
-    return (<row>
-       <h4>Filesystem</h4>
-       <row>
-        {nodes}
-       </row>
-       {fileData}
-    </row>);
+    return (
+      <div className="ui grid">
+       <div className="ui header">Filesystem</div>
+       <div className="row">
+        <div className="four wide column">
+          {nodes}
+        </div>
+        <div className="twelve wide column">
+          <div ref="inputText"></div>
+        </div>
+       </div>
+      </div>
+    );
   }
 });
 

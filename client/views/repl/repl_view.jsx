@@ -22,11 +22,15 @@ var ReplComponent = React.createClass({
     var nodes = [];
     var currentCol = [];
     for(var i=0;i<this.state.output.length;i++){
+      var className;
+      if(i === this.state.output.length-1){
+        className = "lastOutputRepl";
+      };
       nodes.push(
-        <div>
+        <div className={className}>
             {this.state.output[i]}
         </div>
-        )
+      )
     }
 
     var fileData = this.state.fileData;
@@ -41,8 +45,6 @@ var ReplComponent = React.createClass({
   }
 });
 
-
-
 magic.registerView({
   name: 'repl',
   commands: [
@@ -54,7 +56,7 @@ magic.registerView({
       categories: ['read'],
       method: replViewStore['start']
     }
-    ],
+  ],
   category: 'repl',
   icon: 'terminal',
   component: ReplComponent

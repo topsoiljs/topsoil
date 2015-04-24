@@ -5,6 +5,7 @@ var eventBus = require("../eventBus.js");
 var HubWorld = require("./hub_world/hub_world.jsx");
 var magic = require("../magic/magic.js");
 var MagicInput = require("../magic/MagicInput.jsx");
+var SubViews = require("./subViews.jsx");
 
 var MasterView = React.createClass({
   getInitialState: function() {
@@ -18,11 +19,18 @@ var MasterView = React.createClass({
     masterStore.openView(HubWorld);
     //This ensures all of the commands are registered.
     //This is generally bad... There is a more sane place to put this, but I don't know yet...
-    console.log("get all commands:", magic.getAllCommands());
-    masterStore.setSuggestions(magic.getAllCommands());
+    masterStore.setDefaultSuggestions(magic.getAllCommands());
+    masterStore.initializeSubViews(magic.getSubViews());
   },
+  // Need to add
+  /*
+    <i className="fa fa-chevron-right"></i>
+  */
   render: function() {
     //Combine these two worlds...
+    var subviews = this.state.magicData.subviews ? this.state.magicData.subviews.map(function(el){
+      return el.component;
+    }) : [];
     if(this.state.activeView === HubWorld) {
       return (<div className="ui grid">
                 <div className="four wide column">
@@ -33,21 +41,19 @@ var MasterView = React.createClass({
                   <this.state.activeView/>
                 </div>
               </div>)
-    } else if(this.state.activeView) {      
+    } else if(this.state.activeView) {
       return (<div className="ui grid">
                 <div className="row">
                   <div className="four wide column">
-                    <MagicInput {...this.state.magicData}/>
+                    <div className="row">
+                      <div className="four wide column">
+                        <MagicInput {...this.state.magicData}/>
+                        <MagicSuggestions {...this.state.magicData}/>
+                      </div>
+                    </div>
                   </div>
-                  <div className="subviews twelve wide column">
-                    <h1>SUBVIEWS</h1>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="four wide column">
-                    <MagicSuggestions {...this.state.magicData}/>
-                  </div>
-                  <div className="main twelve wide column">
+                  <div className="twelve wide column">
+                    <SubViews subviews={subviews}/>
                     <this.state.activeView/>
                   </div>
                 </div>

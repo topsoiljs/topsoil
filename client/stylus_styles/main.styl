@@ -1,20 +1,27 @@
 #terminal
   width 100%
-
+#app
+  margin-top 20px
 .topsoilInputBox
- margin 10px
-
+  white-space nowrap
 .inputText
   height 100%
 
 .regexEditor:hover
   background-color pink
 
-.regexInput 
+.regexInput
   width 200px
 
 .activeSuggestion
-  background-color #E7E7E7
+  border 1px solid black
+
+.magicSuggestion
+  padding 2px 2px 2px 2px
+
+.activeCommand
+  background-color #A2A2A8
+  color white
 
 .suggestionName
   padding-left 8px
@@ -34,27 +41,27 @@
   width 25px
   vertical-align: middle
 
-.flex-container 
+.flex-container
   padding: 0
   margin: 0
   list-style: none
-  
+
   display: -webkit-box
   display: -moz-box
   display: -ms-flexbox
   display: -webkit-flex
   display: flex
-  
+
   -webkit-flex-flow: row wrap
-  
+
 
 .flex-item
   opacity: 1
-  
+
   width: 200px
   height: 150px
-  
- 
+
+
   line-height: 150px
   color: white
   font-weight: bold
@@ -66,9 +73,73 @@
   opacity: 0.5
   transition: opacity 1s
 
+.icon
+  padding-left 5px
+  width 25px
+
+// SubViews
 .subviews
-  border-style: solid
-  border-width: 2px
-  height 100%
+  padding-top 10px
+  padding-left 0px
+  display flex
+  flex-flow row wrap
 
+.subview
+  margin-right 5px
+  margin-bottom 5px
+  border 1px solid grey
+  padding 3px 3px 3px 3px
+  border-radius 5px 5px 5px
 
+// Begin magic inputs styling
+backColor = #5F8779
+backColorFocus = #8579F2
+.magicinputs
+  margin-right 1px
+  font-size 10px
+  color white
+.magicinputs:focus
+  outline none
+#command:focus
+  background backColorFocus
+  border-left 6px solid backColorFocus
+  border-right 6px solid backColorFocus
+  border-top 3px solid backColorFocus
+  border-bottom 3px solid backColorFocus
+#command
+  border-radius 5px 5px 5px 5px
+  background backColor
+  border-left 5px solid backColor
+  border-right 5px solid backColor
+  border-top 2px solid backColor
+  border-bottom 2px solid backColor
+.magicinputs.args:focus
+  background backColorFocus
+  border-left 10px solid backColorFocus
+  border-right 10px solid backColorFocus
+  border-top 3px solid backColorFocus
+  border-bottom 3px solid backColorFocus
+.magicinputs.args
+  border-radius 20px 20px 20px 20px
+  border-left 9px solid backColor
+  border-right 9px solid backColor
+  border-top 2px solid backColor
+  border-bottom 2px solid backColor
+  background backColor
+.parentRow
+  padding 15px
+.parentofmagicinputs
+  padding-bottom 5px
+  padding-right 10px
+  padding-left 2px
+  margin-left 3px
+  border-bottom 1px solid backColor
+  transition: border-bottom 0.2s ease
+  width 87%
+  display inline-block
+::-webkit-input-placeholder  /* WebKit browsers */
+    color #D1CEF3
+    font-weight bold
+.caret
+  display inline
+  margin-left 9%

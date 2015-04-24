@@ -6,9 +6,9 @@ var createNewStream = function(options){
     {
       command: string : command you want to run,
       opts: object : options object that will be passed to api on backend,
+        child of opts : commands: array : OPTIONAL array of command objects for use with chaining command, SEE BELOW
       cb: function : callback (data) => void,
       initialData: string : OPTIONAL data that will be passed through input pipe if chaining.
-      commands: array : OPTIONAL array of command objects for use with chaining command, SEE BELOW
     }
 
     cb will receive data of form
@@ -44,7 +44,6 @@ var createNewStream = function(options){
 
   opts._uid = uuid.v4();
   opts._info_uid = uuid.v4();
-
   socket.emit(command, opts);
   socket.on(opts._uid, cb);
   socket.on(opts._info_uid, infoCB);
