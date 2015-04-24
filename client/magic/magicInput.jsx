@@ -67,22 +67,21 @@ var MagicInput = React.createClass({
     }
   },
   handleInput: function(e){
-    var el = document.getElementById('terminal');
     if (isKey(e, 'ENTER')) {
-
       var currentCommand = this.getCurrentCommand();
       if(currentCommand.args.length === 0) {
         magic.callCommand(currentCommand);
-
         masterStore.resetState();
 
       } else if(this.props.isArgumentsMode) {
-        magic.callCommand(this.getCurrentCommand(), _.rest(this.props.inputArr));
-        //Maybe factor arguments mode into store?
-        //Maybe not?
-        masterStore.resetState();
+        //This could be moved below?
+        if(this.props.activeArgumentIndex === currentCommand.args.length) {
+          magic.callCommand(this.getCurrentCommand(), _.rest(this.props.inputArr));
+          masterStore.resetState();  
+        } else {
+          masterStore.activeIndexRight();
+        }
       } else {
-        //consider replacing args mode with some pointer to the active suggestion.
         masterStore.enterArgsMode();
       }
     }

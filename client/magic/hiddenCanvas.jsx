@@ -5,7 +5,6 @@ var MagicInput = React.createClass({
     var canvasDom = React.findDOMNode(this.refs["hiddenCanvas"]);
     var ctx = canvasDom.getContext("2d");
     ctx.font="10px Lato";
-    console.log(ctx);
     masterStore.setCTX(ctx);
   },
   render: function() {
