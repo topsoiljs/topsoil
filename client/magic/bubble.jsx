@@ -35,7 +35,7 @@ var Bubble = React.createClass({
         arguments: []string
       }
       Need to further seperate args from suggestions.
-      only put this on 
+      only put this on
     */
     var text = e.target.value;
     this.changeSize(text);
@@ -43,12 +43,12 @@ var Bubble = React.createClass({
 
     var suggestions = magic.search(text);
     masterStore.setSuggestions(suggestions);
-    
+
   },
   onArgChange: function(e) {
     var text = e.target.value;
     this.changeSize(text);
-    masterStore.setActiveArgumentText(text);    
+    masterStore.setActiveArgumentText(text);
     //Do stuff to get the argument suggestions
     /*
     if(_.isString(results.arguments)){
@@ -56,7 +56,7 @@ var Bubble = React.createClass({
       masterStore.setArgsSuggestions(argsSugs);
     }else{
       masterStore.setArgsSuggestions(null);
-    } 
+    }
     */
   },
   componentDidUpdate: function(nextProps) {
@@ -64,7 +64,7 @@ var Bubble = React.createClass({
     var domNode = React.findDOMNode(this.refs[refKey]);
     if(this.props.isActive) {
       //This should set the next input to be focused, but it does not. I don't know why.
-      domNode.focus(); 
+      domNode.focus();
     }
   },
   keyPressFunc: function(e) {
@@ -72,6 +72,8 @@ var Bubble = React.createClass({
     if(isKey(e, "RIGHT_ARROW") && lastCursorPosition === this.props.text.length) {
       masterStore.activeIndexRight();
     } else if(isKey(e, "LEFT_ARROW") && lastCursorPosition === 0) {
+      masterStore.activeIndexLeft();
+    } else if(isKey(e, "BACKSPACE") && lastCursorPosition === 0) {
       masterStore.activeIndexLeft();
     }
   },
@@ -82,7 +84,7 @@ var Bubble = React.createClass({
 
     var style = {width: this.state.width + "px"};
     return (
-     <input id={id}  
+     <input id={id}
             style={style}
             className={"magicinputs " + className}
             placeholder={this.props.placeholder}

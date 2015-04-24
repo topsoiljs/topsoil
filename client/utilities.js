@@ -4,7 +4,8 @@ var keys = {
   38: 'UP_ARROW',
   13: 'ENTER',
   37: 'LEFT_ARROW',
-  39: 'RIGHT_ARROW'
+  39: 'RIGHT_ARROW',
+  8: 'BACKSPACE'
 };
 
 var isKey = function(event){
@@ -18,7 +19,7 @@ var isKey = function(event){
 
 var wrapAround = function(index, length) {
   if(index < 0) {
-    return length - 1; 
+    return length - 1;
   } else if(index >= length) {
     return 0;
   } else {
