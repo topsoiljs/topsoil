@@ -6,8 +6,7 @@ var processManager = require('./server/processManager');
 var stateRoutes = require('./server/stateAPI/stateRoutes');
 var nconf = require('nconf');
 var opn = require('opn');
-
-nconf.file({file: './default_config.json'}).argv().env();
+nconf.argv().env().file({file: __dirname + '/default_config.json'});
 // Global configuration
 global.nconf = nconf;
 
@@ -31,7 +30,7 @@ server.route({
     path: '/{param*}',
     handler: {
         directory: {
-            path: 'client'
+            path: __dirname + '/client'
         }
     }
 });

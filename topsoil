@@ -2,10 +2,11 @@
 
 var forever = require('forever-monitor');
 var conf = require('nconf');
+var resolve = require('path').resolve;
 
 conf.argv().env();
 var config = {};
 if(conf.get('port')){
   config.COMMAND = "node --port " + conf.get('port');
 };
-forever.start('./app.js', config);
+forever.start(__dirname + '/app.js', config);
