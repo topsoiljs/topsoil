@@ -1,6 +1,10 @@
 {
   "name": "topsoil",
-  "version": "0.0.0",
+  "version": "0.0.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/topsoiljs/topsoil"
+  },
   "description": "The topsoil for your terminal.",
   "dependencies": {
     "event-stream": "^3.3.0",
