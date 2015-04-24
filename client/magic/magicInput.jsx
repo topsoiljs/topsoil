@@ -77,7 +77,7 @@ var MagicInput = React.createClass({
         //This could be moved below?
         if(this.props.activeArgumentIndex === currentCommand.args.length) {
           magic.callCommand(this.getCurrentCommand(), _.rest(this.props.inputArr));
-          masterStore.resetState();  
+          masterStore.resetState();
         } else {
           masterStore.activeIndexRight();
         }
