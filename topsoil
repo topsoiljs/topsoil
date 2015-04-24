@@ -1,0 +1,11 @@
+#! /usr/bin/env node
+
+var forever = require('forever-monitor');
+var conf = require('nconf');
+
+conf.argv().env();
+var config = {};
+if(conf.get('port')){
+  config.COMMAND = "node --port " + conf.get('port');
+};
+forever.start('./app.js', config);

@@ -1,15 +1,16 @@
 {
   "name": "topsoil",
   "version": "0.0.0",
-  "private": true,
   "description": "The topsoil for your terminal.",
   "dependencies": {
     "event-stream": "^3.3.0",
+    "forever-monitor": "^1.5.2",
     "hapi": "^8.4.0",
     "level": "^0.18.0",
     "lodash": "^3.7.0",
     "nconf": "^0.7.1",
     "nodemon": "^1.3.7",
+    "opn": "^1.0.2",
     "ps-node": "0.0.4",
     "socket.io": "^1.3.5",
     "through2": "^0.6.5",
@@ -41,5 +42,9 @@
     "socket.io-client": "^1.3.5",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "preferGlobal": "true",
+  "bin": {
+    "topsoil": "topsoil"
   }
 }
