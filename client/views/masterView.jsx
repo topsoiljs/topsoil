@@ -20,6 +20,7 @@ var MasterView = React.createClass({
     //This ensures all of the commands are registered.
     //This is generally bad... There is a more sane place to put this, but I don't know yet...
     masterStore.setDefaultSuggestions(magic.getAllCommands());
+    masterStore.initializeSubViews(magic.getSubViews());
   },
   // Need to add
   /*
@@ -27,6 +28,9 @@ var MasterView = React.createClass({
   */
   render: function() {
     //Combine these two worlds...
+    var subviews = this.state.magicData.subviews ? this.state.magicData.subviews.map(function(el){
+      return el.component;
+    }) : [];
     if(this.state.activeView === HubWorld) {
       return (<div className="ui grid">
                 <div className="four wide column">
@@ -49,7 +53,7 @@ var MasterView = React.createClass({
                     </div>
                   </div>
                   <div className="twelve wide column">
-                    <SubViews/>
+                    <SubViews subviews={subviews}/>
                     <this.state.activeView/>
                   </div>
                 </div>

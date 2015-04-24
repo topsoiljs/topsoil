@@ -12,5 +12,4 @@ api.processes = processes;
 api.repl = repl;
 api.terminal = terminal;
 
-
 module.exports = api;

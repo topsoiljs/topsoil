@@ -2,23 +2,23 @@
 var fs = require('fs');
 var utility = require('../utility/utility');
 var createSpawnEndStreamF = require('../streaming/streaming').createSpawnEndStream;
-
+var execSync = require('child_process').execSync;
 var gitAPI = <any> {};
 
 //wrapper function will take in a callback that process the outputs into workable JSON format
-gitAPI.status = gitWrapper(parseStatus);
+gitAPI.status = gitWrapper(['status', '-s'], parseStatus);
 
-gitAPI.add = gitWrapper(utility.identity);
+// gitAPI.add = gitWrapper(utility.identity);
 
-gitAPI.reset = gitWrapper(utility.identity);
-//
-gitAPI.diff = gitWrapper(parseDiff);
+// gitAPI.reset = gitWrapper(utility.identity);
+// //
+// gitAPI.diff = gitWrapper(parseDiff);
 
 module.exports = gitAPI;
 
-function gitWrapper(parser) {
+function gitWrapper(args, parser) {
     return function(opts) {
-        var spawnStream = createSpawnEndStreamF('git', opts.args, opts.opts, parser);
+        var spawnStream = createSpawnEndStreamF('git', args, opts.opts, parser);
         return spawnStream;
     };
 }
@@ -41,7 +41,8 @@ function parseStatus(str:String){
         newfile: [],
         staged: [],
         unstaged: [],
-        untracked: []
+        untracked: [],
+        branch: ""
     };
     var result = utility.splitLines(str).reduce(function(result,element){
 
@@ -60,6 +61,12 @@ function parseStatus(str:String){
         }
         return result;
     }, emptyResult);
+    var branches = String(execSync('git branch')).split('\n');
+    branches.forEach(function(el){
+        if(el.indexOf('*') > -1){
+            emptyResult.branch = el.slice(2);
+        }
+    });
     return JSON.stringify(result);
 }
 

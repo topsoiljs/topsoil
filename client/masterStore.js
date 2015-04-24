@@ -9,7 +9,6 @@ var _ = require("lodash");
 */
 
 function MasterStore() {
-  
   var initialMagicData = {
       args: null,
       suggestions: [],
@@ -36,7 +35,11 @@ function MasterStore() {
     },
     //MAGIC METHODS
     resetState: function( ){
-      state.magicData = _.cloneDeep(initialMagicData);
+      // Hack right here to avoid overriding subviews state.
+      _.extend(state.magicData, _.cloneDeep(initialMagicData));
+    },
+    initializeSubViews: function(subviews){
+      state.magicData.subviews = subviews;
     },
     setActiveSuggestion: function(sug){
       state.magicData.suggestionActive = sug;
@@ -64,7 +67,7 @@ function MasterStore() {
     //These can all be nicely refactored.
     activeIndexRight: function() {
       state.magicData.activeArgumentIndex = wrapAround(state.magicData.activeArgumentIndex + 1, state.magicData.inputArr.length);
-    }, 
+    },
     activeIndexLeft: function() {
       state.magicData.activeArgumentIndex = wrapAround(state.magicData.activeArgumentIndex - 1, state.magicData.inputArr.length);
     },
@@ -94,7 +97,7 @@ function MasterStore() {
     },
     setCommandText: function(text) {
       state.magicData.inputArr[0].text = text;
-    }, 
+    },
     enterArgsMode: function() {
       var magicData = state.magicData;
 
@@ -121,7 +124,7 @@ function MasterStore() {
     },
     getTextSize: function(text) {
       if(state.ctx) {
-        return state.ctx.measureText(text).width;  
+        return state.ctx.measureText(text).width;
       }
     }
   };

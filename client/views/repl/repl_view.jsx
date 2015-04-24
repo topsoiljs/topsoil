@@ -26,7 +26,6 @@ var ReplComponent = React.createClass({
       if(i === this.state.output.length-1){
         className = "lastOutputRepl";
       };
-      console.log('output one', i, this.state.output[i])
       nodes.push(
         <div className={className}>
             {this.state.output[i]}

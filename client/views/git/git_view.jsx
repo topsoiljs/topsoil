@@ -1,6 +1,6 @@
 var eventBus = require("../../eventBus.js");
 var magic = require("../../magic/magic.js");
-var gitViewStore = require('./git_store.js'); 
+var gitViewStore = require('./git_store.js');
 
 var GitComponent = React.createClass({
   getInitialState: function() {
@@ -14,6 +14,7 @@ var GitComponent = React.createClass({
   render: function() {
     var self = this;
     if(this.state.status){
+      console.log(this.state.status);
       var staged = this.state.status.staged.map(function(file){
               return <GitStaged fileName = {file}/>
             });
@@ -41,7 +42,7 @@ var GitComponent = React.createClass({
     }
 
     return (<row>
-       <h4>Git View</h4>
+       <h4>Git View (branch: {this.state.status.branch})</h4>
        <GitButton fileName = '.' action='add' label='Add All'/>
        <GitButton fileName = '.' action='reset' label='Reset All'/>
        <row>
@@ -157,9 +158,35 @@ magic.registerView({
       tags: ['show git', 'git', 'status', 'ls'],
       categories: ['read'],
       method: gitViewStore["status"]
+    },
+    {
+      name: "Set PWD (git)",
+      description: 'set current PWD for git',
+      args: ['pwd'],
+      tags: ['set pwd git'],
+      categories: ['write'],
+      method: gitViewStore["setPWD"]
+    },
+    {
+      name: "Stream Status",
+      description: 'watch directory and continuously update git status',
+      args: ['dir'],
+      tags: ['git status stream'],
+      categories: ['read'],
+      method: gitViewStore['streamStatus']
+    },
+    {
+      name: "Render Git View",
+      description: 'current git status',
+      args: [],
+      tags: ['show git', 'git', 'status', 'ls'],
+      categories: ['read'],
+      method: gitViewStore["renderView"],
+      render: true
     }
-    ],
+  ],
   category: 'git',
   icon: "git-square",
-  component: GitComponent
+  component: GitComponent,
+  noAutoRender: true
 });
