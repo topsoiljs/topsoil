@@ -95,7 +95,6 @@ function listAllFilesAndDirs (data, cb){
   dirs.shift(); //Get rid of pwd.
 
   var result = {files: filterDirs(pwdFiles), folders: {}};
-
   cb(null, dirs.reduce(function(result, dir) {
     var foldersAndFiles = dir.split("\n");
     var folder = cleanFolder(foldersAndFiles[0].split("/"));
