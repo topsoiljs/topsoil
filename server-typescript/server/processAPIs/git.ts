@@ -12,19 +12,20 @@ gitAPI.commitAdd = gitWrapper(['commit', '-am'], utility.identity);
 
 gitAPI.push = gitWrapper(['push'], utility.identity);
 
-gitAPI.add = gitWrapper(utility.identity);
+gitAPI.add = gitWrapper(['add'], utility.identity);
 
-gitAPI.reset = gitWrapper(utility.identity);
+gitAPI.reset = gitWrapper(['reset', 'HEAD'], utility.identity);
 
-gitAPI.diff = gitWrapper(parseDiff);
+gitAPI.diff = gitWrapper(['diff', '--no-prefix'], parseDiff);
 
 module.exports = gitAPI;
 
 function gitWrapper(args, parser) {
     return function(opts) {
+        //add additional args if client is adding args
         if(opts.args){
             args = args.concat(opts.args);
-        };
+        }
         var spawnStream = createSpawnEndStreamF('git', args, opts.opts, parser);
         return spawnStream;
     };

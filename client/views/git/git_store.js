@@ -61,7 +61,10 @@ function GitViewStore() {
           opts: {cwd: state.currentDir}
         },
         cb: function(data){
+          console.log('the data is', data);
           state.status = JSON.parse(data.data);
+
+          console.log('the status is', state.status);
           eventBus.emit('git');
           // if(updateDiff){
             methods.differenceAll(state.status);
@@ -110,7 +113,7 @@ function GitViewStore() {
       streams['git.add'] = createNewStream({
         command: 'git.add',
         opts: {
-          args: ['add', fileName],
+          args: [fileName],
           opts: {cwd: state.currentDir}
         },
         cb: function(data){
@@ -125,7 +128,7 @@ function GitViewStore() {
       streams['git.reset'] = createNewStream({
         command: 'git.reset',
         opts: {
-          args: ['reset', 'HEAD', fileName],
+          args: [fileName],
           opts: {cwd: state.currentDir}
         },
         cb: function(data){
@@ -143,7 +146,7 @@ function GitViewStore() {
         command: 'git.diff',
         opts: {
           opts: {cwd: state.currentDir},
-          args: ['diff', '--no-prefix', fileName],
+          args: [fileName],
         },
         cb: function(data){
           var res = JSON.parse(data.data);

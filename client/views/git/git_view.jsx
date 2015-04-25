@@ -14,7 +14,6 @@ var GitComponent = React.createClass({
   render: function() {
     var self = this;
     if(this.state.status){
-      console.log(this.state.status);
       var staged = this.state.status.staged.map(function(file){
               return <GitStaged fileName = {file}/>
             });
@@ -114,8 +113,8 @@ var GitDiff = React.createClass({
       '': 'gitOther',
       ' ': 'gitOther',
     }
-    console.log('code is ', code[0]);
-    console.log('classmap is', classMap[code[0]]);
+    // console.log('code is ', code[0]);
+    // console.log('classmap is', classMap[code[0]]);
     //should pass in a file and staging property
     var result = this.props.diff.map(function(code){
       return (
@@ -166,7 +165,8 @@ magic.registerView({
       args: ['directory'],
       tags: ['show git', 'git', 'status', 'ls'],
       categories: ['read'],
-      method: gitViewStore["status"]
+      method: gitViewStore["status"],
+      render: true
     },
     {
       name: "Set PWD (git)",
