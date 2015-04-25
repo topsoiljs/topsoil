@@ -12,7 +12,6 @@ function GitViewStore() {
 
   var streams = {};
 
-
   var methods = {
     init: function(){
       $.get('/state/git/pwd')
@@ -23,6 +22,33 @@ function GitViewStore() {
         .fail(function(){
           console.log('failed getting pwd')
         });
+    },
+    commitAdd: function(args){
+      streams['git.commitAdd'] = createNewStream({
+        command: 'git.commitAdd',
+        opts: {
+          opts: {cwd: state.currentDir},
+          args: [args.message]
+        },
+        cb: function(data){
+          eventBus.emit('git');
+        },
+        initialData: ' '
+      });
+      streams['git.commitAdd'].emit('get');
+    },
+    push: function(args){
+      streams['git.push'] = createNewStream({
+        command: 'git.push',
+        opts: {
+          opts: {cwd: state.currentDir},
+          args: [args.remote, args.branch]
+        },
+        cb: function(data){
+          eventBus.emit('git');
+        },
+        initialData: ' '
+      });
     },
     status: function(updateDiff){
       if(updateDiff.directory){
@@ -42,8 +68,6 @@ function GitViewStore() {
         },
         initialData: ' '
       });
-
-      streams['git.status'].emit('get');
     },
     streamStatus: function(args){
       streams['chain'] = createNewStream({

@@ -21,6 +21,11 @@ var MasterView = React.createClass({
     //This is generally bad... There is a more sane place to put this, but I don't know yet...
     masterStore.setDefaultSuggestions(magic.getAllCommands());
     masterStore.initializeSubViews(magic.getSubViews());
+
+    // Ask for notifications permissions
+    Notification.requestPermission( function(status) {
+      console.log('permissions', status);
+    });
   },
   // Need to add
   /*

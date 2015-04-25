@@ -176,6 +176,22 @@ magic.registerView({
       method: gitViewStore['streamStatus']
     },
     {
+      name: "Commit Add with Message",
+      description: 'Equivalent of git commit -am',
+      args: ['message'],
+      tags: ['git commit add message', 'git commit -am'],
+      categories: ['write'],
+      method: gitViewStore['commitAdd']
+    },
+    {
+      name: "Push to remote",
+      description: 'Push to remote',
+      args: ['remote', 'branch'],
+      tags: ['git push', 'push to remote'],
+      categories: ['write'],
+      method: gitViewStore['push']
+    },
+    {
       name: "Render Git View",
       description: 'current git status',
       args: [],

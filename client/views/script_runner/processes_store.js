@@ -1,5 +1,7 @@
 var eventBus = require('../../eventBus.js');
 var createNewStream = require('../../streaming/streaming_client.js').createNewStream;
+var createNotification = require('../../notifications/notifications.js').createNotification;
+
 function ProcessesViewStore(eventName) {
   var state = {
     outputs:{},
@@ -14,6 +16,7 @@ function ProcessesViewStore(eventName) {
       state.pwd = data;
       render();
   });
+
   var methods = {
     start: function(args){
       args.args = args.args || "";
@@ -26,6 +29,9 @@ function ProcessesViewStore(eventName) {
       streams[args.args] = createNewStream({
         command: 'terminal.callCommand',
         cb: function(data){
+          if(data.data.indexOf("Finished 'build-all") > -1){
+            createNotification('Finished gulp build');
+          };
           out.output.push(data.data);
           render();
         },
