@@ -8,7 +8,9 @@ var gitAPI = <any> {};
 //wrapper function will take in a callback that process the outputs into workable JSON format
 gitAPI.status = gitWrapper(['status', '-s'], parseStatus);
 
-gitAPI.commitAdd = gitWrapper(['commit', '-am'], parseCommitAdd);
+gitAPI.commitAdd = gitWrapper(['commit', '-am'], utility.identity);
+
+gitAPI.push = gitWrapper(['push'], utility.identity);
 // gitAPI.add = gitWrapper(utility.identity);
 
 // gitAPI.reset = gitWrapper(utility.identity);
