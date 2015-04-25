@@ -113,12 +113,12 @@ var GitDiff = React.createClass({
       '': 'gitOther',
       ' ': 'gitOther',
     }
-    // console.log('code is ', code[0]);
-    // console.log('classmap is', classMap[code[0]]);
     //should pass in a file and staging property
     var result = this.props.diff.map(function(code){
+      // console.log('code is ', code[0]);
+      // console.log('classmap is', classMap[code[0]]);
       return (
-        <div className="test">
+        <div className={classMap[code[0]]}>
           <span>
             {code[0]+'  '}
           </span>

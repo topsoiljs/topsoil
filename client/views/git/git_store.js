@@ -139,14 +139,16 @@ function GitViewStore() {
     },
 
     difference: function(fileName, staging, key){
-
+      console.log('called diff on ', fileName);
       key = key || 0;
 
       streams['git.diff'+key] = createNewStream({
         command: 'git.diff',
         opts: {
-          opts: {cwd: state.currentDir},
-          args: [fileName],
+          opts: {
+            cwd: state.currentDir
+          },
+          args: [fileName]
         },
         cb: function(data){
           var res = JSON.parse(data.data);
@@ -160,7 +162,7 @@ function GitViewStore() {
     },
 
     differenceAll : function(status){
-
+      console.log('differenceAll got called');
       var key = 0
       // methods.newDiff();
       status.unstaged.forEach(function(file){

@@ -5,6 +5,7 @@ var createSpawnEndStreamF = require('../streaming/streaming').createSpawnEndStre
 var execSync = require('child_process').execSync;
 var gitAPI = <any> {};
 
+
 //wrapper function will take in a callback that process the outputs into workable JSON format
 gitAPI.status = gitWrapper(['status', '-s'], parseStatus);
 
@@ -21,14 +22,10 @@ gitAPI.diff = gitWrapper(['diff', '--no-prefix'], parseDiff);
 module.exports = gitAPI;
 
 function gitWrapper(args, parser) {
-    return function(opts) {
-        //add additional args if client is adding args
-        if(opts.args){
-            args = args.concat(opts.args);
-        }
-        var spawnStream = createSpawnEndStreamF('git', args, opts.opts, parser);
-        return spawnStream;
-    };
+  return function(opts) {
+    var spawnStream = createSpawnEndStreamF('git', args, opts.opts, parser, opts.args);
+    return spawnStream;
+  };
 };
 
 function parseCommitAdd(str:String){
