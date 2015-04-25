@@ -38,4 +38,6 @@ server.route({
 server.start();
 
 console.log('started server on port: ' + nconf.get('port'));
-opn('http://localhost:' + nconf.get('port'));
+if(!nconf.get('noop')){
+  opn('http://localhost:' + nconf.get('port'));
+}
