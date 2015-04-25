@@ -44,12 +44,12 @@ var MagicInput = React.createClass({
   },
   componentDidMount: function(){
     $('.magicinputs').on('focus', function(e){
-      $('.parentofmagicinputs').css('border-bottom', '3px solid #757575')
-    })
+      $('.parentofmagicinputs').css('border-bottom', '3px solid #757575');
+    });
 
     $('.magicinputs').on('focusout', function(e){
-      $('.parentofmagicinputs').css('border-bottom', '1px solid #757575')
-    })
+      $('.parentofmagicinputs').css('border-bottom', '1px solid #757575');
+    });
   },
   handleShortcut: function(e){
     // Tab or down
