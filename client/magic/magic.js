@@ -82,8 +82,8 @@ Magic.prototype.callCommand = function(command, userArgs){
   if(!command.view.noAutoRender || command.render){
     masterStore.openView(command.view.component);
   }
-  
-  var args = userArgs.join(" ");
+
+  var args = _.pluck(userArgs, "text").join(" ");
 
   if(userArgs.length > 0) {
     _.defaults(command, {argsHistory: {}});
@@ -98,7 +98,7 @@ Magic.prototype.callCommand = function(command, userArgs){
     command.argsHistory[args].priority++;
   }
   // Need to loop over each of the args to give each one auto complete
-  
+
   var argsObj = {};
   _.each(command.args, function(el, ind){
     argsObj[el] = userArgs[ind].text;
@@ -150,14 +150,14 @@ Magic.prototype.search = function(search){
 //argString, argIndex, command
 Magic.prototype.searchArgs = function(currentCommand, argsArr){
   var results;
-  
+
   if(this._argsEngines[currentCommand._id]) {
     console.log("the current command has been set");
     this._argsEngines[currentCommand._id].get(argsArr.join(" "), function(sugs){
       results = sugs;
-    });  
+    });
   }
-  
+
 
   return results;
 };
