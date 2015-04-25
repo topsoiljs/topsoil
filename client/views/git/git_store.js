@@ -24,6 +24,20 @@ function GitViewStore() {
           console.log('failed getting pwd')
         });
     },
+    commitAdd: function(args){
+      streams['git.commitAdd'] = createNewStream({
+        command: 'git.commitAdd',
+        opts: {
+          opts: {cwd: state.currentDir},
+          args: [args.message]
+        },
+        cb: function(data){
+          eventBus.emit('git');
+        },
+        initialData: ' '
+      });
+      streams['git.commitAdd'].emit('get');
+    },
     status: function(updateDiff){
       if(updateDiff.directory){
         state.currentDir = updateDiff.directory;
