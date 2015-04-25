@@ -51,6 +51,7 @@ function GitViewStore() {
       });
     },
     status: function(updateDiff){
+      console.log('the current directory is ', state.currentDir);
       if(updateDiff.directory){
         state.currentDir = updateDiff.directory;
       }

@@ -11,11 +11,12 @@ gitAPI.status = gitWrapper(['status', '-s'], parseStatus);
 gitAPI.commitAdd = gitWrapper(['commit', '-am'], utility.identity);
 
 gitAPI.push = gitWrapper(['push'], utility.identity);
-// gitAPI.add = gitWrapper(utility.identity);
 
-// gitAPI.reset = gitWrapper(utility.identity);
-// //
-// gitAPI.diff = gitWrapper(parseDiff);
+gitAPI.add = gitWrapper(utility.identity);
+
+gitAPI.reset = gitWrapper(utility.identity);
+
+gitAPI.diff = gitWrapper(parseDiff);
 
 module.exports = gitAPI;
 

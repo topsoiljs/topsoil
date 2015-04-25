@@ -79,6 +79,7 @@ var createSpawnEndStream = function(command, args, options, parser){
 
   return through(function(chunk, enc, cb){
     console.log('the through function is being called with options', options);
+    console.log('inputs are ', [command, args, options]);
     var stream = spawn(command, args, options);
     var data = '';
     stream.stdin.write(String(chunk));
@@ -90,7 +91,6 @@ var createSpawnEndStream = function(command, args, options, parser){
       if(data === ''){
         data = 'message received';
       }
-      console.log('stream ended', data);
       cb(null, parser(String(data)));
     });
   });

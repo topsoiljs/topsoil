@@ -108,18 +108,18 @@ var GitUntracked = React.createClass({
 var GitDiff = React.createClass({
   render: function(){
 
-    // var classMap = {
-    //   '-': 'gitRemoval',
-    //   '+': 'gitAddition'
-    //   '': 'gitOther',
-    //   ' ': 'gitOther',
-    // }
+    var classMap = {
+      '-': 'gitRemoval',
+      '+': 'gitAddition',
+      '': 'gitOther',
+      ' ': 'gitOther',
+    }
     console.log('code is ', code[0]);
-    // console.log('classmap is', classMap[code[0]]);
+    console.log('classmap is', classMap[code[0]]);
     //should pass in a file and staging property
     var result = this.props.diff.map(function(code){
       return (
-        <div className={classMap[code[0]]}>
+        <div className="test">
           <span>
             {code[0]+'  '}
           </span>
