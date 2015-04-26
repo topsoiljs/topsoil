@@ -112,7 +112,7 @@ function fsStreamWrapper(createStream, args, mode: number, options?){
   // Options will be default options passed in as last argument
   return function(opts) {
     if(!opts.dir) opts.dir = '/';
-
+    options = options || {};
     var arguments = args.map(function(arg) {
       return opts[arg];
     });
@@ -132,6 +132,7 @@ function fsStreamWrapper(createStream, args, mode: number, options?){
     } else {
       returnStream = stream;
     }
+    return returnStream;
   }
 }
 
