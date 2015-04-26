@@ -95,7 +95,6 @@ function listAllFilesAndDirs (data, cb){
   dirs.shift(); //Get rid of pwd.
 
   var result = {files: filterDirs(pwdFiles), folders: {}};
-
   cb(null, dirs.reduce(function(result, dir) {
     var foldersAndFiles = dir.split("\n");
     var folder = cleanFolder(foldersAndFiles[0].split("/"));
@@ -113,7 +112,7 @@ function fsStreamWrapper(createStream, args, mode: number, options?){
   // Options will be default options passed in as last argument
   return function(opts) {
     if(!opts.dir) opts.dir = '/';
-
+    options = options || {};
     var arguments = args.map(function(arg) {
       return opts[arg];
     });
@@ -133,6 +132,7 @@ function fsStreamWrapper(createStream, args, mode: number, options?){
     } else {
       returnStream = stream;
     }
+    return returnStream;
   }
 }
 

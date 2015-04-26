@@ -44,3 +44,5 @@ bower_components
 *.html
 
 test/randomTestFolder
+
+db

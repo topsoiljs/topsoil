@@ -2,7 +2,7 @@ var createNewStream = require("../../streaming/streaming_client.js").createNewSt
 var eventBus = require("../../eventBus.js");
 
 function GrepStore() {
-  var state = {dir: "", 
+  var state = {dir: "",
                activeFile: "",
                files: [],
                regex: {},
@@ -20,7 +20,7 @@ function GrepStore() {
   function newRegex(selection) {
     regexNameCount++
 
-    return {name: "regex" + regexNameCount, 
+    return {name: "regex" + regexNameCount,
             selection: selection};
   }
 
@@ -50,14 +50,14 @@ function GrepStore() {
       var UID = Math.random();
 
       if(state.regex[state.activeRegex] && state.regex[state.activeRegex].selection) {
-        var regexArg = state.regex[state.activeRegex].selection; 
+        var regexArg = state.regex[state.activeRegex].selection;
 
         function grepCallback(data){
           console.log("grepCallback", data);
           var lines = data.data.split("\n");
           //Remove empty last line
           lines.pop();
-  
+
           //Need to know if it is a dir or file?
           var results = lines.map(function(str) {
             var splitStr = str.split(":");
@@ -66,7 +66,7 @@ function GrepStore() {
             splitStr = splitStr.slice(2);
             return {lineNum: lineNum, line: splitStr.join(""), filename: filename};
           })
-  
+
           state.results = results;
           eventBus.emit('s_grep');
         }
@@ -81,7 +81,7 @@ function GrepStore() {
           },
           initialData: " "
         });
-      }  
+      }
     },
 
     _getFiles: function(dir, cb) {
@@ -98,7 +98,7 @@ function GrepStore() {
 
     _addFiles: function(filesystem, pwd) {
       filesystem.files.forEach(function(file) {
-        state.files.push(pwd + "/" + file); 
+        state.files.push(pwd + "/" + file);
       });
 
       var folders = filesystem.folders;
@@ -117,7 +117,7 @@ function GrepStore() {
           eventBus.emit('s_grep');
         },
         opts: {path: filePath}
-      });    
+      });
     },
 
     setDir: function(args) {
@@ -142,7 +142,8 @@ function GrepStore() {
         methods._getFiles(path, function(filesystem) {
           console.log("fs", filesystem);
           methods._addFiles(filesystem, state.dir);
-          methods._setFile(state.files[0]);
+          // methods._setFile(state.files[0]);
+          eventBus.emit('s_grep');
         });
       }
 

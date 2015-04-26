@@ -27,8 +27,9 @@ var MagicSuggestions = React.createClass({
       if(this.props.isArgumentsMode && suggestion === activeSuggestion){
         return;
       }
-      var args = this.props.argsSuggestions ? ['random args'] : JSON.stringify(suggestion.args).slice(1, -1)
-      var sugNode = (<MagicSuggestion suggestion={suggestion} active={active === ind} args={args}/>);
+
+      var args = this.props.isArgumentsMode ? [] : JSON.stringify(suggestion.args).slice(1, -1)
+      var sugNode = (<MagicSuggestion suggestion={suggestion} isArgumentsMode={this.props.isArgumentsMode} active={active === ind} args={args}/>);
       nodes.push(sugNode);
     }.bind(this));
 

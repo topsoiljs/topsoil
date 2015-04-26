@@ -77,15 +77,15 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command, userArgs){
+
   // Check if view has specified no autorender, or render command explicitly called.
   if(!command.view.noAutoRender || command.render){
     masterStore.openView(command.view.component);
   }
-  //This will probably have to change.
-  //I need to re read it to understand it.
 
-  /*
-  if(args) {
+  var args = _.pluck(userArgs, "text").join(" ");
+
+  if(userArgs.length > 0) {
     _.defaults(command, {argsHistory: {}});
     if(!command.argsHistory[args]){
       var argsObj = {
@@ -95,16 +95,15 @@ Magic.prototype.callCommand = function(command, userArgs){
       command.argsHistory[args] = argsObj;
       this._argsEngines[command._id].add([argsObj]);
     };
-    command.argsHistory[args].priority ++;
+    command.argsHistory[args].priority++;
   }
-  Need to loop over each of the args to give each one auto complete
-  */
+  // Need to loop over each of the args to give each one auto complete
+
   var argsObj = {};
   _.each(command.args, function(el, ind){
     argsObj[el] = userArgs[ind].text;
   });
 
-  console.log(argsObj);
   return command.method(argsObj);
 };
 
@@ -148,14 +147,17 @@ Magic.prototype.search = function(search){
   return suggestions;
 };
 
-Magic.prototype.searchArgs = function(currentCommand, terms){
-  if(terms.length === 0){
-    terms = ' ';
-  };
+//argString, argIndex, command
+Magic.prototype.searchArgs = function(currentCommand, argsArr){
   var results;
-  this._argsEngines[currentCommand._id].get(terms, function(sugs){
-    results = sugs;
-  });
+
+  if(this._argsEngines[currentCommand._id]) {
+    console.log("the current command has been set");
+    this._argsEngines[currentCommand._id].get(argsArr.join(" "), function(sugs){
+      results = sugs;
+    });
+  }
+
 
   return results;
 };

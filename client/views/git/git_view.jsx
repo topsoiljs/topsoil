@@ -14,7 +14,6 @@ var GitComponent = React.createClass({
   render: function() {
     var self = this;
     if(this.state.status){
-      console.log(this.state.status);
       var staged = this.state.status.staged.map(function(file){
               return <GitStaged fileName = {file}/>
             });
@@ -24,7 +23,7 @@ var GitComponent = React.createClass({
                 return (
                 <div>
                   <div><GitUnstaged fileName = {file}/></div>
-                  <div><GitDiff diff = {self.state.diff.unstaged[file]}/></div>
+                  <div className="gitDiff"><GitDiff diff = {self.state.diff.unstaged[file]}/></div>
                 </div>
                 );
               }
@@ -47,19 +46,19 @@ var GitComponent = React.createClass({
        <GitButton fileName = '.' action='reset' label='Reset All'/>
        <row>
         <h5>Staged</h5>
-          <ul>
+          <ul className='gitItem'>
             {staged}
           </ul>
        </row>
        <row>
         <h5>Unstaged</h5>
-          <ul>
+          <ul className='gitItem'>
             {unstaged}
           </ul>
        </row>
        <row>
         <h5>Untracked</h5>
-          <ul>
+          <ul className='gitItem'>
             {untracked}
           </ul>
        </row>
@@ -107,10 +106,19 @@ var GitUntracked = React.createClass({
 
 var GitDiff = React.createClass({
   render: function(){
+
+    var classMap = {
+      '-': 'gitRemoval',
+      '+': 'gitAddition',
+      '': 'gitOther',
+      ' ': 'gitOther',
+    }
     //should pass in a file and staging property
     var result = this.props.diff.map(function(code){
+      // console.log('code is ', code[0]);
+      // console.log('classmap is', classMap[code[0]]);
       return (
-        <div>
+        <div className={classMap[code[0]]}>
           <span>
             {code[0]+'  '}
           </span>
@@ -157,7 +165,8 @@ magic.registerView({
       args: ['directory'],
       tags: ['show git', 'git', 'status', 'ls'],
       categories: ['read'],
-      method: gitViewStore["status"]
+      method: gitViewStore["status"],
+      render: true
     },
     {
       name: "Set PWD (git)",
@@ -174,6 +183,22 @@ magic.registerView({
       tags: ['git status stream'],
       categories: ['read'],
       method: gitViewStore['streamStatus']
+    },
+    {
+      name: "Commit Add with Message",
+      description: 'Equivalent of git commit -am',
+      args: ['message'],
+      tags: ['git commit add message', 'git commit -am'],
+      categories: ['write'],
+      method: gitViewStore['commitAdd']
+    },
+    {
+      name: "Push to remote",
+      description: 'Push to remote',
+      args: ['remote', 'branch'],
+      tags: ['git push', 'push to remote'],
+      categories: ['write'],
+      method: gitViewStore['push']
     },
     {
       name: "Render Git View",

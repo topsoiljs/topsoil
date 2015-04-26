@@ -73,12 +73,13 @@ var createSpawnStream = function(command, args, options, infoHandler) {
   return createDuplex(spawnThrough, outStream);
 };
 
-var createSpawnEndStream = function(command, args, options, parser){
+var createSpawnEndStream = function(command, args, options, parser, moreArgs){
   options = options || {};
   options.stdio = ['pipe', 'pipe'];
-
+  if(moreArgs){
+    args = args.concat(moreArgs);
+  }
   return through(function(chunk, enc, cb){
-    console.log('the through function is being called with options', options);
     var stream = spawn(command, args, options);
     var data = '';
     stream.stdin.write(String(chunk));
@@ -90,8 +91,7 @@ var createSpawnEndStream = function(command, args, options, parser){
       if(data === ''){
         data = 'message received';
       }
-      console.log('stream ended', data);
-      cb(null, parser(String(data)));
+      cb(null, parser(String(data), options));
     });
   });
 };

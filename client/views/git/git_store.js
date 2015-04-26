@@ -8,23 +8,50 @@ function GitViewStore() {
                 staged: {},
                 unstaged: {}
                },
-               currentDir: '/Users/Derek/Desktop/topsoil'};
+               currentDir: ''};
 
   var streams = {};
-
 
   var methods = {
     init: function(){
       $.get('/state/git/pwd')
         .done(function(data){
           state.currentDir = data;
-          methods.status({});
+          methods.status({directory: data});
         })
         .fail(function(){
           console.log('failed getting pwd')
         });
     },
+    commitAdd: function(args){
+      streams['git.commitAdd'] = createNewStream({
+        command: 'git.commitAdd',
+        opts: {
+          opts: {cwd: state.currentDir},
+          args: [args.message]
+        },
+        cb: function(data){
+          eventBus.emit('git');
+        },
+        initialData: ' '
+      });
+      streams['git.commitAdd'].emit('get');
+    },
+    push: function(args){
+      streams['git.push'] = createNewStream({
+        command: 'git.push',
+        opts: {
+          opts: {cwd: state.currentDir},
+          args: [args.remote, args.branch]
+        },
+        cb: function(data){
+          eventBus.emit('git');
+        },
+        initialData: ' '
+      });
+    },
     status: function(updateDiff){
+      console.log('the current directory is ', state.currentDir);
       if(updateDiff.directory){
         state.currentDir = updateDiff.directory;
       }
@@ -34,7 +61,10 @@ function GitViewStore() {
           opts: {cwd: state.currentDir}
         },
         cb: function(data){
+          console.log('the data is', data);
           state.status = JSON.parse(data.data);
+
+          console.log('the status is', state.status);
           eventBus.emit('git');
           // if(updateDiff){
             methods.differenceAll(state.status);
@@ -42,8 +72,6 @@ function GitViewStore() {
         },
         initialData: ' '
       });
-
-      streams['git.status'].emit('get');
     },
     streamStatus: function(args){
       streams['chain'] = createNewStream({
@@ -85,7 +113,7 @@ function GitViewStore() {
       streams['git.add'] = createNewStream({
         command: 'git.add',
         opts: {
-          args: ['add', fileName],
+          args: [fileName],
           opts: {cwd: state.currentDir}
         },
         cb: function(data){
@@ -100,7 +128,7 @@ function GitViewStore() {
       streams['git.reset'] = createNewStream({
         command: 'git.reset',
         opts: {
-          args: ['reset', 'HEAD', fileName],
+          args: [fileName],
           opts: {cwd: state.currentDir}
         },
         cb: function(data){
@@ -111,14 +139,16 @@ function GitViewStore() {
     },
 
     difference: function(fileName, staging, key){
-
+      console.log('called diff on ', fileName);
       key = key || 0;
 
       streams['git.diff'+key] = createNewStream({
         command: 'git.diff',
         opts: {
-          opts: {cwd: state.currentDir},
-          args: ['diff', '--no-prefix', fileName],
+          opts: {
+            cwd: state.currentDir
+          },
+          args: [fileName]
         },
         cb: function(data){
           var res = JSON.parse(data.data);
@@ -132,7 +162,7 @@ function GitViewStore() {
     },
 
     differenceAll : function(status){
-
+      console.log('differenceAll got called');
       var key = 0
       // methods.newDiff();
       status.unstaged.forEach(function(file){
