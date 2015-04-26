@@ -59,7 +59,7 @@ function parseStatus(str:String, options){
         }
         return result;
     }, emptyResult);
-    var branches = String(execSync('git branch', options)).split('\n');
+    var branches = String(execSync('git branch', {cwd: options.cwd})).split('\n');
     result.branches = branches;
     branches.forEach(function(el){
         if(el.indexOf('*') > -1){

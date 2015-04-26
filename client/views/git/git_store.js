@@ -78,14 +78,13 @@ function GitViewStore() {
 
           console.log('the status is', state.status);
           eventBus.emit('git');
-          // if(updateDiff){
-            methods.differenceAll(state.status);
-          // }
+          methods.differenceAll(state.status);
         },
         initialData: ' '
       });
     },
     streamStatus: function(args){
+      args.dir = args.dir || state.currentDir;
       streams['chain'] = createNewStream({
         command: 'chain',
         opts: {
@@ -99,8 +98,7 @@ function GitViewStore() {
             {
               name: 'git.status',
               opts: {
-                cwd: args.dir,
-                initialData: " "
+                cwd: args.dir
               }
             }
           ]
