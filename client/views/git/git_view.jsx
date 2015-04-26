@@ -47,6 +47,7 @@ var GitComponent = React.createClass({
        <h2>Git View (branch: {this.state.status.branch})</h2>
        <GitButton fileName = '.' action='add' label='Add All' color="green" icon="plus"/>
        <GitButton fileName = '.' action='reset' label='Reset All' color="blue" icon="unhide"/>
+       <GitCommit/>
        <div className="ui segment">
         <h3>Staged</h3>
           <ul className='gitItem'>
