@@ -23,6 +23,19 @@ function GitViewStore() {
           console.log('failed getting pwd')
         });
     },
+    checkout: function(){
+      streams['git.checkout'] = createNewStream({
+        command: 'git.checkout',
+        opts: {
+          opts: {cwd: state.currentDir},
+          args: [args.branch]
+        },
+        cb: function(data){
+          eventBus.emit('git');
+        },
+        initialData: ' '
+      });
+    },
     commitAdd: function(args){
       streams['git.commitAdd'] = createNewStream({
         command: 'git.commitAdd',
@@ -35,7 +48,6 @@ function GitViewStore() {
         },
         initialData: ' '
       });
-      streams['git.commitAdd'].emit('get');
     },
     push: function(args){
       streams['git.push'] = createNewStream({

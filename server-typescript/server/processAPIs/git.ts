@@ -19,6 +19,8 @@ gitAPI.reset = gitWrapper(['reset', 'HEAD'], utility.identity);
 
 gitAPI.diff = gitWrapper(['diff', '--no-prefix'], parseDiff);
 
+gitAPI.checkout = gitWrapper(['checkout'], utility.identity);
+
 module.exports = gitAPI;
 
 function gitWrapper(args, parser) {
