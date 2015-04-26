@@ -23,7 +23,7 @@ function GitViewStore() {
           console.log('failed getting pwd')
         });
     },
-    checkout: function(){
+    checkout: function(args){
       streams['git.checkout'] = createNewStream({
         command: 'git.checkout',
         opts: {
