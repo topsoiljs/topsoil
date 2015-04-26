@@ -15,22 +15,25 @@ var GitComponent = React.createClass({
     var self = this;
     if(this.state.status){
       var staged = this.state.status.staged.map(function(file){
-              return <GitStaged fileName = {file}/>
+              return (
+                <div className="ui vertical segment">
+                  <GitStaged fileName = {file}/>
+                </div>
+              )
             });
 
       var unstaged = this.state.status.unstaged.map(function(file){
               if(self.state.diff.unstaged[file]){
                 return (
-                <div>
-                  <div><GitUnstaged fileName = {file}/></div>
-                  <div className="gitDiff"><GitDiff diff = {self.state.diff.unstaged[file]}/></div>
+                <div className="ui vertical segment">
+                  <div><GitUnstaged fileName = {file} diff = {self.state.diff.unstaged[file]}/></div>
                 </div>
                 );
               }
 
               return (
                 <div>
-                  <div><GitUnstaged fileName = {file}/></div>
+                  <div className="ui vertical segment"><GitUnstaged fileName = {file}/></div>
                 </div>
                 );
             });
@@ -41,27 +44,27 @@ var GitComponent = React.createClass({
     }
 
     return (<row>
-       <h4>Git View (branch: {this.state.status.branch})</h4>
-       <GitButton fileName = '.' action='add' label='Add All'/>
-       <GitButton fileName = '.' action='reset' label='Reset All'/>
-       <row>
-        <h5>Staged</h5>
+       <h2>Git View (branch: {this.state.status.branch})</h2>
+       <GitButton fileName = '.' action='add' label='Add All' color="green" icon="plus"/>
+       <GitButton fileName = '.' action='reset' label='Reset All' color="blue" icon="unhide"/>
+       <div className="ui segment">
+        <h3>Staged</h3>
           <ul className='gitItem'>
             {staged}
           </ul>
-       </row>
-       <row>
-        <h5>Unstaged</h5>
+       </div>
+       <div className="ui segment">
+        <h3>Unstaged</h3>
           <ul className='gitItem'>
             {unstaged}
           </ul>
-       </row>
-       <row>
-        <h5>Untracked</h5>
+       </div>
+       <div className="ui segment">
+        <h3>Untracked</h3>
           <ul className='gitItem'>
             {untracked}
           </ul>
-       </row>
+       </div>
        {status}
     </row>);
   }
@@ -72,33 +75,52 @@ var GitStaged = React.createClass({
     var fileName = this.props.fileName;
     return (
       <li>
-        {fileName}
-        <GitButton fileName = {fileName} action='reset'/>
+        <span className = 'gitFileName'>{fileName}</span>
+        <GitButton fileName = {fileName} action='reset' label='Reset' color="red" icon="minus"/>
       </li>
     );
   }
 });
 
 var GitUnstaged = React.createClass({
+
+  getInitialState: function() {
+    return {
+      hideDiff: 'hide'
+    };
+  },
+
+  toggleDiff: function(item) {
+    console.log('consoling the state', this.state);
+    var toggle = this.state.hideDiff ==='hide' ? 'show' : 'hide'
+    this.setState({
+      hideDiff: toggle
+    });
+  },
+
   render: function(){
     var fileName = this.props.fileName;
+    var diff = this.props.diff || [];
+    var self = this;
     return (
       <li>
-        {fileName}
-        <GitButton fileName = {fileName} action='add'/>
-        <GitButton fileName = {fileName} action='difference'/>
+        <span className = 'gitFileName'>{fileName}</span>
+        <GitButton fileName = {fileName} action='add' label='Add' color="green" icon="plus"/>
+        <GitButton handleDiff = {self.toggleDiff} fileName = {fileName} action='difference' label='Diff' color="blue" icon="expand"/>
+        <div className={"gitDiff " + this.state.hideDiff}><GitDiff diff = {diff}/></div>
       </li>
     );
   }
 });
 
 var GitUntracked = React.createClass({
+
   render: function(){
     var fileName = this.props.fileName;
     return (
       <li>
-        {fileName}
-        <GitButton fileName = {fileName} action='add'/>
+        <span className = 'gitFileName'>{fileName}</span>
+        <GitButton fileName = {fileName} action='add' color="green" icon="plus"/>
       </li>
     );
   }
@@ -115,8 +137,6 @@ var GitDiff = React.createClass({
     }
     //should pass in a file and staging property
     var result = this.props.diff.map(function(code){
-      // console.log('code is ', code[0]);
-      // console.log('classmap is', classMap[code[0]]);
       return (
         <div className={classMap[code[0]]}>
           <span>
@@ -129,7 +149,8 @@ var GitDiff = React.createClass({
         );
     })
     return (
-      <div>
+      <div className={"ui white large message "}>
+        <i className="close icon"></i>
         {result}
       </div>
     )
@@ -139,7 +160,7 @@ var GitDiff = React.createClass({
 var GitButton = React.createClass({
   handleAddClick: function(e){
     if(this.props.action ==='difference'){
-      gitViewStore[this.props.action](this.props.fileName, 'unstaged');
+      this.props.handleDiff(this);
       return;
     }
     gitViewStore[this.props.action](this.props.fileName);
@@ -149,8 +170,12 @@ var GitButton = React.createClass({
       this.props.label = this.props.action;
     }
     return (
-      <button onClick={this.handleAddClick}>
-        {this.props.label}
+      <button className = {"medium ui button animated " + this.props.color} onClick={this.handleAddClick}>
+        <div className = "visible content">{this.props.label}</div>
+        <div className = "hidden content">
+          <i className = {this.props.icon + " icon"}></i>
+        </div>
+
       </button>
     )
   }

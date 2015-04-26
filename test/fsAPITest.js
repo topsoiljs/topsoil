@@ -5,7 +5,7 @@ var uuid = require('../deploy/client/bower_components/node-uuid/uuid.js')
 
 var streams = {};
 var currentDir = __dirname;
-var _globalSocket = io('http://localhost:8001/');
+var _globalSocket = io('http://localhost:8000/');
 
 var createNewStream = function(options){
 
