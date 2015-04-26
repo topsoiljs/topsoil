@@ -174,8 +174,21 @@ var GitButton = React.createClass({
         <div className = "hidden content">
           <i className = {this.props.icon + " icon"}></i>
         </div>
-
       </button>
+    )
+  }
+})
+
+var GitCommit = React.createClass({
+
+  render: function(){
+    return (
+      <span className = "gitCommitContainer">
+        <span className="ui input">
+         <input type="text" placeholder="Commit Message..."/>
+        </span>
+        <GitButton fileName = '.' action='commit' label='Commit' color="orange" icon="write"/>
+      </span>
     )
   }
 })
