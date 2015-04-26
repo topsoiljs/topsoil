@@ -233,6 +233,14 @@ magic.registerView({
       categories: ['read'],
       method: gitViewStore["renderView"],
       render: true
+    },
+    {
+      name: "Change Branch",
+      description: 'Runs git checkout to change branches',
+      args: ['branch'],
+      tags: ['checkout git', 'change branch'],
+      categories: ['write'],
+      method: gitViewStore["checkout"]
     }
   ],
   category: 'git',

@@ -19,6 +19,8 @@ gitAPI.reset = gitWrapper(['reset', 'HEAD'], utility.identity);
 
 gitAPI.diff = gitWrapper(['diff', '--no-prefix'], parseDiff);
 
+gitAPI.checkout = gitWrapper(['checkout'], utility.identity);
+
 module.exports = gitAPI;
 
 function gitWrapper(args, parser) {
@@ -57,10 +59,11 @@ function parseStatus(str:String, options){
         }
         return result;
     }, emptyResult);
-    var branches = String(execSync('git branch', options)).split('\n');
+    var branches = String(execSync('git branch', {cwd: options.cwd})).split('\n');
+    result.branches = branches;
     branches.forEach(function(el){
         if(el.indexOf('*') > -1){
-            emptyResult.branch = el.slice(2);
+            result.branch = el.slice(2);
         }
     });
     return JSON.stringify(result);

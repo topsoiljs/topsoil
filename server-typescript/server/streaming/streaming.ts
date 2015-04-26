@@ -73,6 +73,12 @@ var createSpawnStream = function(command, args, options, infoHandler) {
   return createDuplex(spawnThrough, outStream);
 };
 
+var createPassStream = function(){
+  return through(function(chunk, enc, cb){
+    cb(null, chunk);
+  })
+};
+
 var createSpawnEndStream = function(command, args, options, parser, moreArgs){
   options = options || {};
   options.stdio = ['pipe', 'pipe'];
