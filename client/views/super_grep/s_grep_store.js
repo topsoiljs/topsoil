@@ -111,6 +111,7 @@ function GrepStore() {
       createNewStream({
         command: 'fs.readFile',
         cb: function(data) {
+          console.log("set file data back:", data);
           state.activeFile = filePath;
           state.file = data.data;
           eventBus.emit('s_grep');
@@ -140,8 +141,8 @@ function GrepStore() {
         state.dir = path;
         methods._getFiles(path, function(filesystem) {
           methods._addFiles(filesystem, state.dir);
-          // methods._setFile(state.files[0]);
-          eventBus.emit('s_grep');
+          methods._setFile(state.files[0]);
+          // eventBus.emit('s_grep');
         });
       }
 
