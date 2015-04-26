@@ -91,7 +91,7 @@ var createSpawnEndStream = function(command, args, options, parser, moreArgs){
       if(data === ''){
         data = 'message received';
       }
-      cb(null, parser(String(data)));
+      cb(null, parser(String(data), options));
     });
   });
 };

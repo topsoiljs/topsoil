@@ -10,7 +10,7 @@ class State implements StateStore {
   private store;
 
   constructor() {
-    this.store = level('./db');
+    this.store = level(__dirname + '/db');
   }
 
   get(session: string, key: string, cb) {
