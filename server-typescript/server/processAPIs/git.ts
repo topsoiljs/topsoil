@@ -32,7 +32,7 @@ function parseCommitAdd(str:String){
     return str;
 };
 
-function parseStatus(str:String){
+function parseStatus(str:String, options){
     var emptyResult = {
         newfile: [],
         staged: [],
@@ -57,7 +57,7 @@ function parseStatus(str:String){
         }
         return result;
     }, emptyResult);
-    var branches = String(execSync('git branch')).split('\n');
+    var branches = String(execSync('git branch', options)).split('\n');
     branches.forEach(function(el){
         if(el.indexOf('*') > -1){
             emptyResult.branch = el.slice(2);
