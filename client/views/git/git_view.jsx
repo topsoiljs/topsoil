@@ -181,14 +181,20 @@ var GitButton = React.createClass({
 })
 
 var GitCommit = React.createClass({
-
+  getInitialState: function() {
+     return {message: ''};
+   },
+   handleChange: function(event) {
+     this.setState({message: event.target.value});
+     console.log('the state is ', this.state);
+   },
   render: function(){
     return (
       <span className = "gitCommitContainer">
         <span className="ui input">
-         <input type="text" placeholder="Commit Message..."/>
+         <input type="text" placeholder="Commit Message..." onChange={this.handleChange}/>
         </span>
-        <GitButton fileName = '.' action='commit' label='Commit' color="orange" icon="write"/>
+        <GitButton fileName = {this.state} action='commit' label='Commit' color="orange" icon="write"/>
       </span>
     )
   }
