@@ -45,7 +45,7 @@ utility.makeProcess = function(socket, cmd, opts, cb){
             socket.emit(opts.uid, utility.wrapperResponse(e, null));
         });
     } catch(err){
-        console.log('caught an error in the try block', err);
+        log.error('caught an error in the try block', err);
     }
 };
 
@@ -58,21 +58,21 @@ utility.updateIn = function(obj, lookupProps, val) {
   //What if it is empty? (make a new obj)
   obj = _.cloneDeep(obj);
   var objectVals = [obj];
-  
+
   lookupProps.forEach(function(lookupProp) {
     var obj = _.last(objectVals)[lookupProp];
-  
+
     if(obj === undefined) {
       _.last(objectVals)[lookupProp] = {};
       obj = _.last(objectVals)[lookupProp];
     }
-     
+
     objectVals.push(obj);
   });
-  
+
   var lastLookupProp = _.last(lookupProps);
   objectVals[objectVals.length - 2][lastLookupProp] = val;
-  
+
   return obj;
 }
 
@@ -90,7 +90,7 @@ utility.interleave = function(arr1: Array<any>, arr2: Array<any>) {
 
 utility.identity = function(data){
     if(!data){
-        console.log('no data passed');
+        log.error('no data passed');
         return '';
     }
     return data;
@@ -98,10 +98,10 @@ utility.identity = function(data){
 
 utility.logIdentity = function(data){
     if(!data){
-        console.log('no data passed');
+        log.error('no data passed');
         return '';
     }
-    console.log(data);
+    log.error(data);
     return data;
 };
 
@@ -110,21 +110,21 @@ utility.updateIn = function(obj, lookupProps, val) {
   //What if it is empty? (make a new obj)
   obj = _.cloneDeep(obj);
   var objectVals = [obj];
-  
+
   lookupProps.forEach(function(lookupProp) {
     var obj = _.last(objectVals)[lookupProp];
-  
+
     if(obj === undefined) {
       _.last(objectVals)[lookupProp] = {};
       obj = _.last(objectVals)[lookupProp];
     }
-     
+
     objectVals.push(obj);
   });
-  
+
   var lastLookupProp = _.last(lookupProps);
   objectVals[objectVals.length - 2][lastLookupProp] = val;
-  
+
   return obj;
 }
 
@@ -142,7 +142,7 @@ utility.interleave = function(arr1: Array<any>, arr2: Array<any>) {
 
 utility.identity = function(data){
     if(!data){
-        console.log('no data passed');
+        log.error('no data passed');
         return '';
     }
     return data;

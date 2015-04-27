@@ -145,7 +145,9 @@ function fsSingleWrapper(fsCallback){
           }else if(typeof data !== 'string'){
             data = String(data);
           }
-          console.log(err);
+          if(err){
+            log.error('fs single wrapper', err);
+          }
           cb(err, data + '\n');
         })
     })
