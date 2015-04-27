@@ -9,31 +9,12 @@ var SGrepEditor = React.createClass({
   doubleClick: function() {
     this.setState({isContentEditable: true});
   },
-  processText: function(text) {
-
-    var splitText;
-    if(text) {
-      splitText = text.split("");
-    } else {
-      splitText = [];
-    }
-
-    return splitText.map(function(character, ind) {
-      return (<span className="regexEditor" id={ind}>{character}</span>);
-    });
-  },
-  changeFunc: function(e) {
-    grepStore.changeRegexSelection(e.target.value);
-  },
   render: function() {
     return (
       <div>
-        <p>
-          Current Selection:
-        </p>
-        <EditableText changeFunc={this.changeFunc} processText={this.processText} text={this.props.regex} />
+        <span className="bold unselectable">Current Selection:</span>
+        <EditableText activeCharIndex={this.props.activeCharIndex} shouldDisplayOptions={this.props.shouldDisplayOptions} changeFunc={this.changeFunc} text={this.props.regex} />
       </div>
-
     )
   }
 })

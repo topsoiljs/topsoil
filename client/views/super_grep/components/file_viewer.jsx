@@ -5,7 +5,13 @@ var FileViewer = React.createClass({
   getInitialState: function() {
     return {lineCount: []};
   },
-
+  //To add line jumping functionalityt would probably need to move codemirror thing into the store.
+  //Function taken from: http://stackoverflow.com/questions/10575343/codemirror-is-it-possible-to-scroll-to-a-line-so-that-it-is-in-the-middle-of-w
+  jumpToLine: function(i) { 
+    var t = editor.charCoords({line: i, ch: 0}, "local").top; 
+    var middleHeight = editor.getScrollerElement().offsetHeight / 2; 
+    editor.scrollTo(null, t - middleHeight - 5); 
+  },
   componentDidMount: function() {
     var mouseDown = false;
 
