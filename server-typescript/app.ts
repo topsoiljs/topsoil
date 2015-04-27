@@ -5,15 +5,16 @@ var Hapi = require("hapi");
 var processManager = require('./server/processManager');
 var stateRoutes = require('./server/stateAPI/stateRoutes');
 var opn = require('opn');
-// Global logger
+/**Global Logger*/
 var format = require('bunyan-format')({outputMode: 'short'});
-var log = global.log = require('bunyan').createLogger({name: "topsoil", stream: format});
+global.log = require('bunyan').createLogger({name: "topsoil", stream: format});
+var log = global.log;
 // Global configuration
-var nconf = global.nconf = require('nconf')
+global.nconf = require('nconf')
                 .argv().env()
                 .file({file: __dirname + '/default_config.json'});
-
-//// Create a server with a host and port
+var nconf = global.nconf;
+// Create a server with a host and port
 var server = new Hapi.Server();
 var setupSocketAPI = require('./server/processManager');
 

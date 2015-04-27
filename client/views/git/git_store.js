@@ -87,7 +87,6 @@ function GitViewStore() {
         },
         cb: function(data){
           state.status = JSON.parse(data.data);
-
           eventBus.emit('git');
           methods.differenceAll(state.status);
         },
@@ -95,7 +94,9 @@ function GitViewStore() {
       });
     },
     streamStatus: function(args){
-      args.dir = args.dir || state.currentDir;
+      if(args.dir.length <= 0){
+        args.dir = state.currentDir;
+      }
       streams['chain'] = createNewStream({
         command: 'chain',
         opts: {
