@@ -46,7 +46,8 @@ var GitComponent = React.createClass({
     return (<row>
        <h2>Git View (branch: {this.state.status.branch})</h2>
        <GitButton fileName = '.' action='add' label='Add All' color="green" icon="plus"/>
-       <GitButton fileName = '.' action='reset' label='Reset All' color="blue" icon="unhide"/>
+       <GitButton fileName = '.' action='reset' label='Reset All' color="red" icon="minus"/>
+       <GitCommit/>
        <div className="ui segment">
         <h3>Staged</h3>
           <ul className='gitItem'>
@@ -162,6 +163,9 @@ var GitButton = React.createClass({
       this.props.handleDiff(this);
       return;
     }
+    if(this.props.action ==='commit'){
+      this.props.onClick();
+    }
     gitViewStore[this.props.action](this.props.fileName);
   },
   render: function(){
@@ -174,8 +178,29 @@ var GitButton = React.createClass({
         <div className = "hidden content">
           <i className = {this.props.icon + " icon"}></i>
         </div>
-
       </button>
+    )
+  }
+})
+
+var GitCommit = React.createClass({
+  getInitialState: function() {
+     return {message: ''};
+   },
+   handleChange: function(event) {
+     this.setState({message: event.target.value});
+   },
+   reset: function(event){
+     this.setState({message: ''});
+   },
+  render: function(){
+    return (
+      <span className = "gitCommitContainer">
+        <span className="ui input">
+         <input type="text" value = {this.state.message} placeholder="Commit Message..." onChange={this.handleChange}/>
+        </span>
+        <GitButton onClick = {this.reset} fileName = {this.state} action='commit' label='Commit' color="orange" icon="write"/>
+      </span>
     )
   }
 })

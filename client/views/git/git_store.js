@@ -49,6 +49,20 @@ function GitViewStore() {
         initialData: ' '
       });
     },
+    commit: function(args){
+      streams['git.commit'] = createNewStream({
+        command: 'git.commit',
+        opts: {
+          opts: {cwd: state.currentDir},
+          args: [args.message]
+        },
+        cb: function(data){
+          streams['git.status'].emit('get');
+        },
+        initialData: ' '
+      });
+      streams['git.commit'].emit('get');
+    },
     push: function(args){
       streams['git.push'] = createNewStream({
         command: 'git.push',

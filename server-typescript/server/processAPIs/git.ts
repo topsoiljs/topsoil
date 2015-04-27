@@ -11,6 +11,8 @@ gitAPI.status = gitWrapper(['status', '-s'], parseStatus);
 
 gitAPI.commitAdd = gitWrapper(['commit', '-am'], utility.identity);
 
+gitAPI.commit = gitWrapper(['commit', '-m'], utility.identity);
+
 gitAPI.push = gitWrapper(['push'], utility.identity);
 
 gitAPI.add = gitWrapper(['add'], utility.identity);
