@@ -29,11 +29,10 @@ var SGrepComponent = React.createClass({
 
     return (
       <div>
-        SUPER GREP
         <div className="row">
-          <SGrepEditor regex={selection}/>
+          <SGrepEditor activeCharIndex={this.state.activeCharIndex} shouldDisplayOptions={this.state.shouldDisplayOptions} regex={selection}/>
           <p>
-            Current Directory: {this.state.dir}
+            <span className="bold unselectable">Current Directory:</span> <span className="grepBubble">{this.state.dir}</span>
           </p>
           <select onChange={this.selectCallback} className="browser-default">
             {

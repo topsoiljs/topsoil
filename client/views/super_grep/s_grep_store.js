@@ -7,7 +7,9 @@ function GrepStore() {
                files: [],
                regex: {},
                activeRegex: null,
-               results: []};
+               results: [],
+               shouldDisplayOptions: false,
+               activeCharIndex: undefined};
 
   var streams = {};
 
@@ -36,6 +38,9 @@ function GrepStore() {
         state.regex[state.activeRegex].selection = newSelection;
       }
 
+      state.shouldDisplayOptions = false;
+      state.activeCharIndex = undefined;
+
       eventBus.emit('s_grep');
     },
 
@@ -46,17 +51,13 @@ function GrepStore() {
       //Could list out all of the files in the dir... and click to open one as an example..
 
       //How should the user ignore files?
-
-      var UID = Math.random();
-
       if(state.regex[state.activeRegex] && state.regex[state.activeRegex].selection) {
         var regexArg = state.regex[state.activeRegex].selection;
 
         function grepCallback(data){
-          var lines = data.data.split("\n");
-          //Remove empty last line
-          lines.pop();
-
+          var lines = data.data.split("\n").filter(function(line) {
+            return line !== "";
+          });
           //Need to know if it is a dir or file?
           var results = lines.map(function(str) {
             var splitStr = str.split(":");
@@ -74,7 +75,7 @@ function GrepStore() {
           command: 'terminal.callCommand',
           cb: grepCallback,
           opts: {
-            opts: {cwd: state.dir},
+            
             cmd: "grep",
             args: ["-nR", regexArg, state.dir]
           },
@@ -140,10 +141,17 @@ function GrepStore() {
         state.dir = path;
         methods._getFiles(path, function(filesystem) {
           methods._addFiles(filesystem, state.dir);
-          // methods._setFile(state.files[0]);
-          eventBus.emit('s_grep');
+          methods._setFile(state.files[0]);
+          // eventBus.emit('s_grep');
         });
       }
+
+      eventBus.emit('s_grep');
+    },
+
+    setOption: function(index) {
+      state.shouldDisplayOptions = true;
+      state.activeCharIndex = index;
 
       eventBus.emit('s_grep');
     },
