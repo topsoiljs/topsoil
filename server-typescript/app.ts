@@ -13,7 +13,7 @@ var nconf = global.nconf = require('nconf')
                 .argv().env()
                 .file({file: __dirname + '/default_config.json'});
 
-//// Create a server with a host and port
+// Create a server with a host and port
 var server = new Hapi.Server();
 var setupSocketAPI = require('./server/processManager');
 
