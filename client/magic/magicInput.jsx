@@ -123,19 +123,4 @@ var MagicInput = React.createClass({
   }
 });
 
-/*
-For reference
-<input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" />
-
-
-
-$('.magicinputs').on('focus', function(e){
-  $('.parentofmagicinputs').css('border-bottom', '3px solid #757575')
-})
-
-$('.magicinputs').on('focusout', function(e){
-  $('.parentofmagicinputs').css('border-bottom', '1px solid #757575')
-})
-*/
-
 module.exports = MagicInput;

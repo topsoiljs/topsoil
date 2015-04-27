@@ -29,10 +29,6 @@ var MasterView = React.createClass({
 
     log.setLevel(0);
   },
-  // Need to add
-  /*
-    <i className="fa fa-chevron-right"></i>
-  */
   render: function() {
     //Combine these two worlds...
     var subviews = this.state.magicData.subviews ? this.state.magicData.subviews.map(function(el){

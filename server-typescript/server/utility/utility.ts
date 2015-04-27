@@ -3,7 +3,7 @@
 var spawn = require('child_process').spawn;
 var utility = <any> {};
 var _ = require('lodash');
-
+var log = global.log;
 
 utility.wrapperResponse = function(err:string, data:string){
     if(!data) data = '';

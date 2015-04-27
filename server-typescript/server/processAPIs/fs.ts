@@ -12,7 +12,7 @@ var exec = require('child_process').exec;
 var createSocketOutStream = require('../streaming/streaming').createSocketOutStream;
 var createGenericStreamFunc = require('../streaming/streaming').createGenericStream;
 var watch = require('watch');
-
+var log = global.log;
 var fsAPI = <any> {};
 
 fsAPI.ls = function(opts){
