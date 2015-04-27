@@ -84,7 +84,7 @@ var FileViewer = React.createClass({
     }
   },
   render: function() {
-    return (<div className="inputText" ref="inputText"></div>)
+    return (<div className="ui segment inputText" ref="inputText"></div>)
   }
 })
 

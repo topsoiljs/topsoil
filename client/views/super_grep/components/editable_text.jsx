@@ -124,7 +124,7 @@ var EditableText = React.createClass({
   clickSuggestion: function(suggestionText, activeInd, text) {
     return function() {
      var firstHalf = text.slice(0, activeInd);
-     var secondHalf = text.slice(activeInd, text.length);
+     var secondHalf = text.slice(activeInd + 1, text.length);
      grepStore.changeRegexSelection(firstHalf + suggestionText + secondHalf);
     }
   },
@@ -149,7 +149,7 @@ var EditableText = React.createClass({
       )
     } else {
       return (
-        <div>
+        <div style={{display: "inline-block"}} >
           <span className="grepBubble" onDoubleClick={this.setEditable}>{this.processText(this.props.text)}</span>
           {options}
         </div>
