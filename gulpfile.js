@@ -1,29 +1,20 @@
+var gp = require('gulp-load-plugins')();
 var source = require('vinyl-source-stream');
-var gutil = require('gulp-util');
-var uglify = require('gulp-uglify');
-var sourcemaps = require('gulp-sourcemaps');
+var transform = require('vinyl-transform');
 var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
 var reactify = require('reactify');
 var gulp = require('gulp');
-var ts = require('gulp-typescript');
+var ts = gp.typescript;
 var merge = require('merge2');
-var jade = require('gulp-jade');
-var stylus = require('gulp-stylus');
-var watch = require('gulp-watch');
-var react = require('gulp-react');
-var concat = require('gulp-concat');
-var plumber = require('gulp-plumber');
-var mocha = require('gulp-mocha');
 var glob = require('glob');
-var install = require('gulp-install');
+var install = gp.install;
 
 gulp.task('jade', function () {
   var YOUR_LOCALS = {};
-
   gulp.src('./client/templates/*.jade')
-      .pipe(plumber())
-      .pipe(jade({
+      .pipe(gp.plumber())
+      .pipe(gp.jade({
         locals: YOUR_LOCALS
       }))
       .pipe(gulp.dest('./deploy/client'))
@@ -31,17 +22,17 @@ gulp.task('jade', function () {
 
 gulp.task('stylus', function() {
   gulp.src('./client/**/*.styl')
-      .pipe(plumber())
-      .pipe(stylus({
+      .pipe(gp.plumber())
+      .pipe(gp.stylus({
         compress: true
       }))
-      .pipe(concat('main.css'))
+      .pipe(gp.concat('main.css'))
       .pipe(gulp.dest('./deploy/client'));
 });
 
 gulp.task('ts', function () {
   var tsApp = gulp.src('server-typescript/**/*.ts')
-                  .pipe(plumber())
+                  .pipe(gp.plumber())
                   .pipe(ts({
                       declarationFiles: true,
                       noExternalResolve: false,
@@ -50,7 +41,7 @@ gulp.task('ts', function () {
 
 
   var tsServer = gulp.src('server-typescript/server/**/*.ts')
-                     .pipe(plumber())
+                     .pipe(gp.plumber())
                      .pipe(ts({
                          declarationFiles: true,
                          noExternalResolve: false,
@@ -58,7 +49,7 @@ gulp.task('ts', function () {
                      }));
 
     var processAPI = gulp.src('server-typescript/server/processAPIs/**/*.ts')
-        .pipe(plumber())
+        .pipe(gp.plumber())
         .pipe(ts({
             declarationFiles: true,
             noExternalResolve: false,
@@ -66,7 +57,7 @@ gulp.task('ts', function () {
         }));
 
     var utility = gulp.src('server-typescript/server/utility/**/*.ts')
-        .pipe(plumber())
+        .pipe(gp.plumber())
         .pipe(ts({
             declarationFiles: true,
             noExternalResolve: false,
@@ -93,21 +84,22 @@ gulp.task('install', function(){
       gulp.src('server-typescript/default_config.json').pipe(gulp.dest('deploy')),
       gulp.src(['./package.json', './bower.json', './.bowerrc'])
         .pipe(gulp.dest('deploy'))
-        .pipe(install({production: true})),
+        .pipe(gp.install({production: true})),
       gulp.src('./topsoil').pipe(gulp.dest('deploy'))
     ])
 });
 
 gulp.task('jsx', function(){
    return gulp.src(['client/**/*.js', 'client/**/*.jsx'])
-              .pipe(plumber())
-              .pipe(react())
+              .pipe(gp.plumber())
+              .pipe(gp.react())
               .pipe(concat('client.js'))
               .pipe(gulp.dest('deploy/client'));
 });
 
 gulp.task('browserify', function() {
   //Taken from: https://github.com/gulpjs/gulp/blob/master/docs/recipes/browserify-transforms.md
+  // Must be jsx files.
   var b = browserify({
     entries: ['./client/views/masterView.jsx',
               './client/views/super_grep/s_grep.jsx',
@@ -124,10 +116,8 @@ gulp.task('browserify', function() {
   return b.bundle()
           .pipe(source('app.js'))
           .pipe(buffer())
-          .pipe(sourcemaps.init({loadMaps: true}))
-              // Add transformation tasks to the pipeline here.
-              // .pipe(uglify())
-          .pipe(sourcemaps.write('./'))
+          .pipe(gp.sourcemaps.init({loadMaps: true}))
+          .pipe(gp.sourcemaps.write('./'))
           .pipe(gulp.dest('deploy/client'));
 });
 
@@ -140,7 +130,7 @@ gulp.task('jsx-w', function () {
 
 gulp.task('test', function () {
     return gulp.src(['./test/fsAPITest.js','./test/gitAPITest.js'], {read: false})
-        .pipe(mocha({reporter: 'nyan'}));
+        .pipe(gp.mocha({reporter: 'nyan'}));
 });
 
 gulp.task('build-all', ['jade', 'stylus', 'ts', 'browserify', 'install']);

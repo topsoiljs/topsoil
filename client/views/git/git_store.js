@@ -87,7 +87,6 @@ function GitViewStore() {
         },
         cb: function(data){
           state.status = JSON.parse(data.data);
-
           eventBus.emit('git');
           methods.differenceAll(state.status);
         },

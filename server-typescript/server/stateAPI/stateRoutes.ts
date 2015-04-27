@@ -58,12 +58,14 @@ var routes : StateAPI = <StateAPI>{
       if(request.params.key && request.params.session){
         state.get(request.params.session, request.params.key, function(err, data){
           if(err){
+            log.error('error', err);
             reply(404);
           }else{
             reply(data);
           }
         });
       }else{
+        log.error('need session and key');
         throw new Error('need session and key');
       }
     }
