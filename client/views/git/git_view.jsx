@@ -46,7 +46,7 @@ var GitComponent = React.createClass({
     return (<row>
        <h2>Git View (branch: {this.state.status.branch})</h2>
        <GitButton fileName = '.' action='add' label='Add All' color="green" icon="plus"/>
-       <GitButton fileName = '.' action='reset' label='Reset All' color="blue" icon="unhide"/>
+       <GitButton fileName = '.' action='reset' label='Reset All' color="red" icon="minus"/>
        <GitCommit/>
        <div className="ui segment">
         <h3>Staged</h3>
@@ -189,11 +189,9 @@ var GitCommit = React.createClass({
    },
    handleChange: function(event) {
      this.setState({message: event.target.value});
-     console.log('the state is ', this.state);
    },
    reset: function(event){
      this.setState({message: ''});
-     console.log('resetting commit');
    },
   render: function(){
     return (
