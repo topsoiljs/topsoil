@@ -27,6 +27,7 @@ module.exports = gitAPI;
 
 function gitWrapper(args, parser) {
   return function(opts) {
+    log.info('opts in wrapper', opts);
     var spawnStream = createSpawnEndStreamF('git', args, opts.opts, parser, opts.args);
     return spawnStream;
   };
