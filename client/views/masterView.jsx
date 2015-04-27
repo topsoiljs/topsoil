@@ -41,6 +41,7 @@ var MasterView = React.createClass({
                   <MagicSuggestions {...this.state.magicData}/>
                 </div>
                 <div className="main twelve wide column">
+                  <SubViews subviews={subviews}/>
                   <this.state.activeView/>
                 </div>
               </div>)

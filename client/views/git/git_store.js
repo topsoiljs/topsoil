@@ -94,7 +94,9 @@ function GitViewStore() {
       });
     },
     streamStatus: function(args){
-      args.dir = args.dir || state.currentDir;
+      if(args.dir.length <= 0){
+        args.dir = state.currentDir;
+      }
       streams['chain'] = createNewStream({
         command: 'chain',
         opts: {
