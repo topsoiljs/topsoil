@@ -12,7 +12,7 @@ var exec = require('child_process').exec;
 var createSocketOutStream = require('../streaming/streaming').createSocketOutStream;
 var createGenericStreamFunc = require('../streaming/streaming').createGenericStream;
 var watch = require('watch');
-
+var log = global.log;
 var fsAPI = <any> {};
 
 fsAPI.ls = function(opts){
@@ -145,7 +145,9 @@ function fsSingleWrapper(fsCallback){
           }else if(typeof data !== 'string'){
             data = String(data);
           }
-          console.log(err);
+          if(err){
+            log.error('fs single wrapper', err);
+          }
           cb(err, data + '\n');
         })
     })

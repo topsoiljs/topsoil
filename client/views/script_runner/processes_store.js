@@ -54,7 +54,7 @@ function ProcessesViewStore(eventName) {
           render();
         })
         .fail(function(){
-          console.log('failed posting pwd')
+          log.error('failed posting pwd')
         })
     },
     killProcess: function(args){

@@ -17,6 +17,7 @@
     "codemirror": "~5.1.0",
     "node-uuid": "~1.4.3",
     "bloodhound": "~1.0.4",
-    "typeahead.js": "~0.10.5"
+    "typeahead.js": "~0.10.5",
+    "loglevel": "1.2.0"
   }
 }

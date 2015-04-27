@@ -7,6 +7,7 @@ var EventBus = function() {
       events[view].push(listener);
     },
     emit: function(view, data) {
+      log.info('emitting', view, data);
       if(events[view]) {
         events[view].forEach(function(listener){
           listener(data);

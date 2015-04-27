@@ -20,7 +20,7 @@ function GitViewStore() {
           methods.status({directory: data});
         })
         .fail(function(){
-          console.log('failed getting pwd')
+          log.error('failed getting pwd')
         });
     },
     checkout: function(args){
@@ -63,7 +63,6 @@ function GitViewStore() {
       });
     },
     status: function(updateDiff){
-      console.log('the current directory is ', state.currentDir);
       if(updateDiff.directory){
         state.currentDir = updateDiff.directory;
       }
@@ -73,10 +72,8 @@ function GitViewStore() {
           opts: {cwd: state.currentDir}
         },
         cb: function(data){
-          console.log('the data is', data);
           state.status = JSON.parse(data.data);
 
-          console.log('the status is', state.status);
           eventBus.emit('git');
           methods.differenceAll(state.status);
         },
@@ -116,7 +113,7 @@ function GitViewStore() {
           eventBus.emit('git');
         })
         .fail(function(){
-          console.log('failed posting pwd')
+          log.error('failed posting pwd')
         })
     },
     add: function(fileName){
@@ -149,7 +146,6 @@ function GitViewStore() {
     },
 
     difference: function(fileName, staging, key){
-      console.log('called diff on ', fileName);
       key = key || 0;
 
       streams['git.diff'+key] = createNewStream({
@@ -172,7 +168,6 @@ function GitViewStore() {
     },
 
     differenceAll : function(status){
-      console.log('differenceAll got called');
       var key = 0
       // methods.newDiff();
       status.unstaged.forEach(function(file){

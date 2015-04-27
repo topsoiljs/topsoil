@@ -8,13 +8,12 @@ var SGrepEditor = React.createClass({
   },
   doubleClick: function() {
     this.setState({isContentEditable: true});
-    console.log(this.state);
   },
   processText: function(text) {
 
     var splitText;
     if(text) {
-      splitText = text.split("");   
+      splitText = text.split("");
     } else {
       splitText = [];
     }
@@ -24,18 +23,17 @@ var SGrepEditor = React.createClass({
     });
   },
   changeFunc: function(e) {
-    console.log(e.target.value);
-    grepStore.changeRegexSelection(e.target.value); 
+    grepStore.changeRegexSelection(e.target.value);
   },
   render: function() {
     return (
       <div>
         <p>
-          Current Selection: 
+          Current Selection:
         </p>
         <EditableText changeFunc={this.changeFunc} processText={this.processText} text={this.props.regex} />
       </div>
-      
+
     )
   }
 })

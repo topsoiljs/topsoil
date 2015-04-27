@@ -91,7 +91,6 @@ var GitUnstaged = React.createClass({
   },
 
   toggleDiff: function(item) {
-    console.log('consoling the state', this.state);
     var toggle = this.state.hideDiff ==='hide' ? 'show' : 'hide'
     this.setState({
       hideDiff: toggle
