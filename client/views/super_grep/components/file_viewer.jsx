@@ -5,7 +5,13 @@ var FileViewer = React.createClass({
   getInitialState: function() {
     return {lineCount: []};
   },
-
+  //To add line jumping functionalityt would probably need to move codemirror thing into the store.
+  //Function taken from: http://stackoverflow.com/questions/10575343/codemirror-is-it-possible-to-scroll-to-a-line-so-that-it-is-in-the-middle-of-w
+  jumpToLine: function(i) { 
+    var t = editor.charCoords({line: i, ch: 0}, "local").top; 
+    var middleHeight = editor.getScrollerElement().offsetHeight / 2; 
+    editor.scrollTo(null, t - middleHeight - 5); 
+  },
   componentDidMount: function() {
     var mouseDown = false;
 
@@ -13,7 +19,7 @@ var FileViewer = React.createClass({
 
     var myCodeMirror = CodeMirror(inputTextDOM, {
       value: "",
-      mode:  "javascript",  
+      mode:  "javascript",
       lineNumbers: true
     });
 
@@ -35,7 +41,7 @@ var FileViewer = React.createClass({
 
     myCodeMirror.on("mousedown", function() {
       mouseDown = true;
-    }) 
+    })
 
     myCodeMirror.on("cursorActivity", function(codeMirror) {
       if(mouseDown){
@@ -43,26 +49,23 @@ var FileViewer = React.createClass({
         var selectionPosition = codeMirror.listSelections()[0];
         var lineLength = this.state.lineCount[selectionPosition.head.line];
         //I suspect this has bad performance. I could use the raw string to calc much faster.
-        var nextChar = codeMirror.getRange(selectionPosition.head, 
+        var nextChar = codeMirror.getRange(selectionPosition.head,
                                           {ch: selectionPosition.head.ch + 1, line: selectionPosition.head.line});
-  
+
         //need to add a list of chars to escape.
-        
+
         if(selectionPosition.anchor.ch === 0) {
-          console.log("first");
           selection = "^" + selection;
         }
-  
+
         if(selectionPosition.head.ch === lineLength) {
-          console.log("last");
           selection = selection + "$";
         }
-  
+
         if(nextChar === " ") {
-          console.log("end of word");
-          // selection = selection + "\\b"; 
+          // selection = selection + "\\b";
         }
-  
+
         grepStore.changeRegexSelection(selection);
       }
     }.bind(this));
@@ -77,7 +80,7 @@ var FileViewer = React.createClass({
   componentWillUpdate: function(nextProps, nextState) {
     if(nextProps.activeFile !== this.props.activeFile) {
       this.setState({lineCount: nextProps.file.split("\n").map(function(line) { return line.length })});
-      nextState.myCodeMirror.setValue(nextProps.file);  
+      nextState.myCodeMirror.setValue(nextProps.file);
     }
   },
   render: function() {

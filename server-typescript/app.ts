@@ -4,13 +4,17 @@
 var Hapi = require("hapi");
 var processManager = require('./server/processManager');
 var stateRoutes = require('./server/stateAPI/stateRoutes');
-var nconf = require('nconf');
 var opn = require('opn');
-nconf.argv().env().file({file: __dirname + '/default_config.json'});
+/**Global Logger*/
+var format = require('bunyan-format')({outputMode: 'short'});
+global.log = require('bunyan').createLogger({name: "topsoil", stream: format});
+var log = global.log;
 // Global configuration
-global.nconf = nconf;
-
-//// Create a server with a host and port
+global.nconf = require('nconf')
+                .argv().env()
+                .file({file: __dirname + '/default_config.json'});
+var nconf = global.nconf;
+// Create a server with a host and port
 var server = new Hapi.Server();
 var setupSocketAPI = require('./server/processManager');
 
@@ -37,7 +41,8 @@ server.route({
 
 server.start();
 
-console.log('started server on port: ' + nconf.get('port'));
+log.info('started server on port: ' + nconf.get('port'));
 if(!nconf.get('noop')){
-  opn('http://localhost:' + nconf.get('port'));
+    log.info('opening browser to ' + 'http://localhost:' + nconf.get('port'));
+    opn('http://localhost:' + nconf.get('port'));
 }

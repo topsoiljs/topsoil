@@ -8,7 +8,7 @@ var streams = {};
 var currentDir = __dirname;
 var root = path.resolve(__dirname, '..');
 console.log('root is ', root);
-var _globalSocket = io('http://localhost:8001/',{'force new connection':true});
+var _globalSocket = io('http://localhost:8000/',{'force new connection':true});
 
 var createNewStream = function(options){
 

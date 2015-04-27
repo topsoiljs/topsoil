@@ -24,13 +24,11 @@ var MasterView = React.createClass({
 
     // Ask for notifications permissions
     Notification.requestPermission( function(status) {
-      console.log('permissions', status);
+      log.info('permissions', status);
     });
+
+    log.setLevel(0);
   },
-  // Need to add
-  /*
-    <i className="fa fa-chevron-right"></i>
-  */
   render: function() {
     //Combine these two worlds...
     var subviews = this.state.magicData.subviews ? this.state.magicData.subviews.map(function(el){
@@ -43,6 +41,7 @@ var MasterView = React.createClass({
                   <MagicSuggestions {...this.state.magicData}/>
                 </div>
                 <div className="main twelve wide column">
+                  <SubViews subviews={subviews}/>
                   <this.state.activeView/>
                 </div>
               </div>)

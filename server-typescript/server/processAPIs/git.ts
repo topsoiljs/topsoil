@@ -11,6 +11,8 @@ gitAPI.status = gitWrapper(['status', '-s'], parseStatus);
 
 gitAPI.commitAdd = gitWrapper(['commit', '-am'], utility.identity);
 
+gitAPI.commit = gitWrapper(['commit', '-m'], utility.identity);
+
 gitAPI.push = gitWrapper(['push'], utility.identity);
 
 gitAPI.add = gitWrapper(['add'], utility.identity);
@@ -18,6 +20,8 @@ gitAPI.add = gitWrapper(['add'], utility.identity);
 gitAPI.reset = gitWrapper(['reset', 'HEAD'], utility.identity);
 
 gitAPI.diff = gitWrapper(['diff', '--no-prefix'], parseDiff);
+
+gitAPI.checkout = gitWrapper(['checkout'], utility.identity);
 
 module.exports = gitAPI;
 
@@ -57,10 +61,11 @@ function parseStatus(str:String, options){
         }
         return result;
     }, emptyResult);
-    var branches = String(execSync('git branch', options)).split('\n');
+    var branches = String(execSync('git branch', {cwd: options.cwd})).split('\n');
+    result.branches = branches;
     branches.forEach(function(el){
         if(el.indexOf('*') > -1){
-            emptyResult.branch = el.slice(2);
+            result.branch = el.slice(2);
         }
     });
     return JSON.stringify(result);

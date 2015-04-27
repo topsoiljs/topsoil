@@ -4,7 +4,7 @@ var createSpawnStreamF = require('../streaming/streaming').createSpawnStream;
 var terminalAPI = <any> {};
 var es = require('event-stream');
 terminalAPI.callCommand = function(opts, infoHandler) {
-  console.log("terminal opts", opts);
+  log.info("terminal opts", opts);
   var spawnStream = createSpawnStreamF(opts.cmd, opts.args, opts.opts, infoHandler);
   return spawnStream;
 };

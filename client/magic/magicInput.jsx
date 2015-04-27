@@ -44,12 +44,12 @@ var MagicInput = React.createClass({
   },
   componentDidMount: function(){
     $('.magicinputs').on('focus', function(e){
-      $('.parentofmagicinputs').css('border-bottom', '3px solid #757575')
-    })
+      $('.parentofmagicinputs').css('border-bottom', '3px solid #757575');
+    });
 
     $('.magicinputs').on('focusout', function(e){
-      $('.parentofmagicinputs').css('border-bottom', '1px solid #757575')
-    })
+      $('.parentofmagicinputs').css('border-bottom', '1px solid #757575');
+    });
   },
   handleShortcut: function(e){
     // Tab or down
@@ -65,7 +65,7 @@ var MagicInput = React.createClass({
   handleInput: function(e){
     if (isKey(e, 'ENTER')) {
       var currentCommand = this.getCurrentCommand();
-      console.log(currentCommand);
+      log.info('entered command', currentCommand);
       if(currentCommand.args.length === 0) {
         magic.callCommand(currentCommand);
         masterStore.resetState();
@@ -122,20 +122,5 @@ var MagicInput = React.createClass({
     );
   }
 });
-
-/*
-For reference
-<input autoFocus placeholder="Search..." type="text" value={this.state.inputText} onChange={this.onChange} id="terminal" />
-
-
-
-$('.magicinputs').on('focus', function(e){
-  $('.parentofmagicinputs').css('border-bottom', '3px solid #757575')
-})
-
-$('.magicinputs').on('focusout', function(e){
-  $('.parentofmagicinputs').css('border-bottom', '1px solid #757575')
-})
-*/
 
 module.exports = MagicInput;

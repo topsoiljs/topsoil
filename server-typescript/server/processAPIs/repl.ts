@@ -21,33 +21,4 @@ replAPI.start = function(options){
   return createDuplexStream(inStream, outStream);
 }
 
-// var server = require('socket.io')(8001);
-// server.on('connection', function(socket){
-//   var stream;
-//   socket.on('startrepl', function(opts){
-//     opts = opts || {};
-//     var inStream = createInSocket(socket, 'repl');
-//     var outStream = createInSocket(socket, 'repl');
-//     stream = replAPI.start(opts)
-//     inStream.pipe(stream).pipe(outStream);
-//   })
-// })
-
-
-// var client = require('socket.io-client')('http://localhost:8001');
-
-// client.emit('startrepl', {})
-
-// client.emit('repl', {payload:'console.log("test")\n'})
-
-// client.on('repl', function(d){
-//   process.stdout.write(d.data);
-// })
-
-// process.stdin.on('data', function(d){
-//   client.emit('repl', {payload: String(d)})
-// })
-
-
-
 module.exports = replAPI;
