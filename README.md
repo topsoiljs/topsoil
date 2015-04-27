@@ -43,6 +43,8 @@ Topsoil is composed of user authored views. Views are context specific ui's for 
 
 Views are made up of components and stores. A view normally has one store, and a main component that may contain many sub-components. 
 
+Views have to be registered with the magic bar in order to be usable. Here is an example of registering a view:
+
 ```
 magic.registerView({
   name: 'super grep',
@@ -61,6 +63,20 @@ magic.registerView({
   component: SGrepComponent
 });
 ```
+
+Register View Keys:
+
+**name:**
+
+**commands:**
+
+**category:**
+
+**icon:**
+
+**component:**
+
+
 
 
 

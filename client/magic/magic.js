@@ -77,12 +77,13 @@ Magic.prototype.registerView = function(viewObject){
 };
 
 Magic.prototype.callCommand = function(command, userArgs){
-
+  console.log("userArgs", userArgs);
+  console.log("master store state:", masterStore.getState());
   // Check if view has specified no autorender, or render command explicitly called.
   if(!command.view.noAutoRender || command.render){
     masterStore.openView(command.view.component);
   }
-
+  
   var args = _.pluck(userArgs, "text").join(" ");
   userArgs = userArgs || [];
   if(userArgs.length > 0) {
@@ -90,7 +91,8 @@ Magic.prototype.callCommand = function(command, userArgs){
     if(!command.argsHistory[args]){
       var argsObj = {
         name: args,
-        priority: 0
+        priority: 0,
+        argumentsArray: userArgs
       };
       command.argsHistory[args] = argsObj;
       this._argsEngines[command._id].add([argsObj]);
