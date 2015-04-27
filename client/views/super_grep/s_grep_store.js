@@ -112,7 +112,6 @@ function GrepStore() {
       createNewStream({
         command: 'fs.readFile',
         cb: function(data) {
-          console.log("set file data back:", data);
           state.activeFile = filePath;
           state.file = data.data;
           eventBus.emit('s_grep');
