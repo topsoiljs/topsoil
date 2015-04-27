@@ -163,6 +163,9 @@ var GitButton = React.createClass({
       this.props.handleDiff(this);
       return;
     }
+    if(this.props.action ==='commit'){
+      this.props.onClick();
+    }
     gitViewStore[this.props.action](this.props.fileName);
   },
   render: function(){
@@ -188,13 +191,17 @@ var GitCommit = React.createClass({
      this.setState({message: event.target.value});
      console.log('the state is ', this.state);
    },
+   reset: function(event){
+     this.setState({message: ''});
+     console.log('resetting commit');
+   },
   render: function(){
     return (
       <span className = "gitCommitContainer">
         <span className="ui input">
-         <input type="text" placeholder="Commit Message..." onChange={this.handleChange}/>
+         <input type="text" value = {this.state.message} placeholder="Commit Message..." onChange={this.handleChange}/>
         </span>
-        <GitButton fileName = {this.state} action='commit' label='Commit' color="orange" icon="write"/>
+        <GitButton onClick = {this.reset} fileName = {this.state} action='commit' label='Commit' color="orange" icon="write"/>
       </span>
     )
   }
