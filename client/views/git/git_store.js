@@ -57,7 +57,7 @@ function GitViewStore() {
           args: [args.message]
         },
         cb: function(data){
-          eventBus.emit('git');
+          streams['git.status'].emit('get');
         },
         initialData: ' '
       });
