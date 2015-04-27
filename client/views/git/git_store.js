@@ -103,14 +103,12 @@ function GitViewStore() {
           commands: [
             {
               name: 'fs.watchFile',
-              opts: {
-                dir: state.currentDir
-              }
+              opts: {dir: state.currentDir}
             },
             {
               name: 'git.status',
               opts: {
-                cwd: state.currentDir
+                opts: {cwd: state.currentDir}
               }
             }
           ]

@@ -6,6 +6,7 @@ var isKey = require('../utilities.js').isKey;
 var _ = require("lodash");
 var Bubble = require("./bubble.jsx");
 var HiddenCanvas = require("./hiddenCanvas.jsx");
+
 /*
   Data:
   {

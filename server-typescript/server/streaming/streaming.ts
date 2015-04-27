@@ -13,7 +13,6 @@ var createOutStream = function(socket, id: string) {
     cb();
   })
 };
-
 var createDuplex = function(input, out){
   return es.duplex(input, out);
 };
@@ -81,6 +80,7 @@ var createPassStream = function(){
 
 var createSpawnEndStream = function(command, args, options, parser, moreArgs){
   options = options || {};
+  log.info('spawnendstream opts', options);
   options.stdio = ['pipe', 'pipe'];
   if(moreArgs){
     args = args.concat(moreArgs);

@@ -1,6 +1,5 @@
 var EventBus = function() {
   var events = {};
-
   var api = {
     register: function(view, listener) {
       events[view] = events[view] || [];
