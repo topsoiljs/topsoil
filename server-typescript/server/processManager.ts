@@ -33,14 +33,14 @@ var setupAPI = function setupAPI(socket){
         }
     }
     socket.on('chain', function(opts){
-      // var d = domain.create();
-      // d.on('error', function(err){
-      //   log.error('error while making chain', opts);
-      // });
-      // d.run(function(){
+      var d = domain.create();
+      d.on('error', function(err){
+        log.error('error while making chain', opts);
+      });
+      d.run(function(){
         var inStream = createInSocketStream(socket, opts._uid);
         var outStream = createOutSocketStream(socket, opts._uid);
-
+        log.info('running chain', opts, opts.commands[0].opts, opts.commands[1].opts);
         var current = inStream;
         _.each(opts.commands, function(command){
           var splitCommand = command.name.split('.');
@@ -52,7 +52,7 @@ var setupAPI = function setupAPI(socket){
           }
         });
         current.pipe(outStream);
-      // })
+      })
     })
 }
 
