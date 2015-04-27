@@ -94,8 +94,8 @@ function GitViewStore() {
       });
     },
     streamStatus: function(args){
-      if(args.dir.length <= 0){
-        args.dir = state.currentDir;
+      if(args.dir.length > 0){
+        state.currentDir = args.dir;
       }
       streams['chain'] = createNewStream({
         command: 'chain',
@@ -104,13 +104,13 @@ function GitViewStore() {
             {
               name: 'fs.watchFile',
               opts: {
-                dir: args.dir
+                dir: state.currentDir
               }
             },
             {
               name: 'git.status',
               opts: {
-                cwd: args.dir
+                cwd: state.currentDir
               }
             }
           ]
