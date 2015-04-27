@@ -37,35 +37,4 @@ var GrepResults = React.createClass({
   }
 })
 
-/*
-<div class="ui cards">
-  <div class="card">
-    <div class="content">
-      <div class="header">Elliot Fu</div>
-      <div class="description">
-        Elliot Fu is a film-maker from New York.
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="content">
-      <div class="header">Veronika Ossi</div>
-      <div class="meta">Friend</div>
-      <div class="description">
-        Veronika Ossi is a set designer living in New York who enjoys kittens, music, and partying.
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="content">
-      <div class="header">Jenny Hess</div>
-      <div class="meta">Friend</div>
-      <div class="description">
-        Jenny is a student studying Media Management at the New School
-      </div>
-    </div>
-  </div>
-</div>
-*/
-
 module.exports = GrepResults;
