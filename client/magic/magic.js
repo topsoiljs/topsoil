@@ -152,7 +152,7 @@ Magic.prototype.searchArgs = function(currentCommand, argsArr){
   var results;
 
   if(this._argsEngines[currentCommand._id]) {
-    console.log("the current command has been set");
+    log.info("the current command has been set", currentCommand);
     this._argsEngines[currentCommand._id].get(argsArr.join(" "), function(sugs){
       results = sugs;
     });

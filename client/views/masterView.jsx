@@ -24,8 +24,10 @@ var MasterView = React.createClass({
 
     // Ask for notifications permissions
     Notification.requestPermission( function(status) {
-      console.log('permissions', status);
+      log.info('permissions', status);
     });
+
+    log.setLevel(0);
   },
   // Need to add
   /*

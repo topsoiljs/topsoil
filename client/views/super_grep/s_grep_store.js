@@ -53,7 +53,6 @@ function GrepStore() {
         var regexArg = state.regex[state.activeRegex].selection;
 
         function grepCallback(data){
-          console.log("grepCallback", data);
           var lines = data.data.split("\n");
           //Remove empty last line
           lines.pop();
@@ -140,7 +139,6 @@ function GrepStore() {
       } else {
         state.dir = path;
         methods._getFiles(path, function(filesystem) {
-          console.log("fs", filesystem);
           methods._addFiles(filesystem, state.dir);
           // methods._setFile(state.files[0]);
           eventBus.emit('s_grep');

@@ -65,7 +65,7 @@ var MagicInput = React.createClass({
   handleInput: function(e){
     if (isKey(e, 'ENTER')) {
       var currentCommand = this.getCurrentCommand();
-      console.log(currentCommand);
+      log.info('entered command', currentCommand);
       if(currentCommand.args.length === 0) {
         magic.callCommand(currentCommand);
         masterStore.resetState();
