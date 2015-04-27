@@ -84,7 +84,7 @@ Magic.prototype.callCommand = function(command, userArgs){
   }
 
   var args = _.pluck(userArgs, "text").join(" ");
-
+  userArgs = userArgs || [];
   if(userArgs.length > 0) {
     _.defaults(command, {argsHistory: {}});
     if(!command.argsHistory[args]){
