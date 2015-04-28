@@ -70,15 +70,23 @@ var MagicInput = React.createClass({
       if(currentCommand.args.length === 0) {
         magic.callCommand(currentCommand);
         masterStore.resetState();
-
       } else if(this.props.isArgumentsMode) {
-        //This could be moved below?
         if(this.props.activeArgumentIndex === currentCommand.args.length) {
-          magic.callCommand(this.getCurrentCommand(), _.rest(this.props.inputArr));
+          var args;
+          var suggestionArgsActive = this.props.suggestionArgsActive;
+          
+          if(suggestionArgsActive > -1) {
+            var argHistoryObject = this.props.argsSuggestions[suggestionArgsActive];
+            args = argHistoryObject.argumentsArray
+          } else {
+            args = _.rest(this.props.inputArr);
+          }         
+
+          magic.callCommand(currentCommand, args);
           masterStore.resetState();
         } else {
           masterStore.activeIndexRight();
-        }
+        }   
       } else {
         masterStore.enterArgsMode();
       }

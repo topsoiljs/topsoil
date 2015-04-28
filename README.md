@@ -5,7 +5,15 @@ npm install -g topsoil
 
 ![topsoil_home](/images/topsoil_home.png?raw=true)
 
+
+
+# Building From Source:
+
 ## Set Up in the root directory
+
+Clone down the repo
+
+- git clone https://github.com/topsoiljs/topsoil
 
 Install all npm dependencies
 
@@ -28,5 +36,48 @@ To run server under the deploy directory
 Topsoil will be hosted on local host 8000
 
 http://localhost:8000/
+
+# Writing a View:
+
+Topsoil is composed of user authored views. Views are context specific ui's for terminal tasks.
+
+Views are made up of components and stores. A view normally has one store, and a main component that may contain many sub-components. 
+
+Views have to be registered with the magic bar in order to be usable. Here is an example of registering a view:
+
+```
+magic.registerView({
+  name: 'super grep',
+  commands: [
+    {
+      name: "Set Directory",
+      description: "sets the directory for the super grep view",
+      args: ['path'],
+      tags: ["set dir", "folder", "current dir", "grep"],
+      categories: ['set'],
+      method: grepStore['setDir']
+    }
+  ],
+  category: 'filesystem',
+  icon: 'file-text-o',
+  component: SGrepComponent
+});
+```
+
+Register View Keys:
+
+**name:**
+
+**commands:**
+
+**category:**
+
+**icon:**
+
+**component:**
+
+
+
+
 
 
