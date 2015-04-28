@@ -1,6 +1,8 @@
 # topsoil
 The topsoil for your terminal.
 
+![topsoil_video](https://youtu.be/DvRIllTxym4)
+
 npm install -g topsoil
 
 ![topsoil_home](/images/topsoil_home.png?raw=true)
