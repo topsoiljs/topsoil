@@ -1,10 +1,9 @@
 var masterStore = require("../masterStore.js");
 var MagicInput = require("../magic/magicInput.jsx");
-var MagicSuggestions = require("../magic/MagicSuggestions.jsx");
+var MagicSuggestions = require("../magic/magicSuggestions.jsx");
 var eventBus = require("../eventBus.js");
 var HubWorld = require("./hub_world/hub_world.jsx");
 var magic = require("../magic/magic.js");
-var MagicInput = require("../magic/MagicInput.jsx");
 var SubViews = require("./subViews.jsx");
 
 var MasterView = React.createClass({
